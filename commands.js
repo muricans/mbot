@@ -67,10 +67,8 @@ module.exports.registerCommands = function(client) {
 
         // porn commands
       case "rule34":
-        if (!args.length) {
           tools.search(rule34[Math.floor(Math.random() * rule34.length)], 'all', message);
           return message.delete(1000);
-        }
         tools.find(rule34[Math.floor(Math.random() * rule34.length)], args.toString().replace(' ', '+'), 'all', message);
         break;
       case "hentai":
