@@ -1,8 +1,15 @@
 const settings = require('./settings.json');
 const tools = require('./tools.js');
+const fs = require('fs');
 const Discord = require('discord.js');
 
 module.exports.registerCommands = function(client) {
+  client.commands = new Discord.Collection();
+  const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+  for (const file of commandFiles) {
+    const cmd = require(`./commands/${file}`);
+    client.commands.set(cmd.name, cmd);
+  }
   client.on('message', async message => {
     if (message.author.bot) return;
     if (message.channel.type === 'dm') return;
@@ -19,7 +26,9 @@ module.exports.registerCommands = function(client) {
           if (reaction.emoji.name === "🔼") {
             sent.channel.send("Emoji recieved");
           }
-        }, {});
+        }, {
+          time: 20000
+        });
       });
     }
 
@@ -37,119 +46,32 @@ module.exports.registerCommands = function(client) {
     var hardcore = ['nsfwhardcore', 'shelikesitrough'];
     var pegging = ['pegging'];
 
-    const errMsg = "Please move to an nsfw channel :flushed:";
-
     // commands here
 
     if (command === 'ping') {
       message.reply('pong');
     }
 
-    if (command === 'userinfo') {
-      let embed = new Discord.RichEmbed()
-        .setAuthor(message.author.username)
-        .setDescription('User info is being displayed.')
-        .addField('Full Username', `${message.author.username}#${message.author.discriminator}`)
-        .addField('ID', message.author.id)
-        .addField('Time of Creation', message.author.createdAt)
-        .addField('Avatar URL', message.author.avatarURL);
-      message.channel.send(embed);
-    }
-
-
-    if (command === "random") {
-      if (!args.length) {
-        return message.channel.send('Please add a subreddit');
-      }
-      tools.search(args, 'all', message);
-    }
-
     switch (command) {
-      case "help":
-        var page = 0;
-        var min = 1;
-        var max = 3;
-        const embed = new Discord.RichEmbed()
-          .setTitle('Commands')
-          .addField('!help', 'Returns a list of commands for this bot')
-          .addField('!ping', 'Returns pong')
-          .addField('!userinfo', 'Returns userinfo about yourself')
-          .addField('!random <subreddit>', 'Returns a random thread from a subreddit')
-          .addField('!rule34', 'Returns a rule34 image')
-          .addField('!nsfw', 'Returns an nsfw image (Straight)')
-          .addField('!gay', 'Returns a gay porn image')
-          .addField('!hentai', 'Returns a hentai image')
-          .setFooter('Requested by: ' + message.author.username + " (1/3)");
-        //console.log(page);
-        message.channel.send(embed).then(async sent => {
-          await sent.react("◀");
-          await sent.react("▶");
-          sent.awaitReactions(reaction => {
-            if (reaction.emoji.name === "◀") {
-              reaction.remove(message.author);
-              page--;
-            } else if (reaction.emoji.name === "▶") {
-              reaction.remove(message.author);
-              page++;
-            }
-
-            switch (page) {
-              case 1:
-                const embed1 = new Discord.RichEmbed()
-                  .setTitle('Commands')
-                  .addField('!help', 'Returns a list of commands for this bot')
-                  .addField('!ping', 'Returns pong')
-                  .addField('!userinfo', 'Returns userinfo about yourself')
-                  .addField('!random <subreddit>', 'Returns a random thread from a subreddit')
-                  .addField('!rule34', 'Returns a rule34 image')
-                  .addField('!nsfw', 'Returns an nsfw image (Straight)')
-                  .addField('!gay', 'Returns a gay porn image')
-                  .addField('!hentai', 'Returns a hentai image')
-                  .setFooter('Requested by: ' + message.author.username + " (1/3)");
-                //console.log(page);
-                sent.edit(embed1);
-                break;
-              case 2:
-                const embed2 = new Discord.RichEmbed()
-                  .setTitle('Commands')
-                  .addField('!trap', 'Returns a trap image')
-                  .addField('!dick', 'Returns an image of a dick')
-                  .addField('!ass', 'Returns an image of an ass')
-                  .addField('!blowjob', 'Returns a blowjob image')
-                  .addField('!anal', 'Returns an anal image')
-                  .addField('!boobs', 'Returns a picture of a pair of milkers')
-                  .addField('!thighs', 'Retuns an image of thighs')
-                  .addField('!hardcore', 'Returns a hardcore porn image')
-                  .addField('!pegging', 'Returns a pegging image')
-                  .setFooter('Requested by: ' + message.author.username + " (2/3)");
-                //console.log(page);
-                sent.edit(embed2);
-                break;
-              case 3:
-                const embed3 = new Discord.RichEmbed()
-                  .setTitle('Commands')
-                  .addField('!test', 'A test command')
-                  .setFooter('Requested by: ' + message.author.username + " (3/3)");
-                //console.log(page);
-                sent.edit(embed3);
-                break;
-            }
-
-            if (page > max) {
-              page = 3;
-            }
-
-            if (page < min) {
-              page = 1;
-            }
-          }, {
-            time: 20000
-          });
-        });
+      case "userinfo":
+        client.commands.get('userinfo').execute(message, args);
         break;
+      case "help":
+        client.commands.get('help').execute(message, args);
+        break;
+      case "random":
+        client.commands.get('random').execute(message, args);
+        break;
+
+
+
+        // porn commands
       case "rule34":
-        tools.search(rule34[Math.floor(Math.random() * rule34.length)], 'all', message);
-        message.delete(1000);
+        if (!args.length) {
+          tools.search(rule34[Math.floor(Math.random() * rule34.length)], 'all', message);
+          return message.delete(1000);
+        }
+        tools.find(rule34[Math.floor(Math.random() * rule34.length)], args.toString().replace(' ', '+'), 'all', message);
         break;
       case "hentai":
         tools.search(hentai[Math.floor(Math.random() * hentai.length)], 'all', message);
