@@ -32,19 +32,20 @@ module.exports.registerCommands = function(client) {
       });
     }
 
-    let rule34 = ['rule34', 'rule34lol', 'dbdgonewild', 'rule34rainbowsix', '2booty'];
-    var gay = ['broslikeus', 'gaybrosgonewild', 'gaygifs', 'gayporn', 'ladybonersgw', 'men2men', 'TotallyStraight', 'twinks'];
-    var hentai = ['hentai', 'sportshentai', 'ecchi', 'hentai_gif', 'thighdeology', 'westernhentai'];
-    var traps = ['futanari', 'traps', 'traphentai', 'delicioustraps'];
-    var dick = ['bulges', 'cock', 'dickpics4freedom', 'massivecock', 'penis', 'thickdick'];
-    var ass = ['ass', 'bigasses', 'assinthong', 'buttplug', 'booty', 'paag', 'hungrybutts', 'slimthick', 'assholebehindthong'];
-    var nsfw = ['nsfw_gif', 'nsfw', 'asiansgonewild', 'asianhotties', 'asiannsfw', 'porninfifteenseconds'];
-    var blowjob = ['blowjobs', 'deepthroat', 'facefuck'];
+
     var anal = ['anal', 'analgw', 'painal'];
+    var ass = ['ass', 'bigasses', 'assinthong', 'buttplug', 'booty', 'paag', 'hungrybutts', 'slimthick', 'assholebehindthong'];
+    var blowjob = ['blowjobs', 'deepthroat', 'facefuck'];
     var boobs = ['boobies', 'boobs', 'boobbounce'];
-    var thighs = ['datgap', 'thighhighs'];
+    var dick = ['bulges', 'cock', 'dickpics4freedom', 'massivecock', 'penis', 'thickdick'];
+    var gay = ['broslikeus', 'gaybrosgonewild', 'gaygifs', 'gayporn', 'ladybonersgw', 'men2men', 'TotallyStraight', 'twinks'];
     var hardcore = ['nsfwhardcore', 'shelikesitrough'];
+    var hentai = ['hentai', 'sportshentai', 'ecchi', 'hentai_gif', 'thighdeology', 'westernhentai'];
+    var nsfw = ['nsfw_gif', 'nsfw', 'asiansgonewild', 'asianhotties', 'asiannsfw', 'porninfifteenseconds'];
     var pegging = ['pegging'];
+    var rule34 = ['rule34', 'rule34lol', 'dbdgonewild', 'rule34rainbowsix', '2booty'];
+    var thighs = ['datgap', 'thighhighs'];
+    var traps = ['futanari', 'traps', 'traphentai', 'delicioustraps'];
 
     // commands here
 
@@ -53,19 +54,70 @@ module.exports.registerCommands = function(client) {
     }
 
     switch (command) {
-      case "userinfo":
-        client.commands.get('userinfo').execute(message, args);
-        break;
       case "help":
         client.commands.get('help').execute(message, args);
         break;
+      case "userinfo":
+        client.commands.get('userinfo').execute(message, args);
+        break;
       case "random":
         client.commands.get('random').execute(message, args);
+        break;
+      case "roulette":
+        client.commands.get('roulette').execute(message, args);
+        break;
+      case "points":
+        client.commands.get('points').execute(message, args);
+        break;
+      case "give":
+        client.commands.get('give').execute(message, args);
         break;
 
 
 
         // porn commands
+
+      case "anal":
+        tools.search(anal[Math.floor(Math.random() * anal.length)], 'all', message);
+        message.delete(1000);
+        break;
+      case "ass":
+        tools.search(ass[Math.floor(Math.random() * ass.length)], 'all', message);
+        message.delete(1000);
+        break;
+      case "blowjob":
+        tools.search(blowjob[Math.floor(Math.random() * blowjob.length)], 'all', message);
+        message.delete(1000);
+        break;
+      case "boobs":
+        tools.search(boobs[Math.floor(Math.random() * boobs.length)], 'all', message);
+        message.delete(1000);
+        break;
+      case "dick":
+        tools.search(dick[Math.floor(Math.random() * dick.length)], 'all', message);
+        message.delete(1000);
+        break;
+      case "gay":
+        tools.search(gay[Math.floor(Math.random() * gay.length)], 'all', message);
+        message.delete(1000);
+        break;
+      case "hardcore":
+        tools.search(hardcore[Math.floor(Math.random() * hardcore.length)], 'all', message);
+        message.delete(1000);
+        break;
+      case "hentai":
+        tools.search(hentai[Math.floor(Math.random() * hentai.length)], 'all', message);
+        message.delete(1000);
+        break;
+      case "nsfw":
+        tools.search(nsfw[Math.floor(Math.random() * nsfw.length)], 'all', message);
+        message.delete(1000);
+        break;
+      case "pegging":
+        tools.search(pegging[Math.floor(Math.random() * pegging.length)], 'all', message);
+        message.delete(1000);
+        break;
+        // rule34 code different than others
       case "rule34":
         if (!args.length) {
           tools.search(rule34[Math.floor(Math.random() * rule34.length)], 'all', message);
@@ -73,52 +125,12 @@ module.exports.registerCommands = function(client) {
         }
         tools.find(rule34[Math.floor(Math.random() * rule34.length)], args.toString().replace(' ', '+'), 'all', message);
         break;
-      case "hentai":
-        tools.search(hentai[Math.floor(Math.random() * hentai.length)], 'all', message);
-        message.delete(1000);
-        break;
-      case "trap":
-        tools.search(traps[Math.floor(Math.random() * traps.length)], 'all', message);
-        message.delete(1000);
-        break;
-      case "gay":
-        tools.search(gay[Math.floor(Math.random() * gay.length)], 'all', message);
-        message.delete(1000);
-        break;
-      case "dick":
-        tools.search(dick[Math.floor(Math.random() * dick.length)], 'all', message);
-        message.delete(1000);
-        break;
-      case "boobs":
-        tools.search(boobs[Math.floor(Math.random() * boobs.length)], 'all', message);
-        message.delete(1000);
-        break;
-      case "nsfw":
-        tools.search(nsfw[Math.floor(Math.random() * nsfw.length)], 'all', message);
-        message.delete(1000);
-        break;
-      case "blowjob":
-        tools.search(blowjob[Math.floor(Math.random() * blowjob.length)], 'all', message);
-        message.delete(1000);
-        break;
-      case "anal":
-        tools.search(anal[Math.floor(Math.random() * anal.length)], 'all', message);
-        message.delete(1000);
-        break;
       case "thighs":
         tools.search(thighs[Math.floor(Math.random() * thighs.length)], 'all', message);
         message.delete(1000);
         break;
-      case "hardcore":
-        tools.search(hardcore[Math.floor(Math.random() * hardcore.length)], 'all', message);
-        message.delete(1000);
-        break;
-      case "pegging":
-        tools.search(pegging[Math.floor(Math.random() * pegging.length)], 'all', message);
-        message.delete(1000);
-        break;
-      case "ass":
-        tools.search(ass[Math.floor(Math.random() * ass.length)], 'all', message);
+      case "trap":
+        tools.search(traps[Math.floor(Math.random() * traps.length)], 'all', message);
         message.delete(1000);
         break;
 
