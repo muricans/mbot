@@ -52,8 +52,9 @@ module.exports.roulette = function(amnt, current, message, client, all) {
 // check for ending of links exentsion
 module.exports.end = function(string) {
   var contains = false;
-  for (var i = 0; i < endings.length; i++) {
-    var ending = endings[i];
+  var e, ending;
+  for (e in endings) {
+    ending = endings[e];
     if (string.includes(ending)) {
       contains = true;
     }
@@ -64,8 +65,9 @@ module.exports.end = function(string) {
 // check for banned links
 module.exports.banned = function(string) {
   var contains = false;
-  for (var i = 0; i < bannedLinks.length; i++) {
-    var link = bannedLinks[i];
+  var l, link;
+  for (l in bannedLinks) {
+    link = bannedLinks[l];
     if (string.includes(link)) {
       if (mbot.debug) {
         console.log('Found a banned link');

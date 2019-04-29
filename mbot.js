@@ -20,6 +20,13 @@ db.serialize(function() {
 
 var debug = true;
 
+client.on('guildMemberAdd', (guildMember) => {
+  db.serialize(function() {
+    db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', guildMember.user.id.toString(), 100);
+    console.log('New user found, registering them to the bot database with ID of ' + guildMember.user.id.toString());
+  });
+});
+
 // actions
 client.on('ready', async () => {
   db.serialize(function() {
