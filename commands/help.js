@@ -8,7 +8,7 @@ function pageOne(edit, message) {
     .addField('!help', 'Returns a list of commands for this bot')
     .addField('!ping', 'Returns pong')
     .addField('!roulette <bet amount>', 'Returns win/loss and new total points')
-    .addField('!set', 'Sets the users points')
+    .addField('!set', 'Sets the users points [admin only]')
     .addField('!userinfo', 'Returns userinfo about yourself')
     .addField('!random <subreddit> [time] [search]', 'Returns a random thread from a subreddit')
     .setFooter('Page (1/3)');
