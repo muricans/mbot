@@ -1,10 +1,53 @@
 const snekfetch = require('snekfetch');
 const Discord = require('discord.js');
 const mbot = require('./mbot.js');
+const sqlite = require('sqlite3').verbose();
+
+let db = new sqlite.Database('./mbot.db', (err) => {
+  if (err) {
+    console.error(err.message);
+  }
+});
 
 const errMsg = "Please move to an nsfw channel :flushed:";
 var bannedLinks = ['pornhub.com', 'xvideos.com', 'erome.com', 'xnxx.com', 'xhamster.com', 'redtube.com', 'xmov.fun', 'porness.net'];
 var endings = ['.png', '.jpg', '.gif'];
+
+module.exports.setPoints = function(amnt, id) {
+  db.run('UPDATE users SET points = ? WHERE id = ?', amnt, id);
+}
+
+module.exports.roulette = function(amnt, current, message, client, all) {
+  const smile = client.emojis.get("566861749324873738");
+  const wtf = client.emojis.get("567905581868777492");
+  const chance = Math.floor(Math.random() * 100);
+  var wonall;
+  var won;
+  var lost;
+  if (chance > 56) { // chance of winning
+    if (all) {
+      wonall = current * 2;
+    } else {
+      won = current + amnt;
+    }
+    //const win = won
+    if (all) {
+      module.exports.setPoints(wonall, message.author.id.toString());
+      return message.reply(smile + " You won " + (wonall - current) + " points! Now you have " + wonall + " points.");
+    } else {
+      module.exports.setPoints(won, message.author.id.toString());
+      return message.reply(smile + " You won " + (won - current) + " points! Now you have " + won + " points.");
+    }
+  } else {
+    if (all) {
+      lost = current - current;
+    } else {
+      lost = current - amnt;
+    }
+    module.exports.setPoints(lost, message.author.id.toString());
+    return message.reply(wtf + " You lost " + amnt + " points! Now you have " + lost + " points.");
+  }
+}
 
 // check for ending of links exentsion
 module.exports.end = function(string) {

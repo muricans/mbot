@@ -2,6 +2,7 @@
 const settings = require('./settings.json');
 const package = require('./package.json');
 const commands = require('./commands.js');
+const tools = require('./tools.js');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const sqlite = require('sqlite3').verbose();
@@ -44,6 +45,18 @@ client.on('ready', async () => {
       console.log(err);
     }
   }
+  /*setInterval(function() {
+    db.each('SELECT * FROM users', function(err, row) {
+      var uPoints;
+      var u, user;
+      for (u in client.users.array()) {
+        uPoints = row.points + 10;
+        user = client.users.array()[u];
+      }
+      tools.setPoints(uPoints, user.id.toString());
+      console.log('Updated ' + user.id.toString() + ' to ' + uPoints);
+    });
+  }, 30000);*/
 });
 
 commands.registerCommands(client);

@@ -15,10 +15,13 @@ module.exports = {
     if (message.mentions.users.first() === message.author) {
       return message.reply('You cannot give points to yourself!');
     }
+    if (!message.mentions.users.first()) {
+      return message.reply('That user does not exist!')
+    }
     db.serialize(function() {
       db.get("SELECT points points FROM users WHERE id = " + message.author.id.toString(), function(err, row) {
         if (err) {
-          return console.log(err);
+          return message.reply('That user does not exist!');
         }
         const give = parseInt(args[1]);
         if (isNaN(give)) {

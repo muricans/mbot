@@ -64,13 +64,16 @@ module.exports.registerCommands = function(client) {
         client.commands.get('random').execute(message, args);
         break;
       case "roulette":
-        client.commands.get('roulette').execute(message, args);
+        client.commands.get('roulette').execute(message, args, client);
         break;
       case "points":
         client.commands.get('points').execute(message, args);
         break;
       case "give":
         client.commands.get('give').execute(message, args);
+        break;
+      case "set":
+        client.commands.get('set').execute(message, args);
         break;
 
 
