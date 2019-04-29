@@ -34,7 +34,7 @@ module.exports.registerCommands = function(client) {
 
 
     var anal = ['anal', 'analgw', 'painal'];
-    var ass = ['ass', 'assinthong', 'assholebehindthong', 'bigasses', 'booty', 'buttplug', 'hungrybutts', 'paag', 'slimthick',];
+    var ass = ['ass', 'assinthong', 'assholebehindthong', 'bigasses', 'booty', 'buttplug', 'hungrybutts', 'paag', 'slimthick'];
     var blowjob = ['blowjobs', 'deepthroat', 'facefuck'];
     var boobs = ['boobbounce', 'boobies', 'boobs'];
     var dick = ['bulges', 'cock', 'dickpics4freedom', 'massivecock', 'penis', 'thickdick'];
@@ -42,7 +42,7 @@ module.exports.registerCommands = function(client) {
     var hardcore = ['nsfwhardcore', 'shelikesitrough'];
     var hentai = ['ecchi', 'hentai', 'hentai_gif', 'sportshentai', 'thighdeology', 'westernhentai'];
     var nsfw = ['asianhotties', 'asiannsfw', 'asiansgonewild', 'nsfw', 'nsfw_gif', 'porninfifteenseconds'];
-    var pegging = ['pegging'];
+    var pegging = ['pegging']; // any other subredits?
     var rule34 = ['2booty', 'dbdgonewild', 'rule34', 'rule34lol', 'rule34rainbowsix'];
     var thighs = ['datgap', 'thighhighs'];
     var traps = ['delicioustraps', 'futanari', 'traphentai', 'traps'];

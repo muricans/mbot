@@ -68,15 +68,21 @@ module.exports = {
             //console.log(page);
             sent.edit(embed3);
             break;
-            // more help pages start here
+            // more help pages start here, @felanbird follow format ^
+            //remove /* and */ to continue below
+            /*case 4:
+              const embed4 = new Discord.RichEmbed()
+                .setTitle('Commands');
+              sent.edit(embed4);
+              break;*/
         }
 
         if (page > max) {
-          page = 3;
+          page = max;
         }
 
         if (page < min) {
-          page = 1;
+          page = min;
         }
       }, {
         time: 20000
