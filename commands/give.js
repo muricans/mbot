@@ -24,6 +24,20 @@ module.exports = {
           return message.reply('That user does not exist!');
         }
         const give = parseInt(args[1]);
+        if (args[1] === "all") {
+          let all = parseInt(row.points.toString());
+          db.run('UPDATE users SET points = ? WHERE id = ?', 0, message.author.id.toString());
+          db.get("SELECT points points FROM users where id = " + message.mentions.users.first().id.toString(), function(err, row2) {
+            if (err) {
+              return console.log(err);
+            }
+            const mentCurrent = parseInt(row2.points.toString());
+            const mentNewCurrent = all + mentCurrent;
+            db.run('UPDATE users SET points = ? WHERE id = ?', mentNewCurrent, message.mentions.users.first().id.toString());
+            return message.reply('You sent all your points to ' + message.mentions.users.first() + '!');
+          });
+          return;
+        }
         if (isNaN(give)) {
           return message.reply('Please give a proper number!');
         }
@@ -40,7 +54,7 @@ module.exports = {
           const mentCurrent = parseInt(row2.points.toString());
           const mentNewCurrent = give + mentCurrent;
           db.run('UPDATE users SET points = ? WHERE id = ?', mentNewCurrent, message.mentions.users.first().id.toString());
-          message.reply('You sent ' + give + ' points to ' + message.mentions.users.first() + ' !');
+          message.reply('You sent ' + give + ' points to ' + message.mentions.users.first() + '!');
         });
       });
     });
