@@ -1,5 +1,5 @@
 const sqlite = require('sqlite3').verbose();
-const tools = require('../tools.js');
+const tools = require('../../tools.js');
 
 let db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {

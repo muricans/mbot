@@ -10,6 +10,11 @@ module.exports.registerCommands = function(client) {
     const cmd = require(`./commands/${file}`);
     client.commands.set(cmd.name, cmd);
   }
+  const rouletteFiles = fs.readdirSync('./commands/roulette').filter(file => file.endsWith('.js'));
+  for (const file of rouletteFiles) {
+    const rlt = require(`./commands/roulette/${file}`);
+    client.commands.set(rlt.name, rlt);
+  }
   client.on('message', async message => {
     //if (message.author.bot) return;
     if (message.channel.type === 'dm') return;
