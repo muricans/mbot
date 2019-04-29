@@ -3,14 +3,13 @@ const Discord = require('discord.js');
 function pageOne(edit, message) {
   const embed = new Discord.RichEmbed()
     .setTitle('Commands')
+    .addField('!echo', 'Returns your message [admin only]')
     .addField('!help', 'Returns a list of commands for this bot')
     .addField('!ping', 'Returns pong')
     .addField('!roulette <bet amount>', 'Returns win/loss and new total points')
+    .addField('!set', 'Sets the user points')
     .addField('!userinfo', 'Returns userinfo about yourself')
     .addField('!random <subreddit> [time] [search]', 'Returns a random thread from a subreddit')
-    .addField('!anal', 'Returns an anal image')
-    .addField('!ass', 'Returns an image of an ass')
-    .addField('!blowjob', 'Returns a blowjob image')
     .setFooter('Page (1/3)');
   if (edit) {
     return message.edit(embed);
@@ -45,14 +44,13 @@ module.exports = {
           case 2:
             const embed2 = new Discord.RichEmbed()
               .setTitle('Commands')
+              .addField('!anal', 'Returns an anal image')
+              .addField('!ass', 'Returns an image of an ass')
+              .addField('!blowjob', 'Returns a blowjob image')
               .addField('!boobs', 'Returns a picture of a pair of milkers')
               .addField('!hardcore', 'Returns a hardcore porn image')
               .addField('!hentai', 'Returns a hentai image')
               .addField('!nsfw', 'Returns an nsfw image (Straight)')
-              .addField('!pegging', 'Returns a pegging image')
-              .addField('!rule34', 'Returns a rule34 image')
-              .addField('!thighs', 'Retuns an image of thighs')
-              .addField('!trap', 'Returns a trap image')
               .setFooter("Page (2/3)");
             //console.log(page);
             sent.edit(embed2);
@@ -60,6 +58,10 @@ module.exports = {
           case 3:
             const embed3 = new Discord.RichEmbed()
               .setTitle('Commands')
+              .addField('!pegging', 'Returns a pegging image')
+              .addField('!rule34', 'Returns a rule34 image')
+              .addField('!thighs', 'Retuns an image of thighs')
+              .addField('!trap', 'Returns a trap image')
               .addField('!dick', 'Returns an image of a dick')
               .addField('!gay', 'Returns a gay porn image')
               .setFooter("Page (3/3)");
