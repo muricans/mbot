@@ -11,7 +11,7 @@ module.exports = {
   execute(message, args) {
     let hasAdmin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");
     if (!hasAdmin) {
-      return message.channel.send(message.author + " You don't have permission to use this command!")
+      return message.channel.send(message.author + " You don't have permission to use this command!");
     }
     if (args.length < 2) {
       return message.reply('Please add params! !set <@user> <points>');

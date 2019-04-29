@@ -31,12 +31,16 @@ client.on('ready', async () => {
   });
   console.log('mbot v' + package.version + " has been enabled.");
   //game
-  client.user.setPresence({
-    satus: 'online',
-    game: {
-      name: 'Minecraft'
-    }
-  });
+  var games = ['Minecraft', 'Murdering Martine the BOT', 'nymnBridge PewDiePie', 'Acrozze a mega gay', 'This bot was made by me :)'];
+  setInterval(function() {
+    var randomStatus = games[Math.floor(Math.random() * games.length)];
+    client.user.setPresence({
+      satus: 'online',
+      game: {
+        name: randomStatus
+      }
+    });
+  }, 60000);
   if (debug) {
     try {
       let link = await client.generateInvite(["ADMINISTRATOR"]);

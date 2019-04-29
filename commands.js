@@ -11,7 +11,7 @@ module.exports.registerCommands = function(client) {
     client.commands.set(cmd.name, cmd);
   }
   client.on('message', async message => {
-    if (message.author.bot) return;
+    //if (message.author.bot) return;
     if (message.channel.type === 'dm') return;
     if (message.content.indexOf(settings.prefix) !== 0) return;
     const args = message.content.slice(settings.prefix.length).split(' ');
@@ -75,6 +75,12 @@ module.exports.registerCommands = function(client) {
       case "set":
         client.commands.get('set').execute(message, args);
         break;
+      case "echo":
+        client.commands.get('echo').execute(message, args);
+        break;
+        /*case "hey": only reason why checking if bot is needed.
+          message.channel.send('!hey');
+          break;*/
 
 
 

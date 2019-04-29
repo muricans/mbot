@@ -18,7 +18,7 @@ module.exports.setPoints = function(amnt, id) {
 }
 
 module.exports.roulette = function(amnt, current, message, client, all) {
-  const smile = client.emojis.get("572221263435661322");
+  const smile = client.emojis.get("566861749324873738");
   const wtf = client.emojis.get("567905581868777492");
   const chance = Math.floor(Math.random() * 100);
   var wonall;
