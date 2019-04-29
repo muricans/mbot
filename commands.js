@@ -34,18 +34,18 @@ module.exports.registerCommands = function(client) {
 
 
     var anal = ['anal', 'analgw', 'painal'];
-    var ass = ['ass', 'bigasses', 'assinthong', 'buttplug', 'booty', 'paag', 'hungrybutts', 'slimthick', 'assholebehindthong'];
+    var ass = ['ass', 'assinthong', 'assholebehindthong', 'bigasses', 'booty', 'buttplug', 'hungrybutts', 'paag', 'slimthick',];
     var blowjob = ['blowjobs', 'deepthroat', 'facefuck'];
-    var boobs = ['boobies', 'boobs', 'boobbounce'];
+    var boobs = ['boobbounce', 'boobies', 'boobs'];
     var dick = ['bulges', 'cock', 'dickpics4freedom', 'massivecock', 'penis', 'thickdick'];
     var gay = ['broslikeus', 'gaybrosgonewild', 'gaygifs', 'gayporn', 'ladybonersgw', 'men2men', 'TotallyStraight', 'twinks'];
     var hardcore = ['nsfwhardcore', 'shelikesitrough'];
-    var hentai = ['hentai', 'sportshentai', 'ecchi', 'hentai_gif', 'thighdeology', 'westernhentai'];
-    var nsfw = ['nsfw_gif', 'nsfw', 'asiansgonewild', 'asianhotties', 'asiannsfw', 'porninfifteenseconds'];
+    var hentai = ['ecchi', 'hentai', 'hentai_gif', 'sportshentai', 'thighdeology,' 'westernhentai'];
+    var nsfw = ['asianhotties', 'asiannsfw', 'asiansgonewild', 'nsfw', 'nsfw_gif', 'porninfifteenseconds'];
     var pegging = ['pegging'];
-    var rule34 = ['rule34', 'rule34lol', 'dbdgonewild', 'rule34rainbowsix', '2booty'];
+    var rule34 = ['2booty', 'dbdgonewild', 'rule34', 'rule34lol', 'rule34rainbowsix'];
     var thighs = ['datgap', 'thighhighs'];
-    var traps = ['futanari', 'traps', 'traphentai', 'delicioustraps'];
+    var traps = ['delicioustraps', 'futanari', 'traphentai', 'traps'];
 
     // commands here
 
@@ -54,11 +54,17 @@ module.exports.registerCommands = function(client) {
     }
 
     switch (command) {
+      case "echo":
+        client.commands.get('echo').execute(message, args);
+        break;
+      case "give":
+        client.commands.get('give').execute(message, args);
+        break;
       case "help":
         client.commands.get('help').execute(message, args);
         break;
-      case "userinfo":
-        client.commands.get('userinfo').execute(message, args);
+      case "points":
+        client.commands.get('points').execute(message, args);
         break;
       case "random":
         client.commands.get('random').execute(message, args);
@@ -66,18 +72,13 @@ module.exports.registerCommands = function(client) {
       case "roulette":
         client.commands.get('roulette').execute(message, args, client);
         break;
-      case "points":
-        client.commands.get('points').execute(message, args);
-        break;
-      case "give":
-        client.commands.get('give').execute(message, args);
-        break;
       case "set":
         client.commands.get('set').execute(message, args);
         break;
-      case "echo":
-        client.commands.get('echo').execute(message, args);
+      case "userinfo":
+        client.commands.get('userinfo').execute(message, args);
         break;
+
         /*case "hey": only reason why checking if bot is needed.
           message.channel.send('!hey');
           break;*/
