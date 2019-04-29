@@ -5,14 +5,12 @@ function pageOne(edit, message) {
     .setTitle('Commands')
     .addField('!help', 'Returns a list of commands for this bot')
     .addField('!ping', 'Returns pong')
-    //  .addField('!roulette', 'Returns ')
+    .addField('!roulette <bet amount>', 'Returns win/loss and new total points')
     .addField('!userinfo', 'Returns userinfo about yourself')
     .addField('!random <subreddit> [time] [search]', 'Returns a random thread from a subreddit')
     .addField('!anal', 'Returns an anal image')
     .addField('!ass', 'Returns an image of an ass')
     .addField('!blowjob', 'Returns a blowjob image')
-    .addField('!boobs', 'Returns a picture of a pair of milkers')
-    // move !boobs to page2
     .setFooter('Page (1/3)');
   if (edit) {
     return message.edit(embed);
@@ -47,6 +45,7 @@ module.exports = {
           case 2:
             const embed2 = new Discord.RichEmbed()
               .setTitle('Commands')
+              .addField('!boobs', 'Returns a picture of a pair of milkers')
               .addField('!hardcore', 'Returns a hardcore porn image')
               .addField('!hentai', 'Returns a hentai image')
               .addField('!nsfw', 'Returns an nsfw image (Straight)')

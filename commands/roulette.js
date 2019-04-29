@@ -10,7 +10,6 @@ let db = new sqlite.Database('./mbot.db', (err) => {
 function setPoints(amnt, id) {
   db.run('UPDATE users SET points = ? WHERE id = ?', amnt, id);
 }
-
 module.exports = {
   name: 'roulette',
   execute(message, args, client) {
