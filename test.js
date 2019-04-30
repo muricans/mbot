@@ -46,5 +46,6 @@ client.on('ready', async () => {
 });
 
 //login to the client
-client.login(settings.token);
-client.destroy();
+client.login(settings.token).then(function() {
+  client.destroy();
+});
