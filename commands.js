@@ -58,6 +58,18 @@ module.exports.registerCommands = function(client) {
       message.reply('pong');
     }
 
+
+    var data = fs.readFileSync('commands.json', 'utf8');
+    var cmds = JSON.parse(data);
+    var cmd = cmds.commands;
+    var i, jsonCmd, jsonMsg;
+    for (i = 0; i < cmd.length; i++) {
+      jsonCmd = cmd[i].name;
+      jsonMsg = cmd[i].message;
+      if (command === jsonCmd) {
+        message.channel.send(jsonMsg);
+      }
+    }
     switch (command) {
       case "echo":
         client.commands.get('echo').execute(message, args);
@@ -82,6 +94,15 @@ module.exports.registerCommands = function(client) {
         break;
       case "userinfo":
         client.commands.get('userinfo').execute(message, args);
+        break;
+      case "roll":
+        client.commands.get('roll').execute(message, args);
+        break;
+      case "create":
+        client.commands.get('create').execute(message, args);
+        break;
+      case "delete":
+        client.commands.get('delete').execute(message, args);
         break;
 
         /*case "hey": only reason why checking if bot is needed.
