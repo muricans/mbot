@@ -75,6 +75,9 @@ module.exports.registerCommands = function(client) {
       }
     }
     switch (command) {
+      case "8ball":
+        client.commands.get('8ball').execute(message, args, client);
+        break;
       case "create":
         client.commands.get('create').execute(message, args);
         break;
@@ -107,9 +110,6 @@ module.exports.registerCommands = function(client) {
         break;
       case "userinfo":
         client.commands.get('userinfo').execute(message, args, client);
-        break;
-      case "8ball":
-        client.commands.get('8ball').execute(message, args, client);
         break;
 
         /*case "hey": only reason why checking if bot is needed.
