@@ -49,7 +49,7 @@ module.exports = {
               .addField('!roll <number>', 'Returuns a random number between 1 and the chosen number')
               .addField('!userinfo', 'Returns userinfo about yourself')
               .addField('!set', 'Sets the users points [admin only]')
-              .addField('NSFW Commands on Page 3+4')
+              .addField('NSFW Commands on Page 3+4', '🔞')
               .setFooter("Page (2/4)");
             //console.log(page);
             sent.edit(embed2);

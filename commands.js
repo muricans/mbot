@@ -75,6 +75,12 @@ module.exports.registerCommands = function(client) {
       }
     }
     switch (command) {
+      case "create":
+        client.commands.get('create').execute(message, args);
+        break;
+      case "delete":
+        client.commands.get('delete').execute(message, args);
+        break;
       case "echo":
         client.commands.get('echo').execute(message, args);
         break;
@@ -90,6 +96,9 @@ module.exports.registerCommands = function(client) {
       case "random":
         client.commands.get('random').execute(message, args);
         break;
+      case "roll":
+        client.commands.get('roll').execute(message, args);
+        break;
       case "roulette":
         client.commands.get('roulette').execute(message, args, client);
         break;
@@ -98,15 +107,6 @@ module.exports.registerCommands = function(client) {
         break;
       case "userinfo":
         client.commands.get('userinfo').execute(message, args, client);
-        break;
-      case "roll":
-        client.commands.get('roll').execute(message, args);
-        break;
-      case "create":
-        client.commands.get('create').execute(message, args);
-        break;
-      case "delete":
-        client.commands.get('delete').execute(message, args);
         break;
 
         /*case "hey": only reason why checking if bot is needed.
