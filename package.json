@@ -4,7 +4,7 @@
   "description": "Private discord bot",
   "main": "mbot.js",
   "scripts": {
-    "test": "node test.js"
+    "test": "node mbot.js"
   },
   "author": "muricans",
   "license": "MIT",

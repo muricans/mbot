@@ -1,1 +1,18 @@
+dist: trusty
+sudo: required
+addons:
+  apt:
+    sources:
+      - git-core
+      packages:
+        - git
+
 language: node_js
+node_js:
+  - '8'
+before_install:
+  - sudo npm install discord.js
+  - sudo npm install snekfetch
+  - sudo npm install sqlite3
+script:
+  - npm test
