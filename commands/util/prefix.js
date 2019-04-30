@@ -4,5 +4,12 @@ const settings = require('../../settings.json');
 
 module.exports = {
   name: 'prefix',
-  execute(message, args) {},
+  execute(message, args, prefix) {
+    if (args.length === 0) {
+      return message.reply('Please add params! ' + prefix + 'prefix <newPrefix>');
+    }
+    var data = fs.readFileSync('commands.json', 'utf8');
+    var settings = JSON.parse(data);
+    var prf = settings.prefix;
+  },
 };

@@ -18,7 +18,8 @@ module.exports.registerCommands = function(client) {
   client.on('message', async message => {
     //if (message.author.bot) return;
     if (message.channel.type === 'dm') return;
-    if (message.content.indexOf(settings.prefix) !== 0) return;
+    const prefix = settings.prefix;
+    if (message.content.indexOf(prefix) !== 0) return;
     const args = message.content.slice(settings.prefix.length).split(' ');
     const command = args.shift().toLowerCase();
 
