@@ -1,8 +1,6 @@
 // init discord lib
 const settings = require('./settings.json');
 const package = require('./package.json');
-const commands = require('./commands.js');
-const tools = require('./tools.js');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
@@ -47,6 +45,5 @@ client.on('ready', async () => {
   }, 10000);*/
 });
 
-commands.registerCommands(client);
 //login to the client
 client.login(settings.token);
