@@ -19,7 +19,7 @@ client.on('ready', async () => {
         name: randomStatus
       }
     });
-  }, 60000);
+  }, 5000);
   if (debug) {
     try {
       let link = await client.generateInvite(["ADMINISTRATOR"]);
@@ -27,6 +27,9 @@ client.on('ready', async () => {
     } catch (err) {
       console.log(err);
     }
+    setInterval(function() {
+      client.destroy();
+    }, 30000);
   }
   /*setInterval(function() {
     var u, user;
@@ -46,6 +49,4 @@ client.on('ready', async () => {
 });
 
 //login to the client
-client.login(settings.token).then(function() {
-  client.destroy();
-});
+client.login(settings.token);
