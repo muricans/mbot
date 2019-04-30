@@ -108,6 +108,9 @@ module.exports.registerCommands = function(client) {
       case "userinfo":
         client.commands.get('userinfo').execute(message, args, client);
         break;
+      case "8ball":
+        client.commands.get('8ball').execute(message, args, client);
+        break;
 
         /*case "hey": only reason why checking if bot is needed.
           message.channel.send('!hey');
