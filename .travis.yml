@@ -2,10 +2,10 @@ sudo: required
 language: node_js
 node_js:
   - '8'
-install: npm install
+install: nvm install node
 before_install:
-  - sudo npm install discord.js
-  - sudo npm install snekfetch
-  - sudo npm install sqlite3
+  - npm install discord.js
+  - npm install snekfetch
+  - npm install sqlite3
 script:
   - npm test
