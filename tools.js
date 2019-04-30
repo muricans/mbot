@@ -13,7 +13,7 @@ const errMsg = "Please move to an nsfw channel :flushed:";
 const bannedLinks = ['pornhub.com', 'xvideos.com', 'erome.com', 'xnxx.com', 'xhamster.com', 'redtube.com', 'xmov.fun', 'porness.net', 'youtube.com'];
 const endings = ['.png', '.jpg', '.gif'];
 var emojis = ['🍆', '💦', '😳', '🍌', '😏'];
-var randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+var randomEmoji = " " + emojis[Math.floor(Math.random() * emojis.length)];
 
 module.exports.setPoints = function(amnt, id) {
   db.run('UPDATE users SET points = ? WHERE id = ?', amnt, id);
