@@ -7,7 +7,7 @@ module.exports = {
       return message.reply('Please add params! !create <commandName> <message>');
     }
     var cmd = {
-      table: []
+      commands: []
     };
     var newArgs = args.slice(1, args.length);
     var msg = newArgs.join(' ');

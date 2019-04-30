@@ -61,11 +61,15 @@ module.exports.registerCommands = function(client) {
 
     var data = fs.readFileSync('commands.json', 'utf8');
     var cmds = JSON.parse(data);
-    var cmd = cmds.commands;
+    var unfilteredCmd = cmds.commands;
+    let cmd = unfilteredCmd.filter(x => {
+      return x != null;
+    });
     var i, jsonCmd, jsonMsg;
     for (i = 0; i < cmd.length; i++) {
       jsonCmd = cmd[i].name;
       jsonMsg = cmd[i].message;
+
       if (command === jsonCmd) {
         message.channel.send(jsonMsg);
       }
@@ -93,7 +97,7 @@ module.exports.registerCommands = function(client) {
         client.commands.get('set').execute(message, args);
         break;
       case "userinfo":
-        client.commands.get('userinfo').execute(message, args);
+        client.commands.get('userinfo').execute(message, args, client);
         break;
       case "roll":
         client.commands.get('roll').execute(message, args);
