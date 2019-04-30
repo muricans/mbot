@@ -11,7 +11,7 @@ function pageOne(edit, message) {
     .addField('!ping', 'Returns pong')
     .addField('!random <subreddit> [time] [search]', 'Returns a random thread from a subreddit')
     .addField('!roulette <bet amount>', 'Returns win/loss and new total points')
-    .setFooter('Page (1/3)');
+    .setFooter('Page (1/4)');
   if (edit) {
     return message.edit(embed);
   } else if (!edit) {
@@ -50,7 +50,7 @@ module.exports = {
               .addField('!userinfo', 'Returns userinfo about yourself')
               .addField('!set', 'Sets the users points [admin only]')
               .addField('NSFW Commands on Page 3+4')
-              .setFooter("Page (2/3)");
+              .setFooter("Page (2/4)");
             //console.log(page);
             sent.edit(embed2);
             break;
@@ -64,7 +64,7 @@ module.exports = {
               .addField('!hardcore', 'Returns a hardcore porn image')
               .addField('!hentai', 'Returns a hentai image')
               .addField('!nsfw', 'Returns an nsfw image (Straight)')
-              .setFooter("Page (3/3)");
+              .setFooter("Page (3/4)");
             //console.log(page);
             sent.edit(embed3);
             break;
@@ -76,7 +76,8 @@ module.exports = {
               .addField('!thighs', 'Retuns an image of thighs')
               .addField('!trap', 'Returns a trap image')
               .addField('!dick', 'Returns an image of a dick')
-              .addField('!gay', 'Returns a gay porn image');
+              .addField('!gay', 'Returns a gay porn image')
+              .setFooter('Page (4/4)');
             //console.log(page);
             sent.edit(embed4);
             break;
