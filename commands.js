@@ -15,6 +15,11 @@ module.exports.registerCommands = function(client) {
     const rlt = require(`./commands/roulette/${file}`);
     client.commands.set(rlt.name, rlt);
   }
+  const utilFiles = fs.readdirSync('./commands/util').filter(file => file.endsWith('.js'));
+  for (const file of utilFiles) {
+    const utl = require(`./commands/util/${file}`);
+    client.commands.set(utl.name, utl);
+  }
   client.on('message', async message => {
     //if (message.author.bot) return;
     if (message.channel.type === 'dm') return;
@@ -112,6 +117,9 @@ module.exports.registerCommands = function(client) {
       case "userinfo":
         client.commands.get('userinfo').execute(message, args, client);
         break;
+        /*case "prefix":
+          client.commands.get('prefix').execute(message, args);
+          break;*/
 
         /*case "hey": only reason why checking if bot is needed.
           message.channel.send('!hey');
