@@ -2,6 +2,7 @@ sudo: required
 language: node_js
 node_js:
   - '8'
+install: npm install
 before_install:
   - sudo npm install discord.js
   - sudo npm install snekfetch
