@@ -57,17 +57,20 @@ client.on('ready', async () => {
     }
   }
   /*setInterval(function() {
-    db.each('SELECT * FROM users', function(err, row) {
+    var u, user;
+    for (u in client.users.array()) {
       var uPoints;
-      var u, user;
-      for (u in client.users.array()) {
+      user = client.users.array()[u];
+      db.get("SELECT points FROM users WHERE id = " + user.id.toString(), function(err, row) {
+        if (err) {
+          console.log(err);
+        }
         uPoints = row.points + 10;
-        user = client.users.array()[u];
-      }
+      });
       tools.setPoints(uPoints, user.id.toString());
       console.log('Updated ' + user.id.toString() + ' to ' + uPoints);
-    });
-  }, 30000);*/
+    }
+  }, 10000);*/
 });
 
 commands.registerCommands(client);
