@@ -91,6 +91,8 @@ module.exports.search = async function(list, time, message) {
     const allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
     if (!allowed.length) return message.channel.send(errMsg);
     const rn = Math.floor(Math.random() * allowed.length);
+    var emojis = ['🍆', '💦', '😳', '🍌', '😏'];
+    var randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
     var postData = allowed[rn].data;
     var image = postData.url;
     var title = postData.title;
@@ -102,18 +104,18 @@ module.exports.search = async function(list, time, message) {
     if (image.includes('.gifv')) {
       message.channel.send(title)
       message.channel.send(image);
-      message.channel.send("Subreddit: " + subreddit + " Requested by: " + message.author.username + " 🔼 " + up);
+      message.channel.send("Subreddit: " + subreddit + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
     } else if (module.exports.end(image)) {
       const embed = new Discord.RichEmbed()
         .setTitle(title)
         .setImage(image)
-        .setFooter("Subreddit: " + subreddit + " Requested by: " + message.author.username + " 🔼 " + up);
+        .setFooter("Subreddit: " + subreddit + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
       message.channel.send(embed);
     } else {
 
       message.channel.send(title);
       message.channel.send(image);
-      message.channel.send("Subreddit: " + subreddit + " Requested by: " + message.author.username + " 🔼 " + up);
+      message.channel.send("Subreddit: " + subreddit + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
     }
   } catch (err) {
     console.log(err);
@@ -133,6 +135,8 @@ module.exports.rSearch = async function(list, time, message) {
     const allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
     if (!allowed.length) return message.channel.send(errMsg);
     const rn = Math.floor(Math.random() * allowed.length);
+    var emojis = ['🍆', '💦', '😳', '🍌', '😏'];
+    var randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
     var postData = allowed[rn].data;
     var image = postData.url;
     var title = postData.title;
@@ -144,18 +148,18 @@ module.exports.rSearch = async function(list, time, message) {
     if (image.includes('.gifv')) {
       message.channel.send(title)
       message.channel.send(image);
-      message.channel.send("Subreddit: " + subreddit + " Requested by: " + message.author.username + " 🔼 " + up);
+      message.channel.send("Subreddit: " + subreddit + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
     } else if (module.exports.end(image)) {
       const embed = new Discord.RichEmbed()
         .setTitle(title)
         .setImage(image)
-        .setFooter("Subreddit: " + subreddit + " Requested by: " + message.author.username + " 🔼 " + up);
+        .setFooter("Subreddit: " + subreddit + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
       message.channel.send(embed);
     } else {
 
       message.channel.send(title);
       message.channel.send(image);
-      message.channel.send("Subreddit: " + subreddit + " Requested by: " + message.author.username + " 🔼 " + up);
+      message.channel.send("Subreddit: " + subreddit + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
     }
   } catch (err) {
     console.log(err);
@@ -179,6 +183,8 @@ module.exports.find = async function(list, searchTerm, time, message) {
       return message.channel.send('No results found!');
     }
     if (!allowed.length) return message.channel.send(errMsg);
+    var emojis = ['🍆', '💦', '😳', '🍌', '😏'];
+    var randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
     var postData = allowed[rn].data;
     var image = postData.url;
     var title = postData.title;
@@ -190,17 +196,17 @@ module.exports.find = async function(list, searchTerm, time, message) {
     if (image.includes('.gifv')) {
       message.channel.send(title)
       message.channel.send(image);
-      message.channel.send("Subreddit: " + subreddit + " Requested by: " + message.author.username + " 🔼 " + up);
+      message.channel.send("Subreddit: " + subreddit + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
     } else if (module.exports.end(image)) {
       const embed = new Discord.RichEmbed()
         .setTitle(title)
         .setImage(image)
-        .setFooter("Subreddit: " + subreddit + " Requested by: " + message.author.username + " 🔼 " + up);
+        .setFooter("Subreddit: " + subreddit + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
       message.channel.send(embed);
     } else {
       message.channel.send(title);
       message.channel.send(image);
-      message.channel.send("Subreddit: " + subreddit + " Requested by: " + message.author.username + " 🔼 " + up);
+      message.channel.send("Subreddit: " + subreddit + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
     }
   } catch (err) {
     console.log(err);
