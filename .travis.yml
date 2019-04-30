@@ -1,11 +1,13 @@
 sudo: required
 language: node_js
 node_js:
-  - '8'
+- '8'
 install: nvm install node
 before_install:
-  - npm install discord.js
-  - npm install snekfetch
-  - npm install sqlite3
+- openssl aes-256-cbc -K $encrypted_69fe571dd1b7_key -iv $encrypted_69fe571dd1b7_iv
+  -in settings.json.enc -out settings.json -d
+- npm install discord.js
+- npm install snekfetch
+- npm install sqlite3
 script:
-  - npm test
+- npm test
