@@ -10,8 +10,10 @@ let db = new sqlite.Database('./mbot.db', (err) => {
 });
 
 const errMsg = "Please move to an nsfw channel :flushed:";
-var bannedLinks = ['pornhub.com', 'xvideos.com', 'erome.com', 'xnxx.com', 'xhamster.com', 'redtube.com', 'xmov.fun', 'porness.net', 'youtube.com'];
-var endings = ['.png', '.jpg', '.gif'];
+const bannedLinks = ['pornhub.com', 'xvideos.com', 'erome.com', 'xnxx.com', 'xhamster.com', 'redtube.com', 'xmov.fun', 'porness.net', 'youtube.com'];
+const endings = ['.png', '.jpg', '.gif'];
+var emojis = ['🍆', '💦', '😳', '🍌', '😏'];
+var randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
 
 module.exports.setPoints = function(amnt, id) {
   db.run('UPDATE users SET points = ? WHERE id = ?', amnt, id);
@@ -91,8 +93,6 @@ module.exports.search = async function(list, time, message) {
     const allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
     if (!allowed.length) return message.channel.send(errMsg);
     const rn = Math.floor(Math.random() * allowed.length);
-    var emojis = ['🍆', '💦', '😳', '🍌', '😏'];
-    var randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
     var postData = allowed[rn].data;
     var image = postData.url;
     var title = postData.title;
@@ -135,8 +135,6 @@ module.exports.rSearch = async function(list, time, message) {
     const allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
     if (!allowed.length) return message.channel.send(errMsg);
     const rn = Math.floor(Math.random() * allowed.length);
-    var emojis = ['🍆', '💦', '😳', '🍌', '😏'];
-    var randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
     var postData = allowed[rn].data;
     var image = postData.url;
     var title = postData.title;
@@ -183,8 +181,6 @@ module.exports.find = async function(list, searchTerm, time, message) {
       return message.channel.send('No results found!');
     }
     if (!allowed.length) return message.channel.send(errMsg);
-    var emojis = ['🍆', '💦', '😳', '🍌', '😏'];
-    var randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
     var postData = allowed[rn].data;
     var image = postData.url;
     var title = postData.title;
