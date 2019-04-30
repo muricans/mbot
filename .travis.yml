@@ -1,5 +1,4 @@
 language: node_js
 before_script:
-  - npm install discord.js
   - npm install snekfetch
   - npm install sqlite3
