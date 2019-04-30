@@ -1,16 +1,16 @@
 const Discord = require('discord.js');
 
+// 13 real commands | 13 nsfw commands
 function pageOne(edit, message) {
   const embed = new Discord.RichEmbed()
     .setTitle('Commands')
-    .addField('!create <commandName> <message>', 'adds a command to the bot') // command still WIP
-    .addField('!delete <commandName>', 'deletes a command [added by !create] from the bot ') // command still WIP
-    .addField('!echo', 'Returns your message [admin only]')
-    .addField('!give', "Gives a user [x] amount of points")
+    .addField('!8ball <question>', 'Ask the bot a question')
+    .addField('!create <commandName> <message>', 'adds a command to the bot')
+    .addField('!delete <commandName>', 'deletes a command [added by !create] from the bot [admin only]')
+    .addField('!echo <message>', 'Returns your message [admin only]')
+    .addField('!give <@user> <points>', 'Gives a user [x] amount of points')
     .addField('!help', 'Returns a list of commands for this bot')
     .addField('!ping', 'Returns pong')
-    .addField('!random <subreddit> [time] [search]', 'Returns a random thread from a subreddit')
-    .addField('!roulette <bet amount>', 'Returns win/loss and new total points')
     .setFooter('Page (1/4)');
   if (edit) {
     return message.edit(embed);
@@ -19,7 +19,6 @@ function pageOne(edit, message) {
   }
 }
 
-// 11 real commands | 13 nsfw commands
 module.exports = {
   name: 'help',
   execute(message, args) {
@@ -46,8 +45,11 @@ module.exports = {
           case 2:
             const embed2 = new Discord.RichEmbed()
               .setTitle('Commands')
+              .addField('!points <@user>', "Returns the designated user's points")
+              .addField('!random <subreddit> [time] [search]', 'Returns a random thread from a subreddit')
+              .addField('!roulette <bet amount>', 'Returns win/loss and new total points')
               .addField('!roll <number>', 'Returuns a random number between 1 and the chosen number')
-              .addField('!userinfo', 'Returns userinfo about yourself')
+              .addField('!userinfo <@user>', "Returns the designated user's info")
               .addField('!set', 'Sets the users points [admin only]')
               .addField('NSFW Commands on Page 3+4', '🔞')
               .setFooter("Page (2/4)");
