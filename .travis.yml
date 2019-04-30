@@ -8,6 +8,6 @@ before_install:
   -in settings.json.enc -out settings.json -d
 - npm install discord.js
 - npm install snekfetch
-- npm install sqlite3
+- npm install sqlite3 --build-from-source
 script:
 - npm test
