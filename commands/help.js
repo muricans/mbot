@@ -3,7 +3,7 @@ const Discord = require('discord.js');
 function pageOne(edit, message) {
   const embed = new Discord.RichEmbed()
     .setTitle('Commands')
-    .addField('!create <commandName> <message>','adds a command to the bot') // command still WIP
+    .addField('!create <commandName> <message>', 'adds a command to the bot') // command still WIP
     .addField('!delete <commandName>', 'deletes a command [added by !create] from the bot ') // command still WIP
     .addField('!echo', 'Returns your message [admin only]')
     .addField('!give', "Gives a user [x] amount of points")
@@ -68,15 +68,15 @@ module.exports = {
             //console.log(page);
             sent.edit(embed3);
             break;
-            case 4:
-              const embed4 = new Discord.RichEmbed()
-                .setTitle('NSFW Commands');
-                .addField('!pegging', 'Returns a pegging image')
-                .addField('!rule34', 'Returns a rule34 image')
-                .addField('!thighs', 'Retuns an image of thighs')
-                .addField('!trap', 'Returns a trap image')
-                .addField('!dick', 'Returns an image of a dick')
-                .addField('!gay', 'Returns a gay porn image')
+          case 4:
+            const embed4 = new Discord.RichEmbed()
+              .setTitle('NSFW Commands')
+              .addField('!pegging', 'Returns a pegging image')
+              .addField('!rule34', 'Returns a rule34 image')
+              .addField('!thighs', 'Retuns an image of thighs')
+              .addField('!trap', 'Returns a trap image')
+              .addField('!dick', 'Returns an image of a dick')
+              .addField('!gay', 'Returns a gay porn image');
             //console.log(page);
             sent.edit(embed4);
             break;
