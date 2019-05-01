@@ -1,6 +1,25 @@
 module.exports = {
   name: 'clean',
   execute(message, args) {
+    var hasTwoArgs;
+
+    if (args.length === 1) {
+      hasTwoArgs = false;
+    }
+
+    if (args.length > 1) {
+      hasTwoArgs = true;
+    }
+
+    var amnt;
+    if (hasTwoArgs) {
+      amnt = parseInt(args[1]);
+      if (isNaN(amnt)) {
+        return message.channel.send(message.author + ' Please use numbers!');
+      }
+    } else {
+      amnt = 1000;
+    }
     if (args.length === 0) {
       return message.channel.fetchMessages().then(messages => {
         message.delete();
@@ -19,7 +38,9 @@ module.exports = {
     }
 
     if (args[0] === "all") {
-      return message.channel.fetchMessages().then(messages => {
+      return message.channel.fetchMessages({
+        limit: amnt
+      }).then(messages => {
         message.delete();
         message.channel.bulkDelete(messages).then((deleted) => {
           message.channel.send('Deleted ' + deleted.size + ' messages from this channel!');
@@ -30,7 +51,9 @@ module.exports = {
     if (!mention) {
       return message.channel.send('That user does not exist!');
     } else {
-      return message.channel.fetchMessages().then(messages => {
+      return message.channel.fetchMessages({
+        limit: amnt
+      }).then(messages => {
         message.delete();
         const mentionMessages = messages.filter(msg => {
           return msg.author.equals(mention);
