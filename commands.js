@@ -62,7 +62,7 @@ module.exports.registerCommands = function(client) {
 
     const ppHop = client.emojis.get("572687346529468428");
     if (command === 'ping') {
-      message.reply('pong' + ppHop);
+      message.reply('pong ' + ppHop);
     }
 
 
