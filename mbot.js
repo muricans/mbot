@@ -18,8 +18,6 @@ db.serialize(function() {
   db.run('CREATE TABLE if not exists users(id TEXT, points INTEGER, UNIQUE(id))');
 });
 
-var debug = true;
-
 client.on('guildMemberAdd', (guildMember) => {
   db.serialize(function() {
     db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', guildMember.user.id.toString(), 100);
@@ -48,7 +46,7 @@ client.on('ready', async () => {
       }
     });
   }, 60000);
-  if (debug) {
+  if (settings.debug) {
     try {
       let link = await client.generateInvite(["ADMINISTRATOR"]);
       console.log(link);

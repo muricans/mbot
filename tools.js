@@ -1,6 +1,7 @@
 const snekfetch = require('snekfetch');
 const Discord = require('discord.js');
 const mbot = require('./mbot.js');
+const settings = require('./settings.json');
 const sqlite = require('sqlite3').verbose();
 
 let db = new sqlite.Database('./mbot.db', (err) => {
@@ -10,7 +11,10 @@ let db = new sqlite.Database('./mbot.db', (err) => {
 });
 
 const errMsg = "Please move to an nsfw channel :flushed:";
-const bannedLinks = ['pornhub.com', 'xvideos.com', 'erome.com', 'xnxx.com', 'xhamster.com', 'redtube.com', 'xmov.fun', 'porness.net', 'youtube.com'];
+const bannedLinks = ['pornhub.com', 'xvideos.com', 'erome.com', 'xnxx.com', 'xhamster.com', 'redtube.com', 'xmov.fun', 'porness.net',
+  'youtube.com', 'youtu.be'
+];
+// allowed embed endings
 const endings = ['.png', '.jpg', '.gif'];
 const emojis = ['🍆', '💦', '😳', '🍌', '😏'];
 
@@ -70,7 +74,7 @@ module.exports.banned = function(string) {
   for (l in bannedLinks) {
     link = bannedLinks[l];
     if (string.includes(link)) {
-      if (mbot.debug) {
+      if (settings.debug) {
         console.log('Found a banned link');
       }
       contains = true;

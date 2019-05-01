@@ -10,9 +10,14 @@ module.exports = {
       return message.reply('Please add params! ' + prefix + 'prefix <newPrefix>');
     }
     var data = fs.readFileSync('settings.json', 'utf8');
-    var stngs = JSON.parse(data);
-    stngs.push('prefix: ' + args[0]);
-    var json = JSON.stringify(stngs);
-    fs.appendFileSync('settings.json', json);
+    data = {
+      prefix: args[0]
+    };
+    fs.writeFile('settings.json', JSON.stringify(data), function(err) {
+      if (err) {
+        return console.log(err);
+      }
+    });
+    message.channel.send(message.author + " New prefix set: " + args[0]);
   },
 };

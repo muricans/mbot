@@ -8,20 +8,26 @@ module.exports = {
     }
     var data = fs.readFileSync('response.json', 'utf8');
     var responses = JSON.parse(data);
-    var all = [responses.good, responses.unsure, responses.bad];
+    var good = responses.good;
+    var unsure = responses.unsure;
+    var bad = responses.bad;
+    var all = [good.response, unsure.response, bad.response];
     var response = all[Math.floor(Math.random() * all.length)];
-    const forsenE = client.emojis.get("572620570966097931");
-    const sadChamp = client.emojis.get("572621419251499008");
-    const peepoPog = client.emojis.get("572621873393958913");
     switch (response) {
-      case responses.good:
-        message.channel.send(message.author + " " + responses.good[Math.floor(Math.random() * responses.good.length)] + " " + peepoPog);
+      case good.response:
+        message.channel.send(message.author + " " + good.response[Math.floor(Math.random() * good.response.length)] + " " +
+          good.emotes[Math.floor(Math.random() * good.emotes.length)]);
         break;
-      case responses.unsure:
-        message.channel.send(message.author + " " + responses.unsure[Math.floor(Math.random() * responses.unsure.length)] + " " + forsenE);
+      case unsure.response:
+        message.channel.send(message.author + " " + unsure.response[Math.floor(Math.random() * unsure.response.length)] + " " +
+          unsure.emotes[Math.floor(Math.random() * unsure.emotes.length)]);
         break;
-      case responses.bad:
-        message.channel.send(message.author + " " + responses.bad[Math.floor(Math.random() * responses.bad.length)] + " " + sadChamp);
+      case bad.response:
+        message.channel.send(message.author + " " + bad.response[Math.floor(Math.random() * bad.response.length)] + " " +
+          bad.emotes[Math.floor(Math.random() * bad.emotes.length)]);
+        break;
+      default:
+        message.channel.send('Error occured.');
         break;
     }
   },

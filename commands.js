@@ -73,7 +73,7 @@ module.exports.registerCommands = function(client) {
       return x != null;
     });
     var i, jsonCmd, jsonMsg;
-    for (i = 0; i < cmd.length; i++) {
+    for (i in cmd) {
       jsonCmd = cmd[i].name;
       jsonMsg = cmd[i].message;
 
