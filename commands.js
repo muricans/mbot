@@ -62,7 +62,7 @@ module.exports.registerCommands = function(client) {
 
     const ppHop = client.emojis.get("572687346529468428");
     if (command === 'ping') {
-      message.reply('pong' + ppHop);
+      message.reply('pong ' + ppHop);
     }
 
 
@@ -84,6 +84,9 @@ module.exports.registerCommands = function(client) {
     switch (command) {
       case "8ball":
         client.commands.get('8ball').execute(message, args, client);
+        break;
+      case "clean":
+        client.commands.get('clean').execute(message, args);
         break;
       case "create":
         client.commands.get('create').execute(message, args);
@@ -117,9 +120,6 @@ module.exports.registerCommands = function(client) {
         break;
       case "userinfo":
         client.commands.get('userinfo').execute(message, args, client);
-        break;
-      case "clean":
-        client.commands.get('clean').execute(message, args);
         break;
         /*case "prefix":
           client.commands.get('prefix').execute(message, args);
