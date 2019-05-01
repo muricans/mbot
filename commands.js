@@ -92,7 +92,7 @@ module.exports.registerCommands = function(client) {
         client.commands.get('delete').execute(message, args);
         break;
       case "echo":
-        client.commands.get('echo').execute(message, args);
+        client.commands.get('echo').execute(message, args, client);
         break;
       case "give":
         client.commands.get('give').execute(message, args);
