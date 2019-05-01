@@ -4,7 +4,7 @@ module.exports = {
     const weirdChamp = client.emojis.get("572690273247821824");
     let hasAdmin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");
     if (!hasAdmin) {
-      return message.channel.send(message.author + " You don't have permission to use this command!" + weirdChamp);
+      return message.channel.send(message.author + " You don't have permission to use this command! " + weirdChamp);
     }
     const echo = args.join(' ');
     if (args.length === 0) {

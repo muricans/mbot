@@ -118,6 +118,9 @@ module.exports.registerCommands = function(client) {
       case "userinfo":
         client.commands.get('userinfo').execute(message, args, client);
         break;
+      case "clean":
+        client.commands.get('clean').execute(message, args);
+        break;
         /*case "prefix":
           client.commands.get('prefix').execute(message, args);
           break;*/
