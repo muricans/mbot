@@ -36,7 +36,9 @@ client.on('ready', async () => {
   });
   console.log('mbot v' + package.version + " has been enabled.");
   //game
-  var games = ['Minecraft', 'Murdering Martine the BOT', 'nymnBridge PewDiePie', 'Acrozze a mega gay', 'This bot was made by me :)', 'help me'];
+  var games = ['Minecraft', 'Murdering Martine the BOT', 'nymnBridge PewDiePie', 'Acrozze a mega gay',
+    'This bot was made by me :)', 'help me'
+  ];
   setInterval(function() {
     var randomStatus = games[Math.floor(Math.random() * games.length)];
     client.user.setPresence({

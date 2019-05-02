@@ -176,7 +176,8 @@ module.exports.find = async function(list, searchTerm, time, message) {
     const {
       body
     } = await snekfetch
-      .get('https://www.reddit.com/r/' + list + '/search.json?q=' + searchTerm + '&restrict_sr=on&include_over_18=on&sort=relevance&t=' + time)
+      .get('https://www.reddit.com/r/' + list + '/search.json?q=' + searchTerm +
+        '&restrict_sr=on&include_over_18=on&sort=relevance&t=' + time)
       .query({
         limit: 4000
       });
