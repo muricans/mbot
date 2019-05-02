@@ -1,16 +1,17 @@
 const Discord = require('discord.js');
 
-// 13 real commands | 13 nsfw commands
+// 14 commands + 13 nsfw commands
+// seperate admin only commands at a later time
 function pageOne(edit, message) {
   const embed = new Discord.RichEmbed()
     .setTitle('Commands')
     .addField('!8ball <question>', 'Ask the bot a question')
-    .addField('!create <commandName> <message>', 'adds a command to the bot')
-    .addField('!delete <commandName>', 'deletes a command [added by !create] from the bot [admin only]')
-    .addField('!echo <message>', 'Returns your message [admin only]')
+    .addField('!create <commandName> <message>', 'Adds a command to the bot')
+    .addField('!clean <@user> <messageAmount>', 'Deletes a specified amount of messages for a user [admin only]')
+    .addField('!delete <commandName>', 'Deletes a command [added by !create] from the bot [admin only]')
+    .addField('!echo <message>', 'Returns your message from the bot [admin only]')
     .addField('!give <@user> <points>', 'Gives a user [x] amount of points')
     .addField('!help', 'Returns a list of commands for this bot')
-    .addField('!ping', 'Returns pong')
     .setFooter('Page (1/4)');
   if (edit) {
     return message.edit(embed);
@@ -45,12 +46,13 @@ module.exports = {
           case 2:
             const embed2 = new Discord.RichEmbed()
               .setTitle('Commands')
+              .addField('!ping', 'Returns pong')
               .addField('!points <@user>', "Returns the designated user's points")
               .addField('!random <subreddit> [time] [search]', 'Returns a random thread from a subreddit')
               .addField('!roulette <bet amount>', 'Returns win/loss and new total points')
-              .addField('!roll <number>', 'Returuns a random number between 1 and the chosen number')
+              .addField('!roll <number>', 'Returns a random number between 1 and the chosen number')
               .addField('!userinfo <@user>', "Returns the designated user's info")
-              .addField('!set', 'Sets the users points [admin only]')
+              .addField('!set <@user> points', 'Sets the users points [admin only]')
               .addField('NSFW Commands on Page 3+4', '🔞')
               .setFooter("Page (2/4)");
             //console.log(page);
