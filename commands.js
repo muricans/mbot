@@ -1,9 +1,8 @@
-const settings = require('./settings.json');
 const tools = require('./tools.js');
 const fs = require('fs');
 const Discord = require('discord.js');
 
-module.exports.registerCommands = function(client) {
+module.exports.registerCommands = function (client) {
   client.commands = new Discord.Collection();
   const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
   for (const file of commandFiles) {
@@ -23,12 +22,12 @@ module.exports.registerCommands = function(client) {
   client.on('message', async message => {
     //if (message.author.bot) return;
     if (message.channel.type === 'dm') return;
+    let stngs = fs.readFileSync('settings.json', 'utf8');
+    let settings = JSON.parse(stngs);
     const prefix = settings.prefix;
     if (message.content.indexOf(prefix) !== 0) return;
     const args = message.content.slice(settings.prefix.length).split(' ');
     const command = args.shift().toLowerCase();
-
-    let hasAdmin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");
 
     if (command === 'test') {
       message.channel.send("Test recieved").then(async sent => {
@@ -121,9 +120,9 @@ module.exports.registerCommands = function(client) {
       case "userinfo":
         client.commands.get('userinfo').execute(message, args, client);
         break;
-        /*case "prefix":
-          client.commands.get('prefix').execute(message, args);
-          break;*/
+      case "prefix":
+        client.commands.get('prefix').execute(message, args);
+        break;
 
         /*case "hey": only reason why checking if bot is needed.
           message.channel.send('!hey');

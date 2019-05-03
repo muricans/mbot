@@ -4,15 +4,18 @@ const fs = require('fs');
 
 module.exports = {
   name: 'prefix',
-  execute(message, args, prefix) {
+  execute(message, args) {
+    let hasAdmin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");
+    if (!hasAdmin) {
+      return message.channel.send(message.author + " You don't have permission to use this command!");
+    }
     if (args.length === 0) {
       return message.reply('Please add params! ' + prefix + 'prefix <newPrefix>');
     }
     let data = fs.readFileSync('settings.json', 'utf8');
-    data = {
-      prefix: args[0]
-    };
-    fs.writeFile('settings.json', JSON.stringify(data), function(err) {
+    let parsedData = JSON.parse(data);
+    parsedData.prefix = args[0];
+    fs.writeFileSync('settings.json', JSON.stringify(parsedData), function (err) {
       if (err) {
         return console.log(err);
       }
