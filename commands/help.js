@@ -2,31 +2,31 @@ const Discord = require('discord.js');
 
 // 14 commands + 13 nsfw commands
 // seperate admin only commands at a later time
-let page = 0;
 const min = 1;
 const max = 4;
-function pageOne(edit, message) {
-  const embed = new Discord.RichEmbed()
-    .setTitle('Commands')
-    .addField('!8ball <question>', 'Ask the bot a question')
-    .addField('!create <commandName> <message>', 'Adds a command to the bot')
-    .addField('!clean <@user> <messageAmount>', 'Deletes a specified amount of messages for a user [admin only]')
-    .addField('!delete <commandName>', 'Deletes a command [added by !create] from the bot [admin only]')
-    .addField('!echo <message>', 'Returns your message from the bot [admin only]')
-    .addField('!give <@user> <points>', 'Gives a user [x] amount of points')
-    .addField('!help', 'Returns a list of commands for this bot')
-    .setFooter('Page (1/' + max + ')');
+
+function pageOne(edit, message, page) {
   if (edit) {
+    const embed = new Discord.RichEmbed()
+      .setTitle('Commands')
+      .addField('!8ball <question>', 'Ask the bot a question')
+      .addField('!create <commandName> <message>', 'Adds a command to the bot')
+      .addField('!clean <@user> <messageAmount>', 'Deletes a specified amount of messages for a user [admin only]')
+      .addField('!delete <commandName>', 'Deletes a command [added by !create] from the bot [admin only]')
+      .addField('!echo <message>', 'Returns your message from the bot [admin only]')
+      .addField('!give <@user> <points>', 'Gives a user [x] amount of points')
+      .addField('!help', 'Returns a list of commands for this bot')
+      .setFooter('Page (' + page + '/' + max + ')');
     return message.edit(embed);
   } else if (!edit) {
-    return message.channel.send(embed);
+    return message.channel.send("Loading help data...");
   }
 }
 
 module.exports = {
   name: 'help',
   execute(message, args) {
-    var pageNum = 'Page (' + page + '/' + max + ')';
+    let page = 0;
     pageOne(false, message).then(async sent => {
       await sent.react("◀");
       await sent.react("▶");
@@ -39,9 +39,11 @@ module.exports = {
           page++;
         }
 
+        let pageData = 'Page (' + page + '/' + max + ')';
+
         switch (page) {
           case 1:
-            pageOne(true, sent);
+            pageOne(true, sent, page);
             break;
           case 2:
             const embed2 = new Discord.RichEmbed()
@@ -54,7 +56,7 @@ module.exports = {
               .addField('!userinfo <@user>', "Returns the designated user's info")
               .addField('!set <@user> points', 'Sets the users points [admin only]')
               .addField('NSFW Commands on Page 3+4', '🔞')
-              .setFooter('Page (2/' + max + ')');
+              .setFooter(pageData);
             //console.log(page);
             sent.edit(embed2);
             break;
@@ -68,7 +70,7 @@ module.exports = {
               .addField('!hardcore', 'Returns a hardcore porn image')
               .addField('!hentai', 'Returns a hentai image')
               .addField('!nsfw', 'Returns an nsfw image (Straight)')
-              .setFooter('Page (3/' + max + ')');
+              .setFooter(pageData);
             //console.log(page);
             sent.edit(embed3);
             break;
@@ -81,7 +83,7 @@ module.exports = {
               .addField('!trap', 'Returns a trap image')
               .addField('!dick', 'Returns an image of a dick')
               .addField('!gay', 'Returns a gay porn image')
-              .setFooter('Page (4/' + max + ')');
+              .setFooter(pageData);
             //console.log(page);
             sent.edit(embed4);
             break;
