@@ -49,6 +49,7 @@ module.exports = {
             const embed2 = new Discord.RichEmbed()
               .setTitle('Commands')
               .addField('!ping', 'Returns pong')
+              .addField('!prefix <newPrefix>', 'Change the bots prefix [admin only]')
               .addField('!points <@user>', "Returns the designated user's points")
               .addField('!random <subreddit> [time] [search]', 'Returns a random thread from a subreddit')
               .addField('!roulette <bet amount>', 'Returns win/loss and new total points')
