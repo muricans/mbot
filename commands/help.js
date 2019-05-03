@@ -5,21 +5,21 @@ const Discord = require('discord.js');
 const min = 1;
 const max = 4;
 
-function pageOne(edit, message, page) {
+function pageOne(edit, message) {
+  const embed = new Discord.RichEmbed()
+    .setTitle('Commands')
+    .addField('!8ball <question>', 'Ask the bot a question')
+    .addField('!create <commandName> <message>', 'Adds a command to the bot')
+    .addField('!clean <@user> <messageAmount>', 'Deletes a specified amount of messages for a user [admin only]')
+    .addField('!delete <commandName>', 'Deletes a command [added by !create] from the bot [admin only]')
+    .addField('!echo <message>', 'Returns your message from the bot [admin only]')
+    .addField('!give <@user> <points>', 'Gives a user [x] amount of points')
+    .addField('!help', 'Returns a list of commands for this bot')
+    .setFooter('Page (1/' + max + ')');
   if (edit) {
-    const embed = new Discord.RichEmbed()
-      .setTitle('Commands')
-      .addField('!8ball <question>', 'Ask the bot a question')
-      .addField('!create <commandName> <message>', 'Adds a command to the bot')
-      .addField('!clean <@user> <messageAmount>', 'Deletes a specified amount of messages for a user [admin only]')
-      .addField('!delete <commandName>', 'Deletes a command [added by !create] from the bot [admin only]')
-      .addField('!echo <message>', 'Returns your message from the bot [admin only]')
-      .addField('!give <@user> <points>', 'Gives a user [x] amount of points')
-      .addField('!help', 'Returns a list of commands for this bot')
-      .setFooter('Page (' + page + '/' + max + ')');
     return message.edit(embed);
   } else if (!edit) {
-    return message.channel.send("Loading help data...");
+    return message.channel.send(embed);
   }
 }
 
@@ -43,7 +43,7 @@ module.exports = {
 
         switch (page) {
           case 1:
-            pageOne(true, sent, page);
+            pageOne(true, sent);
             break;
           case 2:
             const embed2 = new Discord.RichEmbed()
