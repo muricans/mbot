@@ -2,6 +2,9 @@ const Discord = require('discord.js');
 
 // 14 commands + 13 nsfw commands
 // seperate admin only commands at a later time
+let page = 0;
+const min = 1;
+const max = 4;
 function pageOne(edit, message) {
   const embed = new Discord.RichEmbed()
     .setTitle('Commands')
@@ -12,7 +15,7 @@ function pageOne(edit, message) {
     .addField('!echo <message>', 'Returns your message from the bot [admin only]')
     .addField('!give <@user> <points>', 'Gives a user [x] amount of points')
     .addField('!help', 'Returns a list of commands for this bot')
-    .setFooter('Page (1/4)');
+    .setFooter('Page (1/' + max + ')');
   if (edit) {
     return message.edit(embed);
   } else if (!edit) {
@@ -23,9 +26,6 @@ function pageOne(edit, message) {
 module.exports = {
   name: 'help',
   execute(message, args) {
-    var page = 0;
-    var min = 1;
-    var max = 4;
     var pageNum = 'Page (' + page + '/' + max + ')';
     pageOne(false, message).then(async sent => {
       await sent.react("◀");
@@ -54,7 +54,7 @@ module.exports = {
               .addField('!userinfo <@user>', "Returns the designated user's info")
               .addField('!set <@user> points', 'Sets the users points [admin only]')
               .addField('NSFW Commands on Page 3+4', '🔞')
-              .setFooter("Page (2/4)");
+              .setFooter('Page (2/' + max + ')');
             //console.log(page);
             sent.edit(embed2);
             break;
@@ -68,7 +68,7 @@ module.exports = {
               .addField('!hardcore', 'Returns a hardcore porn image')
               .addField('!hentai', 'Returns a hentai image')
               .addField('!nsfw', 'Returns an nsfw image (Straight)')
-              .setFooter("Page (3/4)");
+              .setFooter('Page (3/' + max + ')');
             //console.log(page);
             sent.edit(embed3);
             break;
@@ -81,7 +81,7 @@ module.exports = {
               .addField('!trap', 'Returns a trap image')
               .addField('!dick', 'Returns an image of a dick')
               .addField('!gay', 'Returns a gay porn image')
-              .setFooter('Page (4/4)');
+              .setFooter('Page (4/' + max + ')');
             //console.log(page);
             sent.edit(embed4);
             break;
