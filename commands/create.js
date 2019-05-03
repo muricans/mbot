@@ -6,11 +6,11 @@ module.exports = {
     if (args.length < 2) {
       return message.reply('Please add params! !create <commandName> <message>');
     }
-    var cmd = {
+    let cmd = {
       commands: []
     };
-    var newArgs = args.slice(1, args.length);
-    var msg = newArgs.join(' ');
+    let newArgs = args.slice(1, args.length);
+    const msg = newArgs.join(' ');
     fs.readFile('commands.json', 'utf8', function(err, data) {
       if (err) {
         return console.log(err);
@@ -20,7 +20,7 @@ module.exports = {
         name: args[0],
         message: msg
       });
-      var json = JSON.stringify(cmd);
+      const json = JSON.stringify(cmd);
       fs.writeFile('commands.json', json, 'utf8', function(err) {
         if (err) {
           return console.log(err);

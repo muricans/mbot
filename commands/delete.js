@@ -10,10 +10,10 @@ module.exports = {
     if (args.length < 1) {
       return message.reply('Please add more params! !delete <commandName>');
     }
-    var data = fs.readFileSync('commands.json', 'utf8');
-    var cmds = JSON.parse(data);
-    var cmd = cmds.commands;
-    var i, jsonCmd, jsonMsg;
+    const data = fs.readFileSync('commands.json', 'utf8');
+    const cmds = JSON.parse(data);
+    const cmd = cmds.commands;
+    let i, jsonCmd;
     for (i = 0; i < cmd.length; i++) {
       if (cmd[i] === null) {
         continue;
@@ -22,7 +22,7 @@ module.exports = {
       if (args[0] === jsonCmd) {
         delete cmd[i];
         message.channel.send(message.author + " Command " + jsonCmd + " deleted!");
-        var json = JSON.stringify(cmds);
+        const json = JSON.stringify(cmds);
         fs.writeFileSync('commands.json', json);
       }
     }

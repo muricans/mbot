@@ -84,6 +84,7 @@ module.exports = {
   },
 };
 
+//delete emote
 async function awaitDelete(sent) {
   sent.react("❎");
   let emotes = 0;

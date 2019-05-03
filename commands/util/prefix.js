@@ -1,4 +1,3 @@
-const settings = require('../../settings.json');
 const fs = require('fs');
 
 // configuration at later time
@@ -9,7 +8,7 @@ module.exports = {
     if (args.length === 0) {
       return message.reply('Please add params! ' + prefix + 'prefix <newPrefix>');
     }
-    var data = fs.readFileSync('settings.json', 'utf8');
+    let data = fs.readFileSync('settings.json', 'utf8');
     data = {
       prefix: args[0]
     };

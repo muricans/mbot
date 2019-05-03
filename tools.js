@@ -56,7 +56,7 @@ module.exports.roulette = function(amnt, current, message, client, all) {
 
 // check for ending of links exentsion
 module.exports.end = function(string) {
-  var contains = false;
+  let contains = false;
   var e, ending;
   for (e in endings) {
     ending = endings[e];
@@ -69,7 +69,7 @@ module.exports.end = function(string) {
 
 // check for banned links
 module.exports.banned = function(string) {
-  var contains = false;
+  let contains = false;
   var l, link;
   for (l in bannedLinks) {
     link = bannedLinks[l];
@@ -85,7 +85,7 @@ module.exports.banned = function(string) {
 
 // find a random post from reddit
 module.exports.search = async function(list, time, message) {
-  var randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+  const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
   try {
     const {
       body
@@ -97,11 +97,11 @@ module.exports.search = async function(list, time, message) {
     const allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
     if (!allowed.length) return message.channel.send(errMsg);
     const rn = Math.floor(Math.random() * allowed.length);
-    var postData = allowed[rn].data;
-    var image = postData.url;
-    var title = postData.title;
-    var up = postData.ups;
-    var subreddit = postData.subreddit_name_prefixed;
+    const postData = allowed[rn].data;
+    const image = postData.url;
+    const title = postData.title;
+    const up = postData.ups;
+    const subreddit = postData.subreddit_name_prefixed;
     if (module.exports.banned(image)) {
       return module.exports.search(list, time, message);
     }
@@ -128,7 +128,7 @@ module.exports.search = async function(list, time, message) {
 }
 
 module.exports.rSearch = async function(list, time, message) {
-  var randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+  const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
   try {
     const {
       body
@@ -140,11 +140,11 @@ module.exports.rSearch = async function(list, time, message) {
     const allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
     if (!allowed.length) return message.channel.send(errMsg);
     const rn = Math.floor(Math.random() * allowed.length);
-    var postData = allowed[rn].data;
-    var image = postData.url;
-    var title = postData.title;
-    var up = postData.ups;
-    var subreddit = postData.subreddit_name_prefixed;
+    const postData = allowed[rn].data;
+    const image = postData.url;
+    const title = postData.title;
+    const up = postData.ups;
+    const subreddit = postData.subreddit_name_prefixed;
     if (module.exports.banned(image)) {
       return module.exports.search(list, time, message);
     }
@@ -188,11 +188,11 @@ module.exports.find = async function(list, searchTerm, time, message) {
       return message.channel.send('No results found!');
     }
     if (!allowed.length) return message.channel.send(errMsg);
-    var postData = allowed[rn].data;
-    var image = postData.url;
-    var title = postData.title;
-    var up = postData.ups;
-    var subreddit = postData.subreddit_name_prefixed;
+    const postData = allowed[rn].data;
+    const image = postData.url;
+    const title = postData.title;
+    const up = postData.ups;
+    const subreddit = postData.subreddit_name_prefixed;
     if (module.exports.banned(image)) {
       return module.exports.find(list, searchTerm, time, message);
     }

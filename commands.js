@@ -66,10 +66,10 @@ module.exports.registerCommands = function(client) {
     }
 
 
-    var data = fs.readFileSync('commands.json', 'utf8');
-    var cmds = JSON.parse(data);
-    var unfilteredCmd = cmds.commands;
-    let cmd = unfilteredCmd.filter(x => {
+    const data = fs.readFileSync('commands.json', 'utf8');
+    const cmds = JSON.parse(data);
+    const unfilteredCmd = cmds.commands;
+    const cmd = unfilteredCmd.filter(x => {
       return x != null;
     });
     var i, jsonCmd, jsonMsg;

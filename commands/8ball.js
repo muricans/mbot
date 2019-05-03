@@ -6,13 +6,13 @@ module.exports = {
     if (args.length === 0) {
       return message.reply('Please add params! !8ball <question>');
     }
-    var data = fs.readFileSync('response.json', 'utf8');
-    var responses = JSON.parse(data);
-    var good = responses.good;
-    var unsure = responses.unsure;
-    var bad = responses.bad;
-    var all = [good.response, unsure.response, bad.response];
-    var response = all[Math.floor(Math.random() * all.length)];
+    const data = fs.readFileSync('response.json', 'utf8');
+    const responses = JSON.parse(data);
+    const good = responses.good;
+    const unsure = responses.unsure;
+    const bad = responses.bad;
+    const all = [good.response, unsure.response, bad.response];
+    const response = all[Math.floor(Math.random() * all.length)];
     switch (response) {
       case good.response:
         message.channel.send(message.author + " " + good.response[Math.floor(Math.random() * good.response.length)] + " " +
