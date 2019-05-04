@@ -12,7 +12,7 @@ module.exports = {
       return message.channel.send(message.author + " You don't have permission to use this command! " + weirdChamp);
     }
     if (args.length === 0) {
-      return message.reply('Please add params! ' + prefix + 'prefix <newPrefix>');
+      return message.reply('Please add params! !prefix <newPrefix>');
     }
     let data = fs.readFileSync('settings.json', 'utf8');
     let parsedData = JSON.parse(data);
