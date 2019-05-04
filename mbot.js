@@ -56,21 +56,21 @@ client.on('ready', async () => {
       console.log(err);
     }
   }
-  /*setInterval(function() {
-    var u, user;
-    for (u in client.users.array()) {
-      var uPoints;
-      user = client.users.array()[u];
-      db.get("SELECT points FROM users WHERE id = " + user.id.toString(), function(err, row) {
-        if (err) {
-          console.log(err);
-        }
-        uPoints = row.points + 10;
-      });
-      tools.setPoints(uPoints, user.id.toString());
-      console.log('Updated ' + user.id.toString() + ' to ' + uPoints);
-    }
-  }, 10000);*/
+  setInterval(async function() {
+    var uPoints;
+    await db.each("SELECT points points, id id FROM users", function(err, row) {
+      if (err) {
+        console.log(err);
+      }
+      var u, user;
+      for (u in client.users.array()) {
+        uPoints = row.points[user.id.toString()];
+        user = client.users.array()[u];
+        tools.setPoints(uPoints, user.id.toString());
+        console.log('Updated ' + user.id.toString() + ' to ' + uPoints);
+      }
+    });
+  }, 5000);
 });
 
 commands.registerCommands(client);
