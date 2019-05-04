@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const fs = require('fs');
 
 // 11 commands + [5 admin only commands] + 13 nsfw commands
 // seperate admin only commands at a later time
@@ -6,16 +7,19 @@ const min = 1;
 const max = 4;
 
 function pageOne(edit, message) {
+  let stngs = fs.readFileSync('settings.json', 'utf8');
+  let settings = JSON.parse(stngs);
+  const prefix = settings.prefix;
   const embed = new Discord.RichEmbed()
     .setTitle('Commands')
-    .addField('!8ball <question>', 'Ask the bot a question')
-    .addField('!create <commandName> <message>', 'Adds a command to the bot')
-    .addField('!clean <@user> <messageAmount>', 'Deletes a specified amount of messages for a user [admin only]')
-    .addField('!delete <commandName>', 'Deletes a command [added by !create] from the bot [admin only]')
-    .addField('!echo <message>', 'Returns your message from the bot [admin only]')
-    .addField('!give <@user> <points>', 'Gives a user [x] amount of points')
-    .addField('!help', 'Returns a list of commands for this bot')
-    .addField('!meme', 'Returns a random meme')
+    .addField(prefix + '8ball <question>', 'Ask the bot a question')
+    .addField(prefix + 'create <commandName> <message>', 'Adds a command to the bot')
+    .addField(prefix + 'clean <@user> <messageAmount>', 'Deletes a specified amount of messages for a user [admin only]')
+    .addField(prefix + 'delete <commandName>', 'Deletes a command [added by !create] from the bot [admin only]')
+    .addField(prefix + 'echo <message>', 'Returns your message from the bot [admin only]')
+    .addField(prefix + 'give <@user> <points>', 'Gives a user [x] amount of points')
+    .addField(prefix + 'help', 'Returns a list of commands for this bot')
+    .addField(prefix + 'meme', 'Returns a random meme')
     .setFooter('Page (1/' + max + ')');
   if (edit) {
     return message.edit(embed);
@@ -27,6 +31,9 @@ function pageOne(edit, message) {
 module.exports = {
   name: 'help',
   execute(message, args) {
+    let stngs = fs.readFileSync('settings.json', 'utf8');
+    let settings = JSON.parse(stngs);
+    const prefix = settings.prefix;
     let page = 0;
     pageOne(false, message).then(async sent => {
       await sent.react("◀");
@@ -49,15 +56,15 @@ module.exports = {
           case 2:
             const embed2 = new Discord.RichEmbed()
               .setTitle('Commands')
-              .addField('!ping', 'Returns pong')
-              .addField('!prefix <newPrefix>', 'Changes the bots prefix [admin only]')
-              .addField('!points <@user>', "Returns the designated user's points")
-              .addField('!qr <information>', 'Returns a QR code with the designated information')
-              .addField('!random <subreddit> [time] [search]', 'Returns a random thread from a subreddit')
-              .addField('!roulette <bet amount>', 'Returns win/loss and new total points')
-              .addField('!roll <number>', 'Returns a random number between 1 and the chosen number')
-              .addField('!userinfo <@user>', "Returns the designated user's info")
-              .addField('!set <@user> points', 'Sets the users points [admin only]')
+              .addField(prefix + 'ping', 'Returns pong')
+              .addField(prefix + 'prefix <newPrefix>', 'Changes the bots prefix [admin only]')
+              .addField(prefix + 'points <@user>', "Returns the designated user's points")
+              .addField(prefix + 'qr <information>', 'Returns a QR code with the designated information')
+              .addField(prefix + 'random <subreddit> [time] [search]', 'Returns a random thread from a subreddit')
+              .addField(prefix + 'roulette <bet amount>', 'Returns win/loss and new total points')
+              .addField(prefix + 'roll <number>', 'Returns a random number between 1 and the chosen number')
+              .addField(prefix + 'userinfo <@user>', "Returns the designated user's info")
+              .addField(prefix + 'set <@user> points', 'Sets the users points [admin only]')
               .addField('NSFW Commands on Page 3+4', '🔞')
               .setFooter(pageData);
             //console.log(page);
@@ -66,13 +73,13 @@ module.exports = {
           case 3:
             const embed3 = new Discord.RichEmbed()
               .setTitle('NSFW Commands')
-              .addField('!anal', 'Returns an anal image')
-              .addField('!ass', 'Returns an image of an ass')
-              .addField('!blowjob', 'Returns a blowjob image')
-              .addField('!boobs', 'Returns a picture of a pair of milkers')
-              .addField('!hardcore', 'Returns a hardcore porn image')
-              .addField('!hentai', 'Returns a hentai image')
-              .addField('!nsfw', 'Returns an nsfw image (Straight)')
+              .addField(prefix + 'anal', 'Returns an anal image')
+              .addField(prefix + 'ass', 'Returns an image of an ass')
+              .addField(prefix + 'blowjob', 'Returns a blowjob image')
+              .addField(prefix + 'boobs', 'Returns a picture of a pair of milkers')
+              .addField(prefix + 'hardcore', 'Returns a hardcore porn image')
+              .addField(prefix + 'hentai', 'Returns a hentai image')
+              .addField(prefix + 'nsfw', 'Returns an nsfw image (Straight)')
               .setFooter(pageData);
             //console.log(page);
             sent.edit(embed3);
@@ -80,12 +87,12 @@ module.exports = {
           case 4:
             const embed4 = new Discord.RichEmbed()
               .setTitle('NSFW Commands')
-              .addField('!pegging', 'Returns a pegging image')
-              .addField('!rule34', 'Returns a rule34 image')
-              .addField('!thighs', 'Retuns an image of thighs')
-              .addField('!trap', 'Returns a trap image')
-              .addField('!dick', 'Returns an image of a dick')
-              .addField('!gay', 'Returns a gay porn image')
+              .addField(prefix + 'pegging', 'Returns a pegging image')
+              .addField(prefix + 'rule34', 'Returns a rule34 image')
+              .addField(prefix + 'thighs', 'Retuns an image of thighs')
+              .addField(prefix + 'trap', 'Returns a trap image')
+              .addField(prefix + 'dick', 'Returns an image of a dick')
+              .addField(prefix + 'gay', 'Returns a gay porn image')
               .setFooter(pageData);
             //console.log(page);
             sent.edit(embed4);
