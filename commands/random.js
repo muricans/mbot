@@ -12,6 +12,7 @@ module.exports = {
     if (args.length === 1) {
       return tools.rSearch(args, 'day', message);
     }
+    // might change later
     const newArgs = args.slice(2, args.length);
     const space = newArgs.join(' ');
     const encoded = encodeURI(space);
