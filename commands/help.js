@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 
-// 10 commands + [5 admin only commands] + 13 nsfw commands
+// 11 commands + [5 admin only commands] + 13 nsfw commands
 // seperate admin only commands at a later time
 const min = 1;
 const max = 4;
@@ -52,6 +52,7 @@ module.exports = {
               .addField('!ping', 'Returns pong')
               .addField('!prefix <newPrefix>', 'Changes the bots prefix [admin only]')
               .addField('!points <@user>', "Returns the designated user's points")
+              .addField('!qr <information>', 'Returns a QR code with the designated information')
               .addField('!random <subreddit> [time] [search]', 'Returns a random thread from a subreddit')
               .addField('!roulette <bet amount>', 'Returns win/loss and new total points')
               .addField('!roll <number>', 'Returns a random number between 1 and the chosen number')
