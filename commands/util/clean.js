@@ -1,6 +1,7 @@
 module.exports = {
   name: 'clean',
   execute(message, args) {
+    const weirdChamp = client.emojis.get("572690273247821824");
     var hasTwoArgs;
 
     if (args.length === 1) {
@@ -41,11 +42,11 @@ module.exports = {
     let canDelOth = message.channel.permissionsFor(message.member).has("MANAGE_MESSAGES");
     let hasAdmin = message.channel.permissionsFor(message.author).has("ADMINISTRATOR");
     if (!canDelOth) {
-      return message.channel.send(message.author + " You don't have permission to use this command!");
+      return message.channel.send(message.author + " You don't have permission to use this command! " + weirdChamp);
     }
 
     if (args[0] === "all") {
-      if (!hasAdmin) return message.channel.send(message.author + "You don't have perission to use this command!");
+      if (!hasAdmin) return message.channel.send(message.author + "You don't have perission to use this command! " + weirdChamp);
       message.delete();
       try {
         return message.channel.fetchMessages({

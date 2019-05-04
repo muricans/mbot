@@ -42,6 +42,7 @@ module.exports.registerCommands = function (client) {
       });
     }
 
+    const meme = ['comedycemetery', 'comedyheaven', 'dankmemes', 'me_irl', 'teenagers'];
 
     var anal = ['anal', 'analgw', 'painal'];
     var ass = ['ass', 'assinthong', 'assholebehindthong', 'bigasses', 'booty', 'buttplug', 'hungrybutts', 'paag', 'slimthick'];
@@ -103,8 +104,8 @@ module.exports.registerCommands = function (client) {
         client.commands.get('help').execute(message, args);
         break;
       case "prefix":
-      client.commands.get('prefix').execute(message, args);
-      break;
+        client.commands.get('prefix').execute(message, args);
+        break;
       case "points":
         client.commands.get('points').execute(message, args);
         break;
@@ -128,6 +129,11 @@ module.exports.registerCommands = function (client) {
           message.channel.send('!hey');
           break;*/
 
+
+      case "meme":
+      tools.search(meme[Math.floor(Math.random() * meme.length)], 'all', message);
+      message.delete(1000);
+      break;
 
 
         // porn commands
