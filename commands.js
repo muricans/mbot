@@ -102,6 +102,9 @@ module.exports.registerCommands = function (client) {
       case "help":
         client.commands.get('help').execute(message, args);
         break;
+      case "prefix":
+      client.commands.get('prefix').execute(message, args);
+      break;
       case "points":
         client.commands.get('points').execute(message, args);
         break;
@@ -119,9 +122,6 @@ module.exports.registerCommands = function (client) {
         break;
       case "userinfo":
         client.commands.get('userinfo').execute(message, args, client);
-        break;
-      case "prefix":
-        client.commands.get('prefix').execute(message, args);
         break;
 
         /*case "hey": only reason why checking if bot is needed.

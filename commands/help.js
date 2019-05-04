@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 
-// 14 commands + 13 nsfw commands
+// 9 commands + [5 admin only commands] + 13 nsfw commands
 // seperate admin only commands at a later time
 const min = 1;
 const max = 4;
@@ -49,6 +49,7 @@ module.exports = {
             const embed2 = new Discord.RichEmbed()
               .setTitle('Commands')
               .addField('!ping', 'Returns pong')
+              .addField('!prefix <newPrefix>', 'Changes the bots prefix [admin only]')
               .addField('!points <@user>', "Returns the designated user's points")
               .addField('!random <subreddit> [time] [search]', 'Returns a random thread from a subreddit')
               .addField('!roulette <bet amount>', 'Returns win/loss and new total points')
