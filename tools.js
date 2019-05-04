@@ -11,11 +11,11 @@ let db = new sqlite.Database('./mbot.db', (err) => {
 
 const errMsg = "Please move to an nsfw channel :flushed:";
 const bannedLinks = ['pornhub.com', 'xvideos.com', 'erome.com', 'xnxx.com', 'xhamster.com', 'redtube.com', 'xmov.fun', 'porness.net',
-  'youtube.com', 'youtu.be'
+  'youtube.com', 'youtu.be', 'nhentai.net'
 ];
 // allowed embed endings
 const endings = ['.png', '.jpg', '.gif'];
-const emojis = ['🍆', '💦', '😳', '🍌', '😏'];
+const emojis = ['🍆', '💦', '😳', '🍌', '😏', '🍑','😊'];
 
 module.exports.setPoints = function (amnt, id) {
   db.run('UPDATE users SET points = ? WHERE id = ?', amnt, id);

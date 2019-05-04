@@ -9,9 +9,10 @@ let db = new sqlite.Database('./mbot.db', (err) => {
 module.exports = {
   name: 'set',
   execute(message, args) {
+    const weirdChamp = client.emojis.get("572690273247821824");
     let hasAdmin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");
     if (!hasAdmin) {
-      return message.channel.send(message.author + " You don't have permission to use this command!");
+      return message.channel.send(message.author + " You don't have permission to use this command! " + weirdChamp);
     }
     if (args.length < 2) {
       return message.reply('Please add params! !set <@user> <points>');

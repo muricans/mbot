@@ -42,6 +42,7 @@ module.exports.registerCommands = function (client) {
       });
     }
 
+    const meme = ['comedycemetery', 'comedyheaven', 'dankmemes', 'me_irl', 'teenagers'];
 
     const anal = ['anal', 'analgw', 'painal'];
     const ass = ['ass', 'assinthong', 'assholebehindthong', 'bigasses', 'booty', 'buttplug', 'hungrybutts', 'paag', 'slimthick'];
@@ -131,6 +132,11 @@ module.exports.registerCommands = function (client) {
           message.channel.send('!hey');
           break;*/
 
+
+      case "meme":
+      tools.search(meme[Math.floor(Math.random() * meme.length)], 'all', message);
+      message.delete(1000);
+      break;
 
 
         // porn commands
