@@ -8,7 +8,7 @@ let db = new sqlite.Database('./mbot.db', (err) => {
 
 module.exports = {
   name: 'set',
-  execute(message, args) {
+  execute(message, args, client) {
     const weirdChamp = client.emojis.get("572690273247821824");
     let hasAdmin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");
     if (!hasAdmin) {
@@ -20,8 +20,8 @@ module.exports = {
     if (!message.mentions.users.first()) {
       return message.reply('That user does not exist!');
     }
-    db.serialize(function() {
-      db.get("SELECT points points FROM users WHERE id = " + message.mentions.users.first().id.toString(), function(err, row) {
+    db.serialize(function () {
+      db.get("SELECT points points FROM users WHERE id = " + message.mentions.users.first().id.toString(), function (err, row) {
         const amnt = parseInt(args[1]);
         if (isNaN(amnt)) {
           return message.reply('Please use numbers!');

@@ -92,7 +92,7 @@ module.exports.registerCommands = function (client) {
         client.commands.get('create').execute(message, args);
         break;
       case "delete":
-        client.commands.get('delete').execute(message, args);
+        client.commands.get('delete').execute(message, args, client);
         break;
       case "echo":
         client.commands.get('echo').execute(message, args, client);
@@ -104,7 +104,7 @@ module.exports.registerCommands = function (client) {
         client.commands.get('help').execute(message, args);
         break;
       case "prefix":
-        client.commands.get('prefix').execute(message, args);
+        client.commands.get('prefix').execute(message, args, client);
         break;
       case "points":
         client.commands.get('points').execute(message, args);
@@ -119,7 +119,7 @@ module.exports.registerCommands = function (client) {
         client.commands.get('roulette').execute(message, args, client);
         break;
       case "set":
-        client.commands.get('set').execute(message, args);
+        client.commands.get('set').execute(message, args, client);
         break;
       case "userinfo":
         client.commands.get('userinfo').execute(message, args, client);
