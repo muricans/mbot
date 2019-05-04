@@ -17,11 +17,11 @@ const bannedLinks = ['pornhub.com', 'xvideos.com', 'erome.com', 'xnxx.com', 'xha
 const endings = ['.png', '.jpg', '.gif'];
 const emojis = ['🍆', '💦', '😳', '🍌', '😏'];
 
-module.exports.setPoints = function(amnt, id) {
+module.exports.setPoints = function (amnt, id) {
   db.run('UPDATE users SET points = ? WHERE id = ?', amnt, id);
 }
 
-module.exports.roulette = function(amnt, current, message, client, all) {
+module.exports.roulette = function (amnt, current, message, client, all) {
   const smile = client.emojis.get("566861749324873738");
   const wtf = client.emojis.get("567905581868777492");
   const chance = Math.floor(Math.random() * 100);
@@ -54,7 +54,7 @@ module.exports.roulette = function(amnt, current, message, client, all) {
 }
 
 // check for ending of links exentsion
-module.exports.end = function(string) {
+module.exports.end = function (string) {
   let contains = false;
   var e, ending;
   for (e in endings) {
@@ -67,7 +67,7 @@ module.exports.end = function(string) {
 }
 
 // check for banned links
-module.exports.banned = function(string) {
+module.exports.banned = function (string) {
   let contains = false;
   var l, link;
   for (l in bannedLinks) {
@@ -83,7 +83,7 @@ module.exports.banned = function(string) {
 }
 
 // find a random post from reddit
-module.exports.search = async function(list, time, message) {
+module.exports.search = async function (list, time, message) {
   const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
   try {
     const {
@@ -126,7 +126,7 @@ module.exports.search = async function(list, time, message) {
 
 }
 
-module.exports.rSearch = async function(list, time, message) {
+module.exports.rSearch = async function (list, time, message) {
   const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
   try {
     const {
@@ -169,7 +169,7 @@ module.exports.rSearch = async function(list, time, message) {
 
 }
 
-module.exports.find = async function(list, searchTerm, time, message) {
+module.exports.find = async function (list, searchTerm, time, message) {
   var randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
   try {
     const {

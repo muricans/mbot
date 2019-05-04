@@ -43,19 +43,19 @@ module.exports.registerCommands = function (client) {
     }
 
 
-    var anal = ['anal', 'analgw', 'painal'];
-    var ass = ['ass', 'assinthong', 'assholebehindthong', 'bigasses', 'booty', 'buttplug', 'hungrybutts', 'paag', 'slimthick'];
-    var blowjob = ['blowjobs', 'deepthroat', 'facefuck'];
-    var boobs = ['boobbounce', 'boobies', 'boobs'];
-    var dick = ['bulges', 'cock', 'dickpics4freedom', 'massivecock', 'penis', 'thickdick'];
-    var gay = ['broslikeus', 'gaybrosgonewild', 'gaygifs', 'gayporn', 'ladybonersgw', 'men2men', 'TotallyStraight', 'twinks'];
-    var hardcore = ['nsfwhardcore', 'shelikesitrough'];
-    var hentai = ['ecchi', 'hentai', 'hentai_gif', 'sportshentai', 'thighdeology', 'westernhentai'];
-    var nsfw = ['asianhotties', 'asiannsfw', 'asiansgonewild', 'nsfw', 'nsfw_gif', 'porninfifteenseconds'];
-    var pegging = ['pegging']; // any other subredits?
-    var rule34 = ['2booty', 'dbdgonewild', 'rule34', 'rule34lol', 'rule34rainbowsix'];
-    var thighs = ['datgap', 'thighhighs'];
-    var traps = ['delicioustraps', 'futanari', 'traphentai', 'traps'];
+    const anal = ['anal', 'analgw', 'painal'];
+    const ass = ['ass', 'assinthong', 'assholebehindthong', 'bigasses', 'booty', 'buttplug', 'hungrybutts', 'paag', 'slimthick'];
+    const blowjob = ['blowjobs', 'deepthroat', 'facefuck'];
+    const boobs = ['boobbounce', 'boobies', 'boobs'];
+    const dick = ['bulges', 'cock', 'dickpics4freedom', 'massivecock', 'penis', 'thickdick'];
+    const gay = ['broslikeus', 'gaybrosgonewild', 'gaygifs', 'gayporn', 'ladybonersgw', 'men2men', 'TotallyStraight', 'twinks'];
+    const hardcore = ['nsfwhardcore', 'shelikesitrough'];
+    const hentai = ['ecchi', 'hentai', 'hentai_gif', 'sportshentai', 'thighdeology', 'westernhentai'];
+    const nsfw = ['asianhotties', 'asiannsfw', 'asiansgonewild', 'nsfw', 'nsfw_gif', 'porninfifteenseconds'];
+    const pegging = ['pegging']; // any other subredits?
+    const rule34 = ['2booty', 'dbdgonewild', 'rule34', 'rule34lol', 'rule34rainbowsix'];
+    const thighs = ['datgap', 'thighhighs'];
+    const traps = ['delicioustraps', 'futanari', 'traphentai', 'traps'];
 
     // commands here
 
