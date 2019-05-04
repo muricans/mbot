@@ -1,1 +1,0 @@
-console.log('ppHop test successful');
