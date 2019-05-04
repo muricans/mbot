@@ -134,9 +134,9 @@ module.exports.registerCommands = function (client) {
 
 
       case "meme":
-      tools.search(meme[Math.floor(Math.random() * meme.length)], 'all', message);
-      message.delete(1000);
-      break;
+        tools.search(meme[Math.floor(Math.random() * meme.length)], 'all', message);
+        message.delete(1000);
+        break;
 
 
         // porn commands
