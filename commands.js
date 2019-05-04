@@ -86,7 +86,7 @@ module.exports.registerCommands = function (client) {
         client.commands.get('8ball').execute(message, args, client);
         break;
       case "clean":
-        client.commands.get('clean').execute(message, args);
+        client.commands.get('clean').execute(message, args, client);
         break;
       case "create":
         client.commands.get('create').execute(message, args);
