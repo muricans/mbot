@@ -111,9 +111,12 @@ module.exports.getImage = function (apiURL, apiKey, message) {
     }
   }
   let req = https.request(options, function (res) {
-    res.on("data", function (chunk) {});
+    let chunks = [];
+    res.on("data", function (chunk) {
+      chunks.push(chunk);
+    });
     res.on("end", function (chunk) {
-      message.channel.send(chunk.link);
+      message.channel.send(chunks[Math.floor(Math.random * chunks.length)].link);
     });
     res.on("error", function (err) {
       console.log(err);
