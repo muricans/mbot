@@ -127,9 +127,9 @@ module.exports.registerCommands = function (client) {
       case "qr":
         client.commands.get('qr').execute(message, args);
         break;
-      case "imgur":
-        client.commands.get('imgur').execute(message, args);
-        break;
+        /*case "imgur":
+          client.commands.get('imgur').execute(message, args);
+          break;*/
 
         /*case "hey": only reason why checking if bot is needed.
           message.channel.send('!hey');
