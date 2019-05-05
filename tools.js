@@ -107,7 +107,7 @@ module.exports.getImage = function (apiURL, apiKey, message) {
     'hostname': 'api.imgur.com',
     'path': apiURL,
     'headers': {
-      'Authorization': apiKey
+      'Authorization': 'Client-ID {' + apiKey + '}'
     }
   }
   let req = https.request(options, function (res) {
