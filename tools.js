@@ -114,6 +114,7 @@ module.exports.getImage = function (apiURL, apiKey, message) {
     let chunks = [];
     res.on("data", function (chunk) {
       chunks.push(chunk);
+      message.channel.send(chunk.link);
     });
     res.on("end", function (chunk) {
       let body = Buffer.concat(chunks);
@@ -123,13 +124,6 @@ module.exports.getImage = function (apiURL, apiKey, message) {
       console.log(err);
     });
   });
-  let postData = "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; ------WebKitFormBoundary7MA4YWxkTrZu0gW--";
-  req.setHeader('content-type', 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW');
-
-  req.each(postData, function (image) {
-    message.channel.send(image.link);
-  });
-
   req.end();
 }
 // find a random post from reddit
