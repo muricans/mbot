@@ -100,6 +100,26 @@ module.exports.webSearch = function (url, message) {
   }
 }
 
+function getImage(apiURL, apiKey, message) {
+  let req = new XMLHttpRequest();
+  req.onreadystatechange = function () {
+    if (req.readyState == 4 && req.status == 200) {
+      JSON.parse(req.responseText);
+    } else {
+      console.log("error");
+    }
+  }
+  req.open("GET", apiURL, true);
+  req.setRequestHeader('Authorization', 'Client-ID ' + apiKey);
+  req.send(null);
+  const embed = new Discord.RichEmbed()
+    .setTitle("Random Twitch Image")
+    .setImage(req.response)
+    .setFooter("Requested by: " + message.author.username);
+  message.channel.send(embed);
+  message.channel.send(req);
+}
+
 // find a random post from reddit
 module.exports.search = async function (list, time, message) {
   const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
