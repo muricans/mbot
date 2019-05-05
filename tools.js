@@ -2,7 +2,7 @@ const snekfetch = require('snekfetch');
 const Discord = require('discord.js');
 const settings = require('./settings.json');
 const sqlite = require('sqlite3').verbose();
-const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+const https = require("https");
 
 let db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
@@ -102,23 +102,35 @@ module.exports.webSearch = function (url, message) {
 }
 
 module.exports.getImage = function (apiURL, apiKey, message) {
-  let req = new XMLHttpRequest();
-  req.onreadystatechange = function () {
-    if (req.readyState == 4 && req.status == 200) {
-      JSON.parse(req.responseText);
-    } else {
-      console.log("error");
+  let options = {
+    'method': 'GET',
+    'hostname': 'api.imgur.com',
+    'path': apiURL,
+    'headers': {
+      'Authorization': 'Bearer {' + apiKey + '}'
     }
   }
-  req.setRequestHeader('Authorization', 'Client-ID ' + apiKey);
-  const embed = new Discord.RichEmbed()
-    .setTitle("Random Twitch Image")
-    .setImage(req.open("GET", apiURL, true))
-    .setFooter("Requested by: " + message.author.username);
-  message.channel.send(embed);
-  message.channel.send(req.open("GET", apiURL, true));
-}
+  let req = https.request(options, function (res) {
+    let chunks = [];
+    res.on("data", function (chunk) {
+      chunks.push(chunk);
+    });
+    res.on("end", function (chunk) {
+      let body = Buffer.concat(chunks);
+      console.log(body.toString());
+    });
+    res.on("error", function (err) {
+      console.log(err);
+    });
+  });
+  let postData = "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; ------WebKitFormBoundary7MA4YWxkTrZu0gW--";
+  req.setHeader('content-type', 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW');
 
+  req.write(postData);
+  message.channel.send(req.write(postData));
+
+  req.end();
+}
 // find a random post from reddit
 module.exports.search = async function (list, time, message) {
   const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
