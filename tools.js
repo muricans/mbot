@@ -101,7 +101,7 @@ module.exports.webSearch = function (url, message) {
   }
 }
 
-module.exports.getImage = function (apiURL, apiKey, message) {
+/*module.exports.getImage = function (apiURL, apiKey, message) {
   let options = {
     'method': 'GET',
     'hostname': 'api.imgur.com',
@@ -129,7 +129,7 @@ module.exports.getImage = function (apiURL, apiKey, message) {
 
   req.write(postData);
   req.end();
-}
+}*/
 // find a random post from reddit
 module.exports.search = async function (list, time, message, filterBanned) {
   const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
