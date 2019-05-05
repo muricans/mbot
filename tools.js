@@ -101,7 +101,7 @@ module.exports.webSearch = function (url, message) {
   }
 }
 
-/*module.exports.getImage = function (apiURL, apiKey, message) {
+module.exports.getImage = function (apiURL, apiKey, message) {
   let options = {
     'method': 'GET',
     'hostname': 'api.imgur.com',
@@ -116,9 +116,9 @@ module.exports.webSearch = function (url, message) {
       chunks.push(chunk);
     });
     res.on("end", function (chunk) {
-      let body = chunks[Math.floor(Math.random() * chunks.length)];
-      console.log(body.data.link);
-      message.channel.send(body.data.link);
+      let body = Buffer.concat(chunks);
+      console.log(body.toString());
+      message.channel.send(body.toString().data.link);
     });
     res.on("error", function (err) {
       console.log(err);
@@ -130,7 +130,7 @@ module.exports.webSearch = function (url, message) {
 
   req.write(postData);
   req.end();
-}*/
+}
 // find a random post from reddit
 module.exports.search = async function (list, time, message) {
   const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
