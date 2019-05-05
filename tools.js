@@ -82,7 +82,7 @@ module.exports.banned = function (string) {
   return contains;
 }
 
-module.exports.webSearch = function (image, message) {
+module.exports.webSearch = async function (image, message) {
   try {
     const {
       url
