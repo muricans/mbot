@@ -101,35 +101,22 @@ module.exports.webSearch = function (url, message) {
   }
 }
 
-/*module.exports.getImage = function (apiURL, apiKey, message) {
-  let options = {
-    'method': 'GET',
-    'hostname': 'api.imgur.com',
-    'path': apiURL,
-    'headers': {
-      'Authorization': 'Client-ID ' + apiKey
-    }
+module.exports.getImage = function (message) {
+  try {
+    const {
+      body
+    } = await snekfetch
+      .get('https://imgur.com/gallery/random.json')
+      .query({
+        limit: 4000
+      });
+    const rn = Math.floor(Math.random() * body.data.length);
+    const imageData = body.data[rn].hash;
+    message.channel.send('i.imgur.com/' + imageData);
+  } catch (err) {
+    console.log(err);
   }
-  let req = https.request(options, function (res) {
-    let data = '';
-    res.on("data", function (chunk) {
-      data += chunk;
-    });
-    res.on("end", function (chunk) {
-      let body = JSON.parse(data);
-      message.channel.send(body.data.link);
-    });
-    res.on("error", function (err) {
-      console.log(err);
-    });
-  });
-  var postData = "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; ------WebKitFormBoundary7MA4YWxkTrZu0gW--";
-
-  req.setHeader('content-type', 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW');
-
-  req.write(postData);
-  req.end();
-}*/
+}
 // find a random post from reddit
 module.exports.search = async function (list, time, message, filterBanned) {
   const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];

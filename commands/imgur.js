@@ -5,7 +5,7 @@ module.exports = {
     name: 'imgur',
     execute(message, args) {
         if (args.length === 0) {
-            tools.getImage("/3/gallery/hot/top/week?showViral=true", settings.imgurID, message);
+            tools.getImage(message);
         }
     },
 };
