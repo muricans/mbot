@@ -118,7 +118,7 @@ module.exports.getImage = function (apiURL, apiKey, message) {
     res.on("end", function (chunk) {
       let body = Buffer.concat(chunks);
       console.log(body.toString());
-      message.channel.send(body.toString().data.link);
+      message.channel.send(body.data.link);
     });
     res.on("error", function (err) {
       console.log(err);
