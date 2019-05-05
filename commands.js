@@ -137,7 +137,7 @@ module.exports.registerCommands = function (client) {
 
 
       case "meme":
-        tools.search(meme[Math.floor(Math.random() * meme.length)], 'all', message);
+        tools.search(meme[Math.floor(Math.random() * meme.length)], 'all', message, false);
         message.delete(1000);
         break;
 

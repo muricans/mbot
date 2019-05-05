@@ -133,7 +133,7 @@ module.exports.webSearch = function (url, message) {
   req.end();
 }*/
 // find a random post from reddit
-module.exports.search = async function (list, time, message) {
+module.exports.search = async function (list, time, message, filterBanned) {
   const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
   try {
     const {
@@ -151,7 +151,7 @@ module.exports.search = async function (list, time, message) {
     const title = postData.title;
     const up = postData.ups;
     const subreddit = postData.subreddit_name_prefixed;
-    if (module.exports.banned(image)) {
+    if (module.exports.banned(image) && filterBanned) {
       return module.exports.search(list, time, message);
     }
     if (image.includes('.gifv')) {
@@ -176,7 +176,7 @@ module.exports.search = async function (list, time, message) {
 
 }
 
-module.exports.rSearch = async function (list, time, message) {
+module.exports.rSearch = async function (list, time, message, filterBanned) {
   const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
   try {
     const {
@@ -194,7 +194,7 @@ module.exports.rSearch = async function (list, time, message) {
     const title = postData.title;
     const up = postData.ups;
     const subreddit = postData.subreddit_name_prefixed;
-    if (module.exports.banned(image)) {
+    if (module.exports.banned(image) && filterBanned) {
       return module.exports.search(list, time, message);
     }
     if (image.includes('.gifv')) {
@@ -219,7 +219,7 @@ module.exports.rSearch = async function (list, time, message) {
 
 }
 
-module.exports.find = async function (list, searchTerm, time, message) {
+module.exports.find = async function (list, searchTerm, time, message, filterBanned) {
   var randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
   try {
     const {
@@ -242,7 +242,7 @@ module.exports.find = async function (list, searchTerm, time, message) {
     const title = postData.title;
     const up = postData.ups;
     const subreddit = postData.subreddit_name_prefixed;
-    if (module.exports.banned(image)) {
+    if (module.exports.banned(image) && filterBanned) {
       return module.exports.find(list, searchTerm, time, message);
     }
     if (image.includes('.gifv')) {
