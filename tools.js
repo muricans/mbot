@@ -82,6 +82,25 @@ module.exports.banned = function (string) {
   return contains;
 }
 
+module.exports.webSearch = function (url, message) {
+  if (url.includes('.gifv')) {
+    message.channel.send("Random Twitch Image")
+    message.channel.send(url);
+    message.channel.send("Requested by: " + message.author.username + " 🔼 " + up);
+  } else if (module.exports.end(url)) {
+    const embed = new Discord.RichEmbed()
+      .setTitle("Random Twitch Image")
+      .setImage(url)
+      .setFooter("Requested by: " + message.author.username + " 🔼 " + up);
+    message.channel.send(embed);
+  } else {
+
+    message.channel.send("Random Twitch Image");
+    message.channel.send(url);
+    message.channel.send("Requested by: " + message.author.username + " 🔼 " + up);
+  }
+}
+
 // find a random post from reddit
 module.exports.search = async function (list, time, message) {
   const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
