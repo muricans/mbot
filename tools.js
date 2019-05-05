@@ -12,7 +12,7 @@ let db = new sqlite.Database('./mbot.db', (err) => {
 
 const errMsg = "Please move to an nsfw channel :flushed:";
 const bannedLinks = ['pornhub.com', 'xvideos.com', 'erome.com', 'xnxx.com', 'xhamster.com', 'redtube.com', 'xmov.fun', 'porness.net',
-  'youtube.com', 'youtu.be', 'nhentai.net', 'efukt.com'
+  'youtube.com', 'youtu.be', 'nhentai.net', 'efukt.com', 'hdpornhere.com'
 ];
 // allowed embed endings
 const endings = ['.png', '.jpg', '.gif'];
