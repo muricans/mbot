@@ -114,7 +114,6 @@ module.exports.getImage = function (apiURL, apiKey, message) {
     let data = '';
     res.on("data", function (chunk) {
       data += chunk;
-      message.channel.send(chunk.data.link);
     });
     res.on("end", function (chunk) {
       let body = JSON.parse(data);
