@@ -110,15 +110,13 @@ module.exports.getImage = function (apiURL, apiKey, message) {
       console.log("error");
     }
   }
-  req.open("GET", apiURL, true);
   req.setRequestHeader('Authorization', 'Client-ID ' + apiKey);
-  req.send(null);
   const embed = new Discord.RichEmbed()
     .setTitle("Random Twitch Image")
-    .setImage(req.response)
+    .setImage(req.open("GET", apiURL, true))
     .setFooter("Requested by: " + message.author.username);
   message.channel.send(embed);
-  message.channel.send(req);
+  message.channel.send(req.open("GET", apiURL, true));
 }
 
 // find a random post from reddit
