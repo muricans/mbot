@@ -82,22 +82,33 @@ module.exports.banned = function (string) {
   return contains;
 }
 
-module.exports.webSearch = function (url, message) {
-  if (url.includes('.gifv')) {
-    message.channel.send("Random Twitch Image")
-    message.channel.send(url);
-    message.channel.send("Requested by: " + message.author.username + " 🔼 " + up);
-  } else if (module.exports.end(url)) {
-    const embed = new Discord.RichEmbed()
-      .setTitle("Random Twitch Image")
-      .setImage(url)
-      .setFooter("Requested by: " + message.author.username + " 🔼 " + up);
-    message.channel.send(embed);
-  } else {
+module.exports.webSearch = function (image, message) {
+  try {
+    const {
+      url
+    } = await snekfetch
+      .get('https://twitchlotto.com/')
+      .query({
+        limit: 4000
+      });
+    if (url.includes('.gifv')) {
+      message.channel.send("Random Twitch Image")
+      message.channel.send(url);
+      message.channel.send("Requested by: " + message.author.username);
+    } else if (module.exports.end(url)) {
+      const embed = new Discord.RichEmbed()
+        .setTitle("Random Twitch Image")
+        .setImage(url)
+        .setFooter("Requested by: " + message.author.username);
+      message.channel.send(embed);
+    } else {
 
-    message.channel.send("Random Twitch Image");
-    message.channel.send(url);
-    message.channel.send("Requested by: " + message.author.username + " 🔼 " + up);
+      message.channel.send("Random Twitch Image");
+      message.channel.send(url);
+      message.channel.send("Requested by: " + message.author.username);
+    }
+  } catch (err) {
+    return console.log(err);
   }
 }
 
