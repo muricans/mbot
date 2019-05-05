@@ -82,7 +82,7 @@ module.exports.banned = function (string) {
   return contains;
 }
 
-module.exports.webSearch = function (url) {
+module.exports.webSearch = function (url, message) {
   if (url.includes('.gifv')) {
     message.channel.send("Random Twitch Image")
     message.channel.send(url);
