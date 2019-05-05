@@ -101,7 +101,7 @@ module.exports.webSearch = function (url, message) {
   }
 }
 
-module.exports.getImage = function (message) {
+module.exports.getImage = async function (message) {
   try {
     const {
       body
