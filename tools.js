@@ -126,8 +126,9 @@ module.exports.getImage = function (apiURL, apiKey, message) {
   let postData = "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; ------WebKitFormBoundary7MA4YWxkTrZu0gW--";
   req.setHeader('content-type', 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW');
 
-  req.write(postData.link);
-  message.channel.send(req.write(postData.link));
+  req.each(postData, function (image) {
+    message.channel.send(image.link);
+  });
 
   req.end();
 }
