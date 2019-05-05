@@ -100,7 +100,7 @@ module.exports.webSearch = function (url, message) {
   }
 }
 
-function getImage(apiURL, apiKey, message) {
+module.exports.getImage = function (apiURL, apiKey, message) {
   let req = new XMLHttpRequest();
   req.onreadystatechange = function () {
     if (req.readyState == 4 && req.status == 200) {
