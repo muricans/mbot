@@ -150,7 +150,7 @@ module.exports.search = async function (list, time, message, filterBanned) {
     const up = postData.ups;
     const subreddit = postData.subreddit_name_prefixed;
     if (module.exports.banned(image) && filterBanned) {
-      return module.exports.search(list, time, message);
+      return module.exports.search(list, time, message, filterBanned);
     }
     if (image.includes('.gifv')) {
       message.channel.send(title)
@@ -193,7 +193,7 @@ module.exports.rSearch = async function (list, time, message, filterBanned) {
     const up = postData.ups;
     const subreddit = postData.subreddit_name_prefixed;
     if (module.exports.banned(image) && filterBanned) {
-      return module.exports.search(list, time, message);
+      return module.exports.search(list, time, message, filterBanned);
     }
     if (image.includes('.gifv')) {
       message.channel.send(title)
@@ -241,7 +241,7 @@ module.exports.find = async function (list, searchTerm, time, message, filterBan
     const up = postData.ups;
     const subreddit = postData.subreddit_name_prefixed;
     if (module.exports.banned(image) && filterBanned) {
-      return module.exports.find(list, searchTerm, time, message);
+      return module.exports.find(list, searchTerm, time, message, filterBanned);
     }
     if (image.includes('.gifv')) {
       message.channel.send(title)
