@@ -112,7 +112,7 @@ module.exports.getImage = async function (message) {
       });
     const rn = Math.floor(Math.random() * body.data.length);
     const imageData = body.data[rn].hash;
-    message.channel.send('i.imgur.com/' + imageData);
+    message.channel.send('https://i.imgur.com/' + imageData);
   } catch (err) {
     console.log(err);
   }
