@@ -145,59 +145,59 @@ module.exports.registerCommands = function (client) {
         // porn commands
 
       case "anal":
-        tools.search(anal[Math.floor(Math.random() * anal.length)], 'all', message);
+        tools.search(anal[Math.floor(Math.random() * anal.length)], 'all', message, true);
         message.delete(1000);
         break;
       case "ass":
-        tools.search(ass[Math.floor(Math.random() * ass.length)], 'all', message);
+        tools.search(ass[Math.floor(Math.random() * ass.length)], 'all', message, true);
         message.delete(1000);
         break;
       case "blowjob":
-        tools.search(blowjob[Math.floor(Math.random() * blowjob.length)], 'all', message);
+        tools.search(blowjob[Math.floor(Math.random() * blowjob.length)], 'all', message, true);
         message.delete(1000);
         break;
       case "boobs":
-        tools.search(boobs[Math.floor(Math.random() * boobs.length)], 'all', message);
+        tools.search(boobs[Math.floor(Math.random() * boobs.length)], 'all', message, true);
         message.delete(1000);
         break;
       case "dick":
-        tools.search(dick[Math.floor(Math.random() * dick.length)], 'all', message);
+        tools.search(dick[Math.floor(Math.random() * dick.length)], 'all', message, true);
         message.delete(1000);
         break;
       case "gay":
-        tools.search(gay[Math.floor(Math.random() * gay.length)], 'all', message);
+        tools.search(gay[Math.floor(Math.random() * gay.length)], 'all', message, true);
         message.delete(1000);
         break;
       case "hardcore":
-        tools.search(hardcore[Math.floor(Math.random() * hardcore.length)], 'all', message);
+        tools.search(hardcore[Math.floor(Math.random() * hardcore.length)], 'all', message, true);
         message.delete(1000);
         break;
       case "hentai":
-        tools.search(hentai[Math.floor(Math.random() * hentai.length)], 'all', message);
+        tools.search(hentai[Math.floor(Math.random() * hentai.length)], 'all', message, true);
         message.delete(1000);
         break;
       case "nsfw":
-        tools.search(nsfw[Math.floor(Math.random() * nsfw.length)], 'all', message);
+        tools.search(nsfw[Math.floor(Math.random() * nsfw.length)], 'all', message, true);
         message.delete(1000);
         break;
       case "pegging":
-        tools.search(pegging[Math.floor(Math.random() * pegging.length)], 'all', message);
+        tools.search(pegging[Math.floor(Math.random() * pegging.length)], 'all', message, true);
         message.delete(1000);
         break;
         // rule34 code different than others
       case "rule34":
         if (!args.length) {
-          tools.search(rule34[Math.floor(Math.random() * rule34.length)], 'all', message);
+          tools.search(rule34[Math.floor(Math.random() * rule34.length)], 'all', message, true);
           return message.delete(1000);
         }
-        tools.find(rule34[Math.floor(Math.random() * rule34.length)], args.toString().replace(' ', '+'), 'all', message);
+        tools.find(rule34[Math.floor(Math.random() * rule34.length)], args.toString().replace(' ', '+'), 'all', message, true);
         break;
       case "thighs":
-        tools.search(thighs[Math.floor(Math.random() * thighs.length)], 'all', message);
+        tools.search(thighs[Math.floor(Math.random() * thighs.length)], 'all', message, true);
         message.delete(1000);
         break;
       case "trap":
-        tools.search(traps[Math.floor(Math.random() * traps.length)], 'all', message);
+        tools.search(traps[Math.floor(Math.random() * traps.length)], 'all', message, true);
         message.delete(1000);
         break;
 
