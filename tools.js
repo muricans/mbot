@@ -117,13 +117,18 @@ module.exports.getImage = function (apiURL, apiKey, message) {
     });
     res.on("end", function (chunk) {
       let body = Buffer.concat(chunks);
-      console.log(body);
+      console.log(body.toString());
       //message.channel.send(body.link);
     });
     res.on("error", function (err) {
       console.log(err);
     });
   });
+  var postData = "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; ------WebKitFormBoundary7MA4YWxkTrZu0gW--";
+
+  req.setHeader('content-type', 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW');
+
+  req.write(postData);
   req.end();
 }
 // find a random post from reddit
