@@ -37,7 +37,7 @@ module.exports = {
           tools.find(args[0], encoded, 'all', message, false);
           break;
         default:
-          const noTime = args.slice(0, args.length);
+          const noTime = args.slice(1, args.length);
           const noTimeEncoded = encodeURI(noTime.join(' '));
           tools.find(args[0], noTimeEncoded, 'day', message, false);
           break;
