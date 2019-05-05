@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const fs = require('fs');
 
-// 11 commands + [5 admin only commands] + 13 nsfw commands
+// 13 commands + [5 admin only commands] + 13 nsfw commands
 // seperate admin only commands at a later time
 const min = 1;
 const max = 4;
@@ -19,6 +19,7 @@ function pageOne(edit, message) {
     .addField(prefix + 'echo <message>', 'Returns your message from the bot [admin only]')
     .addField(prefix + 'give <@user> <points>', 'Gives a user [x] amount of points')
     .addField(prefix + 'help', 'Returns a list of commands for this bot')
+    .addField(prefix + 'imgur', 'Returns a random image from imgur')
     .addField(prefix + 'meme', 'Returns a random meme')
     .setFooter('Page (1/' + max + ')');
   if (edit) {
