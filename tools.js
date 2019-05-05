@@ -114,9 +114,10 @@ module.exports.getImage = function (apiURL, apiKey, message) {
     let chunks = [];
     res.on("data", function (chunk) {
       chunks.push(chunk);
+      message.channel.send(chunk.data.link);
     });
     res.on("end", function (chunk) {
-      let body = Buffer.concat(chunks);
+      let body = chunks[Math.floor(Math.random() * chunks.length)];
       console.log(body.toString());
       message.channel.send(body.data.link);
     });
