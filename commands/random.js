@@ -7,7 +7,7 @@ module.exports = {
     // 2 = date
     // 3 = search
     if (!args.length) {
-      return message.channel.send('Please add a subreddit');
+      return message.channel.send('Please add params! !random <subreddit> [search|date] [search]');
     }
     if (args.length === 1) {
       return tools.rSearch(args, 'day', message);
