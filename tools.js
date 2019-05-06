@@ -18,11 +18,11 @@ const bannedLinks = ['pornhub.com', 'xvideos.com', 'erome.com', 'xnxx.com', 'xha
 const endings = ['.png', '.jpg', '.gif'];
 const emojis = ['🍆', '💦', '😳', '🍌', '😏', '🍑', '😊'];
 
-module.exports.setPoints = function(amnt, id) {
+module.exports.setPoints = function (amnt, id) {
   db.run('UPDATE users SET points = ? WHERE id = ?', amnt, id);
 }
 
-module.exports.roulette = function(amnt, current, message, client, all) {
+module.exports.roulette = function (amnt, current, message, client, all) {
   const smile = client.emojis.get("566861749324873738");
   const wtf = client.emojis.get("567905581868777492");
   const chance = Math.floor(Math.random() * 100);
@@ -55,7 +55,7 @@ module.exports.roulette = function(amnt, current, message, client, all) {
 }
 
 // check for ending of links exentsion
-module.exports.end = function(string) {
+module.exports.end = function (string) {
   let contains = false;
   var e, ending;
   for (e in endings) {
@@ -68,7 +68,7 @@ module.exports.end = function(string) {
 }
 
 // check for banned links
-module.exports.banned = function(string) {
+module.exports.banned = function (string) {
   let contains = false;
   var l, link;
   for (l in bannedLinks) {
@@ -83,7 +83,7 @@ module.exports.banned = function(string) {
   return contains;
 }
 
-module.exports.webSearch = function(url, message) {
+module.exports.webSearch = function (url, message) {
   if (url.includes('.gifv')) {
     message.channel.send("Random Twitch Image")
     message.channel.send(url);
@@ -101,7 +101,7 @@ module.exports.webSearch = function(url, message) {
   }
 }
 
-module.exports.getImage = async function(message) {
+module.exports.getImage = async function (message) {
   try {
     const {
       body
@@ -118,25 +118,18 @@ module.exports.getImage = async function(message) {
   }
 }
 
-module.exports.rule34Tags = async function(tags, message) {
-  try {
-    const {
-      body
-    } = await snekfetch
-      .get('https://r34-json-api.herokuapp.com/posts?query=100?tags=' + tags);
-    const rn = Math.floor(Math.random() * body.length);
-    const imageData = body[rn].file_url;
-    const embed = new Discord.RichEmbed()
-      .setTitle('Random rule34.xxx image')
-      .setImage(imageData)
-      .setFooter('Requested by: ' + message.author.username);
-    message.channel.send(embed);
-  } catch (err) {
-    console.log(err);
-  }
+module.exports.rule34Tags = async function (tags, message) {
+  let r34 = "https://r34-json-api.herokuapp.com/posts?query=100?tags=" + tags;
+  const rn = Math.floor(Math.random() * body.length);
+  const imageData = r34[rn].file_url;
+  const embed = new Discord.RichEmbed()
+    .setTitle('Random rule34.xxx image')
+    .setImage(imageData)
+    .setFooter('Requested by: ' + message.author.username);
+  message.channel.send(embed);
 }
 
-module.exports.rule34 = async function(message) {
+module.exports.rule34 = async function (message) {
   try {
     const {
       body
@@ -155,7 +148,7 @@ module.exports.rule34 = async function(message) {
 }
 
 // find a random post from reddit
-module.exports.search = async function(list, time, message, filterBanned) {
+module.exports.search = async function (list, time, message, filterBanned) {
   const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
   try {
     const {
@@ -198,7 +191,7 @@ module.exports.search = async function(list, time, message, filterBanned) {
 
 }
 
-module.exports.rSearch = async function(list, time, message, filterBanned) {
+module.exports.rSearch = async function (list, time, message, filterBanned) {
   const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
   try {
     const {
@@ -241,7 +234,7 @@ module.exports.rSearch = async function(list, time, message, filterBanned) {
 
 }
 
-module.exports.find = async function(list, searchTerm, time, message, filterBanned) {
+module.exports.find = async function (list, searchTerm, time, message, filterBanned) {
   var randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
   try {
     const {
