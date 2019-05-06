@@ -119,14 +119,21 @@ module.exports.getImage = async function (message) {
 }
 
 module.exports.rule34Tags = async function (tags, message) {
-  let r34 = "https://r34-json-api.herokuapp.com/posts?query=100?tags=" + tags;
-  const rn = Math.floor(Math.random() * r34.length);
-  const imageData = r34[rn].file_url;
-  const embed = new Discord.RichEmbed()
-    .setTitle('Random rule34.xxx image')
-    .setImage(imageData)
-    .setFooter('Requested by: ' + message.author.username);
-  message.channel.send(embed);
+  try {
+    const {
+      body
+    } = await snekfetch
+      .get("https://r34-json-api.herokuapp.com/posts?query=100?tags=" + tags);
+    const rn = Math.floor(Math.random() * body.length);
+    const imageData = body[rn].file_url;
+    const embed = new Discord.RichEmbed()
+      .setTitle('Random rule34.xxx image')
+      .setImage(imageData)
+      .setFooter('Requested by: ' + message.author.username);
+    message.channel.send(embed);
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 module.exports.rule34 = async function (message) {
