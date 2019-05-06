@@ -103,11 +103,20 @@ module.exports.registerCommands = function(client) {
       case "help":
         client.commands.get('help').execute(message, args);
         break;
+      case "imgur":
+        client.commands.get('imgur').execute(message, args);
+        break;
       case "prefix":
         client.commands.get('prefix').execute(message, args, client);
         break;
       case "points":
         client.commands.get('points').execute(message, args);
+        break;
+      case "qr":
+        client.commands.get('qr').execute(message, args);
+        break;
+      case "r34xxx":
+        client.commands.get('r34xxx').execute(message, args);
         break;
       case "random":
         client.commands.get('random').execute(message, args);
@@ -123,15 +132,6 @@ module.exports.registerCommands = function(client) {
         break;
       case "userinfo":
         client.commands.get('userinfo').execute(message, args, client);
-        break;
-      case "qr":
-        client.commands.get('qr').execute(message, args);
-        break;
-      case "imgur":
-        client.commands.get('imgur').execute(message, args);
-        break;
-      case "r34xxx":
-        client.commands.get('r34xxx').execute(message, args);
         break;
 
         /*case "hey": only reason why checking if bot is needed.
