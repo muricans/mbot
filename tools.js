@@ -123,7 +123,10 @@ module.exports.rule34Tags = async function (tags, message) {
     const {
       body
     } = await snekfetch
-      .get("https://r34-json-api.herokuapp.com/posts?query=100?tags=" + tags);
+      .get("https://r34-json-api.herokuapp.com/posts?query=100?tags=" + tags)
+      .query({
+        limit: 100
+      });
     const rn = Math.floor(Math.random() * body.length);
     const imageData = body[rn].file_url;
     const embed = new Discord.RichEmbed()
