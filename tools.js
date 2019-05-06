@@ -118,33 +118,18 @@ module.exports.getImage = async function (message) {
   }
 }
 
-module.exports.rule34Tags = async function (tags, message) {
-  try {
-    const {
-      body
-    } = await snekfetch
-      .get("https://r34-json-api.herokuapp.com/posts?query=100&tags=" + tags)
-      .query({
-        limit: 100
-      });
-    const rn = Math.floor(Math.random() * body.length);
-    const imageData = body[rn].file_url;
-    const embed = new Discord.RichEmbed()
-      .setTitle('Random rule34.xxx image')
-      .setImage(imageData)
-      .setFooter('Requested by: ' + message.author.username + ' With tags: ' + tags);
-    message.channel.send(embed);
-  } catch (err) {
-    message.channel.send(message.author + ' Could not find any images with those tags!');
+module.exports.rule34 = async function (message, hasTags, tags) {
+  let link;
+  if (hasTags) {
+    link = "https://r34-json-api.herokuapp.com/posts?query=100&tags=" + tags;
+  } else {
+    link = "https://r34-json-api.herokuapp.com/posts?query=100";
   }
-}
-
-module.exports.rule34 = async function (message) {
   try {
     const {
       body
     } = await snekfetch
-      .get('https://r34-json-api.herokuapp.com/posts?query=100');
+      .get(link);
     const rn = Math.floor(Math.random() * body.length);
     const imageData = body[rn].file_url;
     const embed = new Discord.RichEmbed()
