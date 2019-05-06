@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const fs = require('fs');
 
-// 13 commands + [5 admin only commands] + 13 nsfw commands
+// 13 commands + [5 admin only commands] + 14 nsfw commands
 // seperate admin only commands at a later time
 const min = 1;
 const max = 4;
@@ -89,7 +89,8 @@ module.exports = {
             const embed4 = new Discord.RichEmbed()
               .setTitle('NSFW Commands')
               .addField(prefix + 'pegging', 'Returns a pegging image')
-              .addField(prefix + 'rule34', 'Returns a rule34 image')
+              .addField(prefix + 'r34xxx', 'Returns an image from rule34')
+              .addField(prefix + 'rule34', 'Returns a rule34 image from reddit')
               .addField(prefix + 'thighs', 'Retuns an image of thighs')
               .addField(prefix + 'trap', 'Returns a trap image')
               .addField(prefix + 'dick', 'Returns an image of a dick')
