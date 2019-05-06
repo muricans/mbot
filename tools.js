@@ -120,7 +120,7 @@ module.exports.getImage = async function (message) {
 
 module.exports.rule34Tags = async function (tags, message) {
   let r34 = "https://r34-json-api.herokuapp.com/posts?query=100?tags=" + tags;
-  const rn = Math.floor(Math.random() * body.length);
+  const rn = Math.floor(Math.random() * r34.length);
   const imageData = r34[rn].file_url;
   const embed = new Discord.RichEmbed()
     .setTitle('Random rule34.xxx image')
