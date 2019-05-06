@@ -138,7 +138,7 @@ module.exports.rule34 = async function (message, hasTags, tags) {
       .setFooter('Requested by: ' + message.author.username);
     message.channel.send(embed);
   } catch (err) {
-    console.log(err);
+    message.channel.send('Could not find any images with those tags!');
   }
 }
 
