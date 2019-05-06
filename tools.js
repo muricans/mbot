@@ -132,10 +132,10 @@ module.exports.rule34Tags = async function (tags, message) {
     const embed = new Discord.RichEmbed()
       .setTitle('Random rule34.xxx image')
       .setImage(imageData)
-      .setFooter('Requested by: ' + message.author.username);
+      .setFooter('Requested by: ' + message.author.username + ' With tags: ' + tags);
     message.channel.send(embed);
   } catch (err) {
-    console.log(err);
+    message.channel.send(message.author + ' Could not find any images with those tags!');
   }
 }
 
