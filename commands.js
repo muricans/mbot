@@ -2,7 +2,7 @@ const tools = require('./tools.js');
 const fs = require('fs');
 const Discord = require('discord.js');
 
-module.exports.registerCommands = function (client) {
+module.exports.registerCommands = function(client) {
   client.commands = new Discord.Collection();
   const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
   for (const file of commandFiles) {
@@ -129,6 +129,9 @@ module.exports.registerCommands = function (client) {
         break;
       case "imgur":
         client.commands.get('imgur').execute(message, args);
+        break;
+      case "r34xxx":
+        client.commands.get('r34xxx').execute(message, args);
         break;
 
         /*case "hey": only reason why checking if bot is needed.
