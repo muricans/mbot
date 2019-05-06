@@ -119,11 +119,13 @@ module.exports.getImage = async function (message) {
 }
 
 module.exports.rule34 = async function (message, hasTags, tags) {
-  let link;
+  let link, footer;
   if (hasTags) {
     link = "https://r34-json-api.herokuapp.com/posts?query=100&tags=" + tags;
+    footer = 'Requested by: ' + message.author.username + ' With tags: ' + tags;
   } else {
     link = "https://r34-json-api.herokuapp.com/posts?query=100";
+    footer = 'Requested by: ' + message.author.username;
   }
   try {
     const {
@@ -135,7 +137,7 @@ module.exports.rule34 = async function (message, hasTags, tags) {
     const embed = new Discord.RichEmbed()
       .setTitle('Random rule34.xxx image')
       .setImage(imageData)
-      .setFooter('Requested by: ' + message.author.username);
+      .setFooter(footer);
     message.channel.send(embed);
   } catch (err) {
     message.channel.send('Could not find any images with those tags!');
