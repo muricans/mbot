@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const fs = require('fs');
 
-// 13 commands + [5 admin only commands] + 15 nsfw commands
+// 14 commands + [5 admin only commands] + 14 nsfw commands
 // seperate admin only commands at a later time
 const min = 1;
 const max = 4;
@@ -15,6 +15,7 @@ function pageOne(edit, message) {
     .addField(prefix + '8ball <question>', 'Ask the bot a question')
     .addField(prefix + 'create <commandName> <message>', 'Adds a command to the bot')
     .addField(prefix + 'clean <@user> <messageAmount>', 'Deletes a specified amount of messages for a user [admin only]')
+    .addField(prefix + 'danbooru', 'Returns a danbooru image [NSFW Available]')
     .addField(prefix + 'delete <commandName>', 'Deletes a command [added by !create] from the bot [admin only]')
     .addField(prefix + 'echo <message>', 'Returns your message from the bot [admin only]')
     .addField(prefix + 'give <@user> <points>', 'Gives a user [x] amount of points')
@@ -78,7 +79,6 @@ module.exports = {
               .addField(prefix + 'ass', 'Returns an image of an ass')
               .addField(prefix + 'blowjob', 'Returns a blowjob image')
               .addField(prefix + 'boobs', 'Returns a picture of a pair of milkers')
-              .addField(prefix + 'danbooru', 'Returns a danbooru image')
               .addField(prefix + 'hardcore', 'Returns a hardcore porn image')
               .addField(prefix + 'hentai', 'Returns a hentai image')
               .addField(prefix + 'nsfw', 'Returns an nsfw image (Straight)')
