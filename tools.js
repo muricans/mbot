@@ -162,12 +162,24 @@ module.exports.danbooru = async function (message, hasTags, tags) {
     const data = body[rn];
     const imageData = data.file_url;
     const rating = data.rating;
-    const embed = new Discord.RichEmbed()
-      .setTitle('Random danbooru image')
-      .setImage(imageData)
-      .setFooter(footer);
-    console.log(rating);
-    return message.channel.send(embed);
+    if (rating === "q" || rating === "e") {
+      if (message.channel.nsfw) {
+        const embed = new Discord.RichEmbed()
+          .setTitle('Random danbooru image')
+          .setImage(imageData)
+          .setFooter(footer);
+        return message.channel.send(embed);
+      } else {
+        return module.exports.danbooru(message, hasTags, tags);
+      }
+    } else if (rating === "s") {
+      const embed = new Discord.RichEmbed()
+        .setTitle('Random danbooru image')
+        .setImage(imageData)
+        .setFooter(footer);
+      console.log(rating);
+      return message.channel.send(embed);
+    }
   } catch (err) {
     console.log(err);
   }
