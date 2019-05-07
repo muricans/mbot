@@ -157,7 +157,7 @@ module.exports.danbooru = async function (message, hasTags, tags) {
     const {
       body
     } = await snekfetch
-      .get('https://danbooru.donmai.us/posts.json');
+      .get(link);
     const rn = Math.floor(Math.random() * body.length);
     const data = body[rn];
     const imageData = data.file_url;
@@ -178,7 +178,7 @@ module.exports.danbooru = async function (message, hasTags, tags) {
       const embed = new Discord.RichEmbed()
         .setTitle('Random danbooru image')
         .setImage(imageData)
-        .setFooter('Requested by: ' + message.author.username);
+        .setFooter(footer);
       return message.channel.send(embed);
     } else if (!message.channel.nsfw && !safe) {
       return module.exports.danbooru(message, hasTags, tags);
@@ -186,7 +186,7 @@ module.exports.danbooru = async function (message, hasTags, tags) {
       const embed = new Discord.RichEmbed()
         .setTitle('Random danbooru image')
         .setImage(imageData)
-        .setFooter('Requested by: ' + message.author.username);
+        .setFooter(footer);
       return message.channel.send(embed);
     }
   } catch (err) {
