@@ -147,7 +147,7 @@ module.exports.rule34 = async function (message, hasTags, tags) {
 module.exports.danbooru = async function (message, hasTags, tags) {
   let link, footer;
   if (hasTags) {
-    link = "https://danbooru.donmai.us/posts.json?utf8=✓&tags=" + tags;
+    link = "https://danbooru.donmai.us/posts.json?tags=" + tags;
     footer = 'Requested by: ' + message.author.username + ' With tags: ' + tags;
   } else {
     link = "https://danbooru.donmai.us/posts.json";
