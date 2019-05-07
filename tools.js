@@ -144,6 +144,24 @@ module.exports.rule34 = async function (message, hasTags, tags) {
   }
 }
 
+module.exports.danbooru = async function (message, isSfw, hasTags, tags) {
+  try {
+    const {
+      body
+    } = await snekfetch
+      .get('https://danbooru.donmai.us/posts.json');
+    const rn = Math.floor(Math.random() * body.length);
+    const imageData = body[rn].file_url;
+    const embed = new Discord.RichEmbed()
+      .setTitle('Random danbooru image')
+      .setImage(imageData)
+      .setFooter('Requested by: ' + message.author.username);
+    message.channel.send(embed);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 // find a random post from reddit
 module.exports.search = async function (list, time, message, filterBanned) {
   const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
