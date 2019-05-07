@@ -167,7 +167,10 @@ module.exports.danbooru = async function (message, hasTags, tags) {
       case "s":
         safe = true;
         break;
-      case "q" || "e":
+      case "e":
+        safe = false;
+        break;
+      case "q":
         safe = false;
         break;
     }
