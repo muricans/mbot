@@ -147,7 +147,7 @@ module.exports.rule34 = async function (message, hasTags, tags) {
 module.exports.danbooru = async function (message, hasTags, tags) {
   let link, footer;
   if (hasTags) {
-    link = "https://danbooru.donmai.us/posts.json?tags=" + tags;
+    link = "https://danbooru.donmai.us/posts.json?utf8=✓&tags=" + tags;
     footer = 'Requested by: ' + message.author.username + ' With tags: ' + tags;
   } else {
     link = "https://danbooru.donmai.us/posts.json";
@@ -162,33 +162,12 @@ module.exports.danbooru = async function (message, hasTags, tags) {
     const data = body[rn];
     const imageData = data.file_url;
     const rating = data.rating;
-    let safe;
-    switch (rating) {
-      case "s":
-        safe = true;
-        break;
-      case "e":
-        safe = false;
-        break;
-      case "q":
-        safe = false;
-        break;
-    }
-    if (!message.channel.nsfw && safe) {
-      const embed = new Discord.RichEmbed()
-        .setTitle('Random danbooru image')
-        .setImage(imageData)
-        .setFooter(footer);
-      return message.channel.send(embed);
-    } else if (!message.channel.nsfw && !safe) {
-      return module.exports.danbooru(message, hasTags, tags);
-    } else {
-      const embed = new Discord.RichEmbed()
-        .setTitle('Random danbooru image')
-        .setImage(imageData)
-        .setFooter(footer);
-      return message.channel.send(embed);
-    }
+    const embed = new Discord.RichEmbed()
+      .setTitle('Random danbooru image')
+      .setImage(imageData)
+      .setFooter(footer);
+    console.log(rating);
+    return message.channel.send(embed);
   } catch (err) {
     console.log(err);
   }
