@@ -3,6 +3,11 @@ const tools = require('../tools.js');
 module.exports = {
     name: 'danbooru',
     execute(message, args) {
-        return tools.danbooru(message, false);
+        if (args.length === 0) {
+            return tools.danbooru(message, false);
+        } else {
+            let searchArgs = args.join('+');
+            return tools.danbooru(message, true, searchArgs);
+        }
     },
 };
