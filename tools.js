@@ -181,7 +181,7 @@ module.exports.danbooru = async function (message, hasTags, tags) {
       return message.channel.send(embed);
     }
   } catch (err) {
-    console.log(err);
+    message.channel.send('Could not find any images with those tags!');
   }
 }
 
