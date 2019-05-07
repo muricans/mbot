@@ -145,18 +145,47 @@ module.exports.rule34 = async function (message, hasTags, tags) {
 }
 
 module.exports.danbooru = async function (message, isSfw, hasTags, tags) {
+  let link, footer;
+  if (hasTags) {
+    link = "https://danbooru.donmai.us/posts.json?utf8=%E2%9C%93&tags=" + tags;
+    footer = 'Requested by: ' + message.author.username + ' With tags: ' + tags;
+  } else {
+    link = "https://danbooru.donmai.us/posts.json";
+    footer = 'Requested by: ' + message.author.username;
+  }
   try {
     const {
       body
     } = await snekfetch
       .get('https://danbooru.donmai.us/posts.json');
     const rn = Math.floor(Math.random() * body.length);
-    const imageData = body[rn].file_url;
-    const embed = new Discord.RichEmbed()
-      .setTitle('Random danbooru image')
-      .setImage(imageData)
-      .setFooter('Requested by: ' + message.author.username);
-    message.channel.send(embed);
+    const data = body[rn];
+    const imageData = data.file_url;
+    const rating = data.rating;
+    let safe;
+    switch (rating) {
+      case "s":
+        safe = true;
+        break;
+      case "q" || "e":
+        safe = false;
+        break;
+    }
+    if (isSfw && safe) {
+      const embed = new Discord.RichEmbed()
+        .setTitle('Random danbooru image')
+        .setImage(imageData)
+        .setFooter('Requested by: ' + message.author.username);
+      return message.channel.send(embed);
+    } else if (isSfw && !safe) {
+      return module.exports.danbooru(message, isSfw, hasTags, tags);
+    } else if (!isSfw && !safe) {
+      const embed = new Discord.RichEmbed()
+        .setTitle('Random danbooru image')
+        .setImage(imageData)
+        .setFooter('Requested by: ' + message.author.username);
+      return message.channel.send(embed);
+    }
   } catch (err) {
     console.log(err);
   }
