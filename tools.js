@@ -164,7 +164,7 @@ module.exports.danbooru = async function (message, hasTags, tags) {
     const rating = data.rating;
     if (rating === "q" || rating === "e") {
       if (message.channel.nsfw) {
-        if (image.includes('.gifv')) {
+        if (imageData.includes('.gifv')) {
           message.channel.send("Random danbooru image")
           message.channel.send(imageData);
           message.channel.send(footer);
@@ -184,7 +184,7 @@ module.exports.danbooru = async function (message, hasTags, tags) {
         return module.exports.danbooru(message, hasTags, tags);
       }
     } else if (rating === "s") {
-      if (image.includes('.gifv')) {
+      if (imageData.includes('.gifv')) {
         message.channel.send("Random danbooru image")
         message.channel.send(imageData);
         message.channel.send(footer);
