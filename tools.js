@@ -182,7 +182,7 @@ module.exports.danbooru = async function (message, hasTags, tags) {
       return message.channel.send(embed);
     } else if (!message.channel.nsfw && !safe) {
       return module.exports.danbooru(message, hasTags, tags);
-    } else if (message.channel.nsfw && !safe) {
+    } else {
       const embed = new Discord.RichEmbed()
         .setTitle('Random danbooru image')
         .setImage(imageData)
