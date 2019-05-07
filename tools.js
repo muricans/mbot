@@ -164,19 +164,42 @@ module.exports.danbooru = async function (message, hasTags, tags) {
     const rating = data.rating;
     if (rating === "q" || rating === "e") {
       if (message.channel.nsfw) {
-        const embed = new Discord.RichEmbed()
-          .setTitle('Random danbooru image')
-          .setImage(imageData)
-          .setFooter(footer);
-        return message.channel.send(embed);
+        if (image.includes('.gifv')) {
+          message.channel.send(title)
+          message.channel.send(imageData);
+          message.channel.send(footer);
+        } else if (module.exports.end(image)) {
+          const embed = new Discord.RichEmbed()
+            .setTitle(title)
+            .setImage(imageData)
+            .setFooter(footer);
+          message.channel.send(embed);
+        } else {
+
+          message.channel.send(title);
+          message.channel.send(imageData);
+          message.channel.send(footer);
+        }
       } else if (!message.channel.nsfw) {
         return module.exports.danbooru(message, hasTags, tags);
       }
     } else if (rating === "s") {
-      const embed = new Discord.RichEmbed()
-        .setTitle('Random danbooru image')
-        .setImage(imageData)
-        .setFooter(footer);
+      if (image.includes('.gifv')) {
+        message.channel.send(title)
+        message.channel.send(imageData);
+        message.channel.send(footer);
+      } else if (module.exports.end(image)) {
+        const embed = new Discord.RichEmbed()
+          .setTitle(title)
+          .setImage(imageData)
+          .setFooter(footer);
+        message.channel.send(embed);
+      } else {
+
+        message.channel.send(title);
+        message.channel.send(imageData);
+        message.channel.send(footer);
+      }
       console.log(rating);
       return message.channel.send(embed);
     }
