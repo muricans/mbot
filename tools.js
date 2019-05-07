@@ -169,7 +169,7 @@ module.exports.danbooru = async function (message, hasTags, tags) {
           .setImage(imageData)
           .setFooter(footer);
         return message.channel.send(embed);
-      } else {
+      } else if (!message.channel.nsfw) {
         return module.exports.danbooru(message, hasTags, tags);
       }
     } else if (rating === "s") {
