@@ -2,6 +2,7 @@ const snekfetch = require('snekfetch');
 const Discord = require('discord.js');
 const sqlite = require('sqlite3').verbose();
 const request = require('request');
+const fs = require('fs');
 
 let db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
