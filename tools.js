@@ -2,7 +2,7 @@ const snekfetch = require('snekfetch');
 const Discord = require('discord.js');
 const settings = require('./settings.json');
 const sqlite = require('sqlite3').verbose();
-const https = require("https");
+const request = require('request');
 
 let db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
@@ -17,6 +17,17 @@ const bannedLinks = ['pornhub.com', 'xvideos.com', 'erome.com', 'xnxx.com', 'xha
 // allowed embed endings
 const endings = ['.png', '.jpg', '.gif'];
 const emojis = ['🍆', '💦', '😳', '🍌', '😏', '🍑', '😊'];
+
+module.exports.shorten = function (url) {
+  request({
+    uri: 'http://tinyurl.com/api-create.php?url=' + url
+  }, (err, response, body) => {
+    if (err) {
+      return console.log(err);
+    }
+    return body;
+  });
+}
 
 module.exports.setPoints = function (amnt, id) {
   db.run('UPDATE users SET points = ? WHERE id = ?', amnt, id);
