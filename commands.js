@@ -80,10 +80,18 @@ module.exports.registerCommands = function (client) {
       if (command === jsonCmd) {
         if (jsonMsg.startsWith('{module}')) {
           const mention = message.mentions.users.first();
-          let date = new Date().getHours();
+          let date = new Date();
+          let options = {
+            hour: '2-digit',
+            minute: '2-digit'
+          };
+          if (jsonMsg.includes('{mention}') && !mention) {
+            return message.channel.send(message.author + ' Please provide someone to mention!')
+          }
           let formattedMsg = jsonMsg
             .replace('{mention}', mention)
-            .replace('{time}', date);
+            .replace('{time}', date.toLocaleString('en-us', options));
+          return message.channel.send(formattedMsg.slice(9));
         }
         message.channel.send(jsonMsg);
       }
