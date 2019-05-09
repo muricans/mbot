@@ -3,7 +3,6 @@ const tools = require('../tools.js');
 
 module.exports = {
   name: 'create',
-  cooldown: 5,
   execute(message, args) {
     let stngs = fs.readFileSync('settings.json', 'utf8');
     let settings = JSON.parse(stngs);

@@ -102,26 +102,6 @@ module.exports.registerCommands = function (client) {
       }
     }
 
-    const commandTest = client.commands.get(command);
-    const cooldowns = new Discord.Collection();
-    if (!cooldowns.has(commandTest)) {
-      cooldowns.set(commandTest.name, new Discord.Collection());
-    }
-
-    const now = Date.now();
-    const timestamps = cooldowns.get(commandTest.name);
-    const cooldownAmount = (commandTest.cooldown || 0) * 1000;
-    if (timestamps.has(message.author.id)) {
-      const expTime = timestamps.get(message.author.id) + cooldownAmount;
-      if (now < expTime) {
-        const timeLeft = (expirationTime - now) / 1000;
-        return message.channel.send(message.author + ` please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`);
-      }
-    }
-
-    timestamps.set(message.author.id, now);
-    setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
-
     switch (command) {
       case "8ball":
         client.commands.get('8ball').execute(message, args, client);
