@@ -33,85 +33,100 @@ function pageOne(edit, message) {
 module.exports = {
   name: 'help',
   execute(message, args) {
-    let stngs = fs.readFileSync('settings.json', 'utf8');
-    let settings = JSON.parse(stngs);
-    const prefix = settings.prefix;
-    let page = 0;
-    pageOne(false, message).then(async sent => {
-      await sent.react("◀");
-      await sent.react("▶");
-      sent.awaitReactions(reaction => {
-        if (reaction.emoji.name === "◀") {
-          reaction.remove(message.author);
-          page--;
-        } else if (reaction.emoji.name === "▶") {
-          reaction.remove(message.author);
-          page++;
-        }
+    if (args.length === 0) {
+      let stngs = fs.readFileSync('settings.json', 'utf8');
+      let settings = JSON.parse(stngs);
+      const prefix = settings.prefix;
+      let page = 0;
+      pageOne(false, message).then(async sent => {
+        await sent.react("◀");
+        await sent.react("▶");
+        sent.awaitReactions(reaction => {
+          if (reaction.emoji.name === "◀") {
+            reaction.remove(message.author);
+            page--;
+          } else if (reaction.emoji.name === "▶") {
+            reaction.remove(message.author);
+            page++;
+          }
 
-        let pageData = 'Page (' + page + '/' + max + ')';
+          let pageData = 'Page (' + page + '/' + max + ')';
 
-        switch (page) {
-          case 1:
-            pageOne(true, sent);
-            break;
-          case 2:
-            const embed2 = new Discord.RichEmbed()
-              .setTitle('Commands')
-              .addField(prefix + 'ping', 'Returns pong')
-              .addField(prefix + 'prefix <newPrefix>', 'Changes the bots prefix [admin only]')
-              .addField(prefix + 'points <@user>', "Returns the designated user's points")
-              .addField(prefix + 'qr <information>', 'Returns a QR code with the designated information')
-              .addField(prefix + 'random <subreddit> [time] [search]', 'Returns a random thread from a subreddit')
-              .addField(prefix + 'roulette <bet amount>', 'Returns win/loss and new total points')
-              .addField(prefix + 'roll <number>', 'Returns a random number between 1 and the chosen number')
-              .addField(prefix + 'userinfo <@user>', "Returns the designated user's info")
-              .addField(prefix + 'set <@user> points', 'Sets the users points [admin only]')
-              .addField('NSFW Commands on Page 3+4', '🔞')
-              .setFooter(pageData);
-            //console.log(page);
-            sent.edit(embed2);
-            break;
-          case 3:
-            const embed3 = new Discord.RichEmbed()
-              .setTitle('NSFW Commands')
-              .addField(prefix + 'anal', 'Returns an anal image')
-              .addField(prefix + 'ass', 'Returns an image of an ass')
-              .addField(prefix + 'blowjob', 'Returns a blowjob image')
-              .addField(prefix + 'boobs', 'Returns a picture of a pair of milkers')
-              .addField(prefix + 'hardcore', 'Returns a hardcore porn image')
-              .addField(prefix + 'hentai', 'Returns a hentai image')
-              .addField(prefix + 'nsfw', 'Returns an nsfw image (Straight)')
-              .setFooter(pageData);
-            //console.log(page);
-            sent.edit(embed3);
-            break;
-          case 4:
-            const embed4 = new Discord.RichEmbed()
-              .setTitle('NSFW Commands')
-              .addField(prefix + 'pegging', 'Returns a pegging image')
-              .addField(prefix + 'r34xxx', 'Returns an image from rule34')
-              .addField(prefix + 'rule34', 'Returns a rule34 image from reddit')
-              .addField(prefix + 'thighs', 'Retuns an image of thighs')
-              .addField(prefix + 'trap', 'Returns a trap image')
-              .addField(prefix + 'dick', 'Returns an image of a dick')
-              .addField(prefix + 'gay', 'Returns a gay porn image')
-              .setFooter(pageData);
-            //console.log(page);
-            sent.edit(embed4);
-            break;
-        }
+          switch (page) {
+            case 1:
+              pageOne(true, sent);
+              break;
+            case 2:
+              const embed2 = new Discord.RichEmbed()
+                .setTitle('Commands')
+                .addField(prefix + 'ping', 'Returns pong')
+                .addField(prefix + 'prefix <newPrefix>', 'Changes the bots prefix [admin only]')
+                .addField(prefix + 'points <@user>', "Returns the designated user's points")
+                .addField(prefix + 'qr <information>', 'Returns a QR code with the designated information')
+                .addField(prefix + 'random <subreddit> [time] [search]', 'Returns a random thread from a subreddit')
+                .addField(prefix + 'roulette <bet amount>', 'Returns win/loss and new total points')
+                .addField(prefix + 'roll <number>', 'Returns a random number between 1 and the chosen number')
+                .addField(prefix + 'userinfo <@user>', "Returns the designated user's info")
+                .addField(prefix + 'set <@user> points', 'Sets the users points [admin only]')
+                .addField('NSFW Commands on Page 3+4', '🔞')
+                .setFooter(pageData);
+              //console.log(page);
+              sent.edit(embed2);
+              break;
+            case 3:
+              const embed3 = new Discord.RichEmbed()
+                .setTitle('NSFW Commands')
+                .addField(prefix + 'anal', 'Returns an anal image')
+                .addField(prefix + 'ass', 'Returns an image of an ass')
+                .addField(prefix + 'blowjob', 'Returns a blowjob image')
+                .addField(prefix + 'boobs', 'Returns a picture of a pair of milkers')
+                .addField(prefix + 'hardcore', 'Returns a hardcore porn image')
+                .addField(prefix + 'hentai', 'Returns a hentai image')
+                .addField(prefix + 'nsfw', 'Returns an nsfw image (Straight)')
+                .setFooter(pageData);
+              //console.log(page);
+              sent.edit(embed3);
+              break;
+            case 4:
+              const embed4 = new Discord.RichEmbed()
+                .setTitle('NSFW Commands')
+                .addField(prefix + 'pegging', 'Returns a pegging image')
+                .addField(prefix + 'r34xxx', 'Returns an image from rule34')
+                .addField(prefix + 'rule34', 'Returns a rule34 image from reddit')
+                .addField(prefix + 'thighs', 'Retuns an image of thighs')
+                .addField(prefix + 'trap', 'Returns a trap image')
+                .addField(prefix + 'dick', 'Returns an image of a dick')
+                .addField(prefix + 'gay', 'Returns a gay porn image')
+                .setFooter(pageData);
+              //console.log(page);
+              sent.edit(embed4);
+              break;
+          }
 
-        if (page > max) {
-          page = max;
-        }
+          if (page > max) {
+            page = max;
+          }
 
-        if (page < min) {
-          page = min;
-        }
-      }, {
-        time: 20000
+          if (page < min) {
+            page = min;
+          }
+        }, {
+          time: 20000
+        });
       });
-    });
+    }
+    const cmd = client.commands.get(args[0].toLowerCase());
+    if (!cmd) {
+      return message.channel.send(message.author + ' That command does not exist!');
+    }
+    if (cmd.usage) {
+      const embed = new Discord.RichEmbed()
+        .setTitle('Command: ' + cmd.name)
+        .addField('Usage: ' + cmd.usage);
+      message.channel.send(embed);
+    } else {
+      return message.channel.send(message.author + ' No usage data foud for that command!');
+    }
+
   },
 };
