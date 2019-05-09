@@ -12,8 +12,11 @@ module.exports = {
     };
     let newArgs = args.slice(1, args.length);
     const msg = newArgs.join(' ');
+    let stngs = fs.readFileSync('settings.json', 'utf8');
+    let settings = JSON.parse(stngs);
+    const prefix = settings.prefix;
     for (var i in tools.adminCommands) {
-      if (msg.includes(tools.adminCommands[i])) {
+      if (msg.includes(prefix + tools.adminCommands[i])) {
         return message.channel.send(message.author + ' Cannot run admin commands!');
       }
     }
