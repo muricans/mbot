@@ -4,8 +4,11 @@ const tools = require('../tools.js');
 module.exports = {
   name: 'create',
   execute(message, args) {
+    let stngs = fs.readFileSync('settings.json', 'utf8');
+    let settings = JSON.parse(stngs);
+    const prefix = settings.prefix;
     if (args.length < 2) {
-      return message.reply('Please add params! ' + tools.prefix + 'create <commandName> <message>');
+      return message.reply('Please add params! ' + prefix + 'create <commandName> <message>');
     }
     let cmd = {
       commands: []
@@ -33,6 +36,6 @@ module.exports = {
         }
       });
     });
-    return message.channel.send(message.author + ' New command added! ' + tools.prefix + args[0] + ', which returns ' + msg);
+    return message.channel.send(message.author + ' New command added! ' + prefix + args[0] + ', which returns ' + msg);
   },
 };
