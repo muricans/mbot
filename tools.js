@@ -17,7 +17,7 @@ const bannedLinks = ['pornhub.com', 'xvideos.com', 'erome.com', 'xnxx.com', 'xha
 // allowed embed endings
 const endings = ['.png', '.jpg', '.gif'];
 const emojis = ['🍆', '💦', '😳', '🍌', '😏', '🍑', '😊'];
-const adminCommands = ['set', 'give', 'delete', 'echo', 'clean', 'prefix'];
+module.exports.adminCommands = ['set', 'give', 'delete', 'echo', 'clean', 'prefix'];
 
 module.exports.shorten = function (url) {
   request({
