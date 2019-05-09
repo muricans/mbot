@@ -32,7 +32,7 @@ function pageOne(edit, message) {
 
 module.exports = {
   name: 'help',
-  execute(message, args) {
+  execute(message, args, client) {
     if (args.length === 0) {
       let stngs = fs.readFileSync('settings.json', 'utf8');
       let settings = JSON.parse(stngs);

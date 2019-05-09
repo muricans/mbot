@@ -122,7 +122,7 @@ module.exports.registerCommands = function (client) {
         client.commands.get('give').execute(message, args);
         break;
       case "help":
-        client.commands.get('help').execute(message, args);
+        client.commands.get('help').execute(message, args, client);
         break;
       case "imgur":
         client.commands.get('imgur').execute(message, args);
