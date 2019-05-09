@@ -5,16 +5,13 @@ module.exports = {
   name: 'create',
   execute(message, args) {
     if (args.length < 2) {
-      return message.reply('Please add params! !create <commandName> <message>');
+      return message.reply('Please add params! ' + tools.prefix + 'create <commandName> <message>');
     }
     let cmd = {
       commands: []
     };
     let newArgs = args.slice(1, args.length);
     const msg = newArgs.join(' ');
-    let stngs = fs.readFileSync('settings.json', 'utf8');
-    let settings = JSON.parse(stngs);
-    const prefix = settings.prefix;
     for (var i in tools.adminCommands) {
       if (msg.includes(prefix + tools.adminCommands[i])) {
         return message.channel.send(message.author + ' Cannot run admin commands!');
@@ -36,6 +33,6 @@ module.exports = {
         }
       });
     });
-    return message.channel.send(message.author + ' New command added! !' + args[0] + ', which returns ' + msg);
+    return message.channel.send(message.author + ' New command added! ' + tools.prefix + args[0] + ', which returns ' + msg);
   },
 };
