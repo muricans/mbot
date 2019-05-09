@@ -122,8 +122,8 @@ module.exports = {
     if (cmd.usage) {
       const embed = new Discord.RichEmbed()
         .setTitle('Command: ' + cmd.name)
-        .addField('Usage: ' + cmd.usage);
-      message.channel.send(embed);
+        .addField('Usage ', cmd.usage);
+      return message.channel.send(embed);
     } else {
       return message.channel.send(message.author + ' No usage data foud for that command!');
     }
