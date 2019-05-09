@@ -13,18 +13,15 @@ module.exports = {
         .addField('Avatar URL', message.author.avatarURL);
       return message.channel.send(embed);
     }
-    const id = parseInt(args[0]);
-    if (isNaN(id)) {
-      const mention = message.mentions.users.first();
-      let embed = new Discord.RichEmbed()
-        .setAuthor(mention.username)
-        .setDescription('User info is being displayed.')
-        .addField('Full Username', `${mention.username}#${mention.discriminator}`)
-        .addField('ID', mention.id)
-        .addField('Time of Creation', mention.createdAt)
-        .addField('Avatar URL', mention.avatarURL);
-      return message.channel.send(embed);
-    }
+    const mention = message.mentions.users.first();
+    let embed = new Discord.RichEmbed()
+      .setAuthor(mention.username)
+      .setDescription('User info is being displayed.')
+      .addField('Full Username', `${mention.username}#${mention.discriminator}`)
+      .addField('ID', mention.id)
+      .addField('Time of Creation', mention.createdAt)
+      .addField('Avatar URL', mention.avatarURL);
+    return message.channel.send(embed);
     /*const mention = client.fetchUser(id);
     let embed = new Discord.RichEmbed()
       .setAuthor(mention.username)

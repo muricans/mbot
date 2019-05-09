@@ -78,6 +78,13 @@ module.exports.registerCommands = function (client) {
       jsonMsg = cmd[i].message;
 
       if (command === jsonCmd) {
+        if (jsonMsg.startsWith('{module}')) {
+          const mention = message.mentions.users.first();
+          let date = new Date().getHours();
+          let formattedMsg = jsonMsg
+            .replace('{mention}', mention)
+            .replace('{time}', date);
+        }
         message.channel.send(jsonMsg);
       }
     }
