@@ -1,6 +1,5 @@
 const snekfetch = require('snekfetch');
 const Discord = require('discord.js');
-const settings = require('./settings.json');
 const sqlite = require('sqlite3').verbose();
 const request = require('request');
 
