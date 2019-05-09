@@ -1,4 +1,5 @@
 const fs = require('fs');
+const tools = require('../tools.js');
 
 module.exports = {
   name: 'create',
@@ -11,7 +12,12 @@ module.exports = {
     };
     let newArgs = args.slice(1, args.length);
     const msg = newArgs.join(' ');
-    fs.readFile('commands.json', 'utf8', function(err, data) {
+    for (var i in tools.adminCommands) {
+      if (msg.includes(tools.adminCommands[i])) {
+        return message.channel.send(message.author + ' Cannot run admin commands!');
+      }
+    }
+    fs.readFile('commands.json', 'utf8', function (err, data) {
       if (err) {
         return console.log(err);
       }
@@ -21,7 +27,7 @@ module.exports = {
         message: msg
       });
       const json = JSON.stringify(cmd);
-      fs.writeFile('commands.json', json, 'utf8', function(err) {
+      fs.writeFile('commands.json', json, 'utf8', function (err) {
         if (err) {
           return console.log(err);
         }
