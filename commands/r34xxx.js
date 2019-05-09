@@ -2,6 +2,7 @@ const tools = require('../tools.js');
 
 module.exports = {
   name: 'r34xxx',
+  usage: '[tags]',
   execute(message, args) {
     message.delete(1000);
     if (!message.channel.nsfw) {

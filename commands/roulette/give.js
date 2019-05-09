@@ -8,6 +8,7 @@ let db = new sqlite.Database('./mbot.db', (err) => {
 
 module.exports = {
   name: 'give',
+  usage: '<user|all> <amount>',
   execute(message, args) {
     if (args.length < 2) {
       return message.reply('Please add params: !give <@user> <amnt>');
@@ -18,8 +19,8 @@ module.exports = {
     if (!message.mentions.users.first()) {
       return message.reply('That user does not exist!')
     }
-    db.serialize(function() {
-      db.get("SELECT points points FROM users WHERE id = " + message.author.id.toString(), function(err, row) {
+    db.serialize(function () {
+      db.get("SELECT points points FROM users WHERE id = " + message.author.id.toString(), function (err, row) {
         if (err) {
           return message.reply('That user does not exist!');
         }
@@ -27,7 +28,7 @@ module.exports = {
         if (args[1] === "all") {
           let all = parseInt(row.points.toString());
           db.run('UPDATE users SET points = ? WHERE id = ?', 0, message.author.id.toString());
-          db.get("SELECT points points FROM users where id = " + message.mentions.users.first().id.toString(), function(err, row2) {
+          db.get("SELECT points points FROM users where id = " + message.mentions.users.first().id.toString(), function (err, row2) {
             if (err) {
               return console.log(err);
             }
@@ -47,7 +48,7 @@ module.exports = {
         }
         const newCurrent = current - give;
         db.run('UPDATE users SET points = ? WHERE id = ?', newCurrent, message.author.id.toString());
-        db.get("SELECT points points FROM users where id = " + message.mentions.users.first().id.toString(), function(err, row2) {
+        db.get("SELECT points points FROM users where id = " + message.mentions.users.first().id.toString(), function (err, row2) {
           if (err) {
             return console.log(err);
           }

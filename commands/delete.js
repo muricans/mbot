@@ -2,6 +2,7 @@ const fs = require('fs');
 
 module.exports = {
   name: 'delete',
+  usage: '<command>',
   execute(message, args, client) {
     const weirdChamp = client.emojis.get("572690273247821824");
     let hasAdmin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");

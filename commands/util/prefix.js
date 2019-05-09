@@ -4,6 +4,7 @@ const fs = require('fs');
 
 module.exports = {
   name: 'prefix',
+  usage: '<newPrefix>',
   execute(message, args, client) {
     const weirdChamp = client.emojis.get("572690273247821824");
 

@@ -1,5 +1,6 @@
 module.exports = {
   name: 'roll',
+  usage: '[number]',
   execute(message, args) {
     if (args.length === 0) {
       const roll = Math.floor(Math.random() * 6 + 1);

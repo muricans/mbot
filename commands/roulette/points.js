@@ -8,10 +8,11 @@ let db = new sqlite.Database('./mbot.db', (err) => {
 
 module.exports = {
   name: 'points',
+  usage: '[user]',
   execute(message, args) {
-    db.serialize(function() {
+    db.serialize(function () {
       if (args.length === 0) {
-        db.get('SELECT points points FROM users WHERE id = ' + message.author.id.toString(), function(err, row) {
+        db.get('SELECT points points FROM users WHERE id = ' + message.author.id.toString(), function (err, row) {
           if (err) {
             return console.log(err);
           }
@@ -19,7 +20,7 @@ module.exports = {
         });
       }
       if (args.length > 0) {
-        db.get('SELECT points points FROM users WHERE id = ' + message.mentions.users.first().id.toString(), function(err, row) {
+        db.get('SELECT points points FROM users WHERE id = ' + message.mentions.users.first().id.toString(), function (err, row) {
           if (err) {
             return message.reply('No such user exists!');
           }

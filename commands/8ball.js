@@ -2,6 +2,7 @@ const fs = require('fs');
 
 module.exports = {
   name: '8ball',
+  usage: '<question>',
   execute(message, args, client) {
     if (args.length === 0) {
       return message.reply('Please add params! !8ball <question>');

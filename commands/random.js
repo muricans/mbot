@@ -2,6 +2,7 @@ const tools = require('../tools.js');
 
 module.exports = {
   name: 'random',
+  usage: '<subreddit> [search|date] [search]',
   execute(message, args) {
     // 1 = subreddit
     // 2 = date

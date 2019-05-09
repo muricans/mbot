@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 
 module.exports = {
     name: 'qr',
+    usage: '<text|info>',
     execute(message, args) {
         if (args.length === 0) {
             return message.channel.send(message.author + ' Please add params! !qr <information>');

@@ -32,11 +32,12 @@ function pageOne(edit, message) {
 
 module.exports = {
   name: 'help',
+  usage: '[command]',
   execute(message, args, client) {
+    let stngs = fs.readFileSync('settings.json', 'utf8');
+    let settings = JSON.parse(stngs);
+    const prefix = settings.prefix;
     if (args.length === 0) {
-      let stngs = fs.readFileSync('settings.json', 'utf8');
-      let settings = JSON.parse(stngs);
-      const prefix = settings.prefix;
       let page = 0;
       pageOne(false, message).then(async sent => {
         await sent.react("◀");
@@ -121,7 +122,7 @@ module.exports = {
     }
     if (cmd.usage) {
       const embed = new Discord.RichEmbed()
-        .setTitle('Command: ' + cmd.name)
+        .setTitle(prefix + cmd.name)
         .addField('Usage ', cmd.usage);
       return message.channel.send(embed);
     } else {

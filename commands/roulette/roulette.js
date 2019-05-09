@@ -12,10 +12,11 @@ function setPoints(amnt, id) {
 }
 module.exports = {
   name: 'roulette',
+  usage: '<all|amount>',
   execute(message, args, client) {
     if (args.length === 0) return message.channel.send('Please provide the amount you would like to roulette!');
-    db.serialize(function() {
-      db.get("SELECT points points FROM users WHERE id = " + message.author.id.toString(), function(err, row) {
+    db.serialize(function () {
+      db.get("SELECT points points FROM users WHERE id = " + message.author.id.toString(), function (err, row) {
         if (err) {
           return console.log(err);
         }

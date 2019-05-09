@@ -1,5 +1,6 @@
 module.exports = {
   name: 'echo',
+  usage: '<content>',
   async execute(message, args, client) {
     const weirdChamp = client.emojis.get("572690273247821824");
     let hasAdmin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");
