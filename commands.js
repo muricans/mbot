@@ -78,6 +78,11 @@ module.exports.registerCommands = function (client) {
       jsonMsg = cmd[i].message;
 
       if (command === jsonCmd) {
+        for (var i in tools.adminCommands) {
+          if (jsonMsg.includes(prefix + tools.adminCommands[i]) && !message.channel.permissionsFor(message.member).has("ADMINISTRATOR")) {
+            return message.channel.send(message.author + ' That is an admin only command!');
+          }
+        }
         if (jsonMsg.startsWith('{module}')) {
           const mention = message.mentions.users.first();
           let date = new Date();
