@@ -115,6 +115,7 @@ module.exports = {
           time: 20000
         });
       });
+      return;
     }
     const cmd = client.commands.get(args[0].toLowerCase());
     if (!cmd) {
