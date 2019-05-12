@@ -14,6 +14,8 @@ let db = new sqlite.Database('./mbot.db', (err) => {
   console.log('Connected to bot database');
 });
 
+let uptime = 3600;
+
 db.serialize(function () {
   db.run('CREATE TABLE if not exists users(id TEXT, points INTEGER, UNIQUE(id))');
 });
@@ -74,6 +76,15 @@ client.on('ready', async () => {
   }, 5000);*/
 });
 
-commands.registerCommands(client);
+setInterval(function () {
+  uptime++;
+}, 1000);
+
+module.exports.getUptime = function () {
+  return uptime;
+}
+
+commands.registerCommands(client, this);
+console.log('Registered commands.');
 //login to the client
 client.login(settings.token);

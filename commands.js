@@ -1,8 +1,15 @@
 const tools = require('./tools.js');
 const fs = require('fs');
 const Discord = require('discord.js');
+const sqlite = require('sqlite3').verbose();
 
-module.exports.registerCommands = function (client) {
+let db = new sqlite.Database('./mbot.db', (err) => {
+  if (err) {
+    console.error(err.message);
+  }
+});
+
+module.exports.registerCommands = function (client, mbot) {
   client.commands = new Discord.Collection();
   const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
   for (const file of commandFiles) {
@@ -62,7 +69,12 @@ module.exports.registerCommands = function (client) {
 
     const ppHop = client.emojis.get("572687346529468428");
     if (command === 'ping') {
+      let minutes = Math.floor(mbot.getUptime() / 60);
+      let seconds = Math.floor(mbot.getUptime() - minutes * 60);
+      let hours = Math.floor(seconds / 3600);
+      let time = hours + ':' + minutes + ':' + seconds;
       message.reply('pong ' + ppHop);
+      message.channel.send('mbot has been up for: ' + time);
     }
 
 
@@ -78,30 +90,25 @@ module.exports.registerCommands = function (client) {
       jsonMsg = cmd[i].message;
 
       if (command === jsonCmd) {
-        for (var i in tools.adminCommands) {
-          if (jsonMsg.includes(prefix + tools.adminCommands[i]) && !message.channel.permissionsFor(message.member).has("ADMINISTRATOR")) {
-            return message.channel.send(message.author + ' That is an admin only command!');
-          }
-        }
         if (jsonMsg.startsWith('{module}')) {
-          const mention = message.mentions.users.first();
+          let mention = message.mentions.users.first();
           let date = new Date();
           let options = {
             hour: '2-digit',
             minute: '2-digit'
           };
-          if (jsonMsg.includes('{mention}') && !mention) {
-            return message.channel.send(message.author + ' Please provide someone to mention!')
+          if (!mention) {
+            mention = message.author;
           }
           let formattedMsg = jsonMsg
             .replace('{mention}', mention)
+            .replace('{id}', mention.id.toString())
             .replace('{time}', date.toLocaleString('en-us', options));
           return message.channel.send(formattedMsg.slice(9));
         }
         message.channel.send(jsonMsg);
       }
     }
-
     switch (command) {
       case "8ball":
         client.commands.get('8ball').execute(message, args, client);
@@ -122,7 +129,7 @@ module.exports.registerCommands = function (client) {
         client.commands.get('give').execute(message, args);
         break;
       case "help":
-        client.commands.get('help').execute(message, args, client);
+        client.commands.get('help').execute(message, args);
         break;
       case "imgur":
         client.commands.get('imgur').execute(message, args);
