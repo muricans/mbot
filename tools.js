@@ -3,6 +3,8 @@ const Discord = require('discord.js');
 const settings = require('./settings.json');
 const sqlite = require('sqlite3').verbose();
 const request = require('request');
+const EventEmitter = require('events');
+const mbot = require('./mbot');
 
 let db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
@@ -32,6 +34,10 @@ module.exports.shorten = function (url) {
 
 module.exports.setPoints = function (amnt, id) {
   db.run('UPDATE users SET points = ? WHERE id = ?', amnt, id);
+  mbot.event.emit('pointsUpdated', {
+    amount: amnt,
+    userId: id
+  });
 }
 
 module.exports.roulette = function (amnt, current, message, client, all) {
@@ -350,3 +356,6 @@ module.exports.find = async function (list, searchTerm, time, message, filterBan
     console.log(err);
   }
 }
+
+class Event extends EventEmitter {}
+module.exports.Event = Event;

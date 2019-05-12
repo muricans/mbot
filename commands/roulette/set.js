@@ -1,4 +1,5 @@
 const sqlite = require('sqlite3').verbose();
+const tools = require('../../tools');
 
 let db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
@@ -27,7 +28,8 @@ module.exports = {
         if (isNaN(amnt)) {
           return message.reply('Please use numbers!');
         }
-        db.run('UPDATE users SET points = ? WHERE id = ?', amnt, message.mentions.users.first().id.toString());
+        //db.run('UPDATE users SET points = ? WHERE id = ?', amnt, message.mentions.users.first().id.toString());
+        tools.setPoints(amnt, message.mentions.users.first().id.toString());
         message.reply('You set ' + message.mentions.users.first() + ' points to ' + amnt + '!');
       });
     });

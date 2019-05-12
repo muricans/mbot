@@ -26,6 +26,9 @@ module.exports.registerCommands = function (client, mbot) {
     const utl = require(`./commands/util/${file}`);
     client.commands.set(utl.name, utl);
   }
+
+  mbot.event.emit('filesLoaded');
+
   client.on('message', async message => {
     //if (message.author.bot) return;
     if (message.channel.type === 'dm') return;

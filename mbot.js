@@ -7,6 +7,9 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const sqlite = require('sqlite3').verbose();
 
+module.exports.event = new tools.Event();
+let event = module.exports.event;
+
 let db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
     console.error(err.message);
@@ -78,13 +81,20 @@ client.on('ready', async () => {
 
 setInterval(function () {
   uptime++;
+  event.emit('uptimeUp');
 }, 1000);
 
 module.exports.getUptime = function () {
   return uptime;
 }
 
+event.on('filesLoaded', function () {
+  console.log('Command files loaded!');
+});
+
+event.on('pointsUpdated', function (e) {
+  console.log(`Set ${e.userId}'s points to ${e.amount}!`);
+});
 commands.registerCommands(client, this);
-console.log('Registered commands.');
 //login to the client
 client.login(settings.token);
