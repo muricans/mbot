@@ -14,7 +14,7 @@ let db = new sqlite.Database('./mbot.db', (err) => {
   console.log('Connected to bot database');
 });
 
-let uptime = 3600;
+let uptime = 0;
 
 db.serialize(function () {
   db.run('CREATE TABLE if not exists users(id TEXT, points INTEGER, UNIQUE(id))');
