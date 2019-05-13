@@ -9,7 +9,7 @@ module.exports = {
         if (args.length === 0) {
             return message.reply('Please add params! !get <id>')
         }
-        request(`http://157.230.208.246/api/members/id/${args[0]}`, (err, res, body) => {
+        request(`http://muricans.tk/api/members/id/${args[0]}`, (err, res, body) => {
             if (err) {
                 console.log(err);
             }

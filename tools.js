@@ -13,7 +13,7 @@ let db = new sqlite.Database('./mbot.db', (err) => {
 });
 
 module.exports.contactAPI = function (client) {
-  request('http://157.230.208.246/api/members/', (err, res, body) => {
+  request('http://muricans.tk/api/members/', (err, res, body) => {
     if (err) return console.log(err);
     console.log(body);
     let members = JSON.parse(body);
@@ -23,17 +23,27 @@ module.exports.contactAPI = function (client) {
       user = client.users.array()[u];
       const member = members.find(m => m.discordId === user.id.toString());
       if (!member) {
-        module.exports.post(user.username.toString(), user.id.toString());
+        module.exports.memberPOST(user.username.toString(), user.id.toString());
       }
     }
   });
 }
 
-module.exports.post = function (name, discordId) {
-  request.post('http://157.230.208.246/api/members/', {
+module.exports.memberPOST = function (name, discordId) {
+  request.post('http://muricans.tk/api/members/', {
     json: {
       name: name,
       discordId: discordId
+    }
+  }, (err, res, body) => {
+    if (err) return console.log(err);
+  });
+}
+
+module.exports.imagePOST = function (url) {
+  request.post('http://muricans.tk/api/images/', {
+    json: {
+      url: url
     }
   }, (err, res, body) => {
     if (err) return console.log(err);

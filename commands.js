@@ -29,6 +29,22 @@ module.exports.registerCommands = function (client, mbot) {
 
   mbot.event.emit('filesLoaded');
 
+  const meme = ['comedycemetery', 'comedyheaven', 'dankmemes', 'me_irl', 'teenagers'];
+
+  const anal = ['anal', 'analgw', 'painal'];
+  const ass = ['ass', 'assinthong', 'assholebehindthong', 'bigasses', 'booty', 'buttplug', 'hungrybutts', 'paag', 'slimthick'];
+  const blowjob = ['blowjobs', 'deepthroat', 'facefuck'];
+  const boobs = ['boobbounce', 'boobies', 'boobs'];
+  const dick = ['bulges', 'cock', 'dickpics4freedom', 'massivecock', 'penis', 'thickdick'];
+  const gay = ['broslikeus', 'gaybrosgonewild', 'gaygifs', 'gayporn', 'ladybonersgw', 'men2men', 'TotallyStraight', 'twinks'];
+  const hardcore = ['nsfwhardcore', 'shelikesitrough'];
+  const hentai = ['ecchi', 'hentai', 'hentai_gif', 'sportshentai', 'thighdeology', 'westernhentai'];
+  const nsfw = ['asianhotties', 'asiannsfw', 'asiansgonewild', 'nsfw', 'nsfw_gif', 'porninfifteenseconds'];
+  const pegging = ['pegging']; // any other subredits?
+  const rule34 = ['2booty', 'dbdgonewild', 'rule34', 'rule34lol', 'rule34rainbowsix'];
+  const thighs = ['datgap', 'thighhighs'];
+  const traps = ['delicioustraps', 'futanari', 'traphentai', 'traps'];
+
   client.on('message', async message => {
     //if (message.author.bot) return;
     if (message.channel.type === 'dm') return;
@@ -51,22 +67,6 @@ module.exports.registerCommands = function (client, mbot) {
         });
       });
     }
-
-    const meme = ['comedycemetery', 'comedyheaven', 'dankmemes', 'me_irl', 'teenagers'];
-
-    const anal = ['anal', 'analgw', 'painal'];
-    const ass = ['ass', 'assinthong', 'assholebehindthong', 'bigasses', 'booty', 'buttplug', 'hungrybutts', 'paag', 'slimthick'];
-    const blowjob = ['blowjobs', 'deepthroat', 'facefuck'];
-    const boobs = ['boobbounce', 'boobies', 'boobs'];
-    const dick = ['bulges', 'cock', 'dickpics4freedom', 'massivecock', 'penis', 'thickdick'];
-    const gay = ['broslikeus', 'gaybrosgonewild', 'gaygifs', 'gayporn', 'ladybonersgw', 'men2men', 'TotallyStraight', 'twinks'];
-    const hardcore = ['nsfwhardcore', 'shelikesitrough'];
-    const hentai = ['ecchi', 'hentai', 'hentai_gif', 'sportshentai', 'thighdeology', 'westernhentai'];
-    const nsfw = ['asianhotties', 'asiannsfw', 'asiansgonewild', 'nsfw', 'nsfw_gif', 'porninfifteenseconds'];
-    const pegging = ['pegging']; // any other subredits?
-    const rule34 = ['2booty', 'dbdgonewild', 'rule34', 'rule34lol', 'rule34rainbowsix'];
-    const thighs = ['datgap', 'thighhighs'];
-    const traps = ['delicioustraps', 'futanari', 'traphentai', 'traps'];
 
     // commands here
 
