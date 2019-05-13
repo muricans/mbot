@@ -12,9 +12,7 @@ module.exports = {
     if (args.length < 1) {
       return message.reply('Please add more params! !delete <commandName>');
     }
-    const data = fs.readFile('commands.json', 'utf8', (err) => {
-      if (err) console.log(err);
-    });
+    const data = fs.readFileSync('commands.json', 'utf8');
     const cmds = JSON.parse(data);
     const cmd = cmds.commands;
     let i, jsonCmd;
@@ -27,9 +25,7 @@ module.exports = {
         delete cmd[i];
         message.channel.send(message.author + " Command " + jsonCmd + " deleted!");
         const json = JSON.stringify(cmds);
-        fs.writeFile('commands.json', json, (err) => {
-          if (err) console.log(err);
-        });
+        fs.writeFileSync('commands.json', json);
       }
     }
   },

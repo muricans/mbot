@@ -48,9 +48,7 @@ module.exports.registerCommands = function (client, mbot) {
   client.on('message', async message => {
     //if (message.author.bot) return;
     if (message.channel.type === 'dm') return;
-    let stngs = fs.readFile('settings.json', 'utf8', (err) => {
-      if (err) console.log(err);
-    });
+    let stngs = fs.readFileSync('settings.json', 'utf8');
     let settings = JSON.parse(stngs);
     const prefix = settings.prefix;
     if (message.content.indexOf(prefix) !== 0) return;
@@ -83,9 +81,7 @@ module.exports.registerCommands = function (client, mbot) {
     }
 
 
-    const data = fs.readFile('commands.json', 'utf8', (err) => {
-      if (err) console.log(err);
-    });
+    const data = fs.readFileSync('commands.json', 'utf8');
     const cmds = JSON.parse(data);
     const unfilteredCmd = cmds.commands;
     const cmd = unfilteredCmd.filter(x => {

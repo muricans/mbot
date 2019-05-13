@@ -7,9 +7,7 @@ const min = 1;
 const max = 4;
 
 function pageOne(edit, message) {
-  let stngs = fs.readFile('settings.json', 'utf8', (err) => {
-    if (err) console.log(err);
-  });
+  let stngs = fs.readFileSync('settings.json', 'utf8');
   let settings = JSON.parse(stngs);
   const prefix = settings.prefix;
   const embed = new Discord.RichEmbed()
@@ -36,9 +34,7 @@ module.exports = {
   name: 'help',
   usage: '[command]',
   execute(message, args, client) {
-    let stngs = fs.readFile('settings.json', 'utf8', (err) => {
-      if (err) console.log(err);
-    });
+    let stngs = fs.readFileSync('settings.json', 'utf8');
     let settings = JSON.parse(stngs);
     const prefix = settings.prefix;
     if (args.length === 0) {

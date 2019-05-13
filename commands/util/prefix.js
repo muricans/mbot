@@ -15,12 +15,10 @@ module.exports = {
     if (args.length === 0) {
       return message.reply('Please add params! !prefix <newPrefix>');
     }
-    let data = fs.readFile('settings.json', 'utf8', (err) => {
-      if (err) console.log(err);
-    });
+    let data = fs.readFileSync('settings.json', 'utf8');
     let parsedData = JSON.parse(data);
     parsedData.prefix = args[0];
-    fs.writeFile('settings.json', JSON.stringify(parsedData), function (err) {
+    fs.writeFileSync('settings.json', JSON.stringify(parsedData), function (err) {
       if (err) {
         return console.log(err);
       }
