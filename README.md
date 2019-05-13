@@ -25,8 +25,9 @@ After that is completed install the needed dependencies.
 $ npm install discord.js
 $ npm install snekfetch
 $ npm install sqlite3
+$ npm install request
 ```
-When you are finished installing the dependencies,run the start.sh script.
+When you are finished installing the dependencies, run the start.sh script.
 You may need to give the script permissions to run, you can do so by entering the following.
 
 ```sh
