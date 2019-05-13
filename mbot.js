@@ -77,6 +77,7 @@ client.on('ready', async () => {
       });
     });
   }, 5000);*/
+  tools.contactAPI(client);
 });
 
 setInterval(function () {

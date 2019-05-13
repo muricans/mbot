@@ -12,6 +12,34 @@ let db = new sqlite.Database('./mbot.db', (err) => {
   }
 });
 
+module.exports.contactAPI = function (client) {
+  request('http://157.230.208.246/api/members/', (err, res, body) => {
+    if (err) return console.log(err);
+    console.log(body);
+    let members = JSON.parse(body);
+    //module.exports.postAPI("xd", "xd");
+    let u, user;
+    for (u in client.users.array()) {
+      user = client.users.array()[u];
+      const member = members.find(m => m.discordId === user.id.toString());
+      if (!member) {
+        module.exports.post(user.username.toString(), user.id.toString());
+      }
+    }
+  });
+}
+
+module.exports.post = function (name, discordId) {
+  request.post('http://157.230.208.246/api/members/', {
+    json: {
+      name: name,
+      discordId: discordId
+    }
+  }, (err, res, body) => {
+    if (err) return console.log(err);
+  });
+}
+
 const errMsg = "Please move to an nsfw channel :flushed:";
 const bannedLinks = ['pornhub.com', 'xvideos.com', 'erome.com', 'xnxx.com', 'xhamster.com', 'redtube.com', 'xmov.fun', 'porness.net',
   'youtube.com', 'youtu.be', 'nhentai.net', 'efukt.com', 'hdpornhere.com', 'fm4.ru', 'xvieoxx.com'
