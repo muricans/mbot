@@ -52,7 +52,7 @@ module.exports.imagePOST = function (url) {
 
 const errMsg = "Please move to an nsfw channel :flushed:";
 const bannedLinks = ['pornhub.com', 'xvideos.com', 'erome.com', 'xnxx.com', 'xhamster.com', 'redtube.com', 'xmov.fun', 'porness.net',
-  'youtube.com', 'youtu.be', 'nhentai.net', 'efukt.com', 'hdpornhere.com', 'fm4.ru', 'xvieoxx.com'
+  'youtube.com', 'youtu.be', 'nhentai.net', 'efukt.com', 'hdpornhere.com', 'fm4.ru', 'xvieoxx.com', 'xtube.com'
 ];
 // allowed embed endings
 const endings = ['.png', '.jpg', '.gif'];
