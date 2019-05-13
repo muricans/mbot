@@ -15,28 +15,35 @@ let db = new sqlite.Database('./mbot.db', (err) => {
 module.exports.contactAPI = function (client) {
   request('http://muricans.tk/api/members/', (err, res, body) => {
     if (err) return console.log(err);
-    console.log(body);
+    //console.log(body);
     let members = JSON.parse(body);
-    //module.exports.postAPI("xd", "xd");
     let u, user;
     for (u in client.users.array()) {
       user = client.users.array()[u];
       const member = members.find(m => m.discordId === user.id.toString());
       if (!member) {
-        module.exports.memberPOST(user.username.toString(), user.id.toString());
+        module.exports.memberPOST(user);
       }
     }
   });
 }
 
-module.exports.memberPOST = function (name, discordId) {
+module.exports.memberPOST = function (user) {
   request.post('http://muricans.tk/api/members/', {
     json: {
-      name: name,
-      discordId: discordId
+      name: user.username.toString(),
+      discordId: user.id.toString()
     }
   }, (err, res, body) => {
     if (err) return console.log(err);
+    mbot.event.emit('newUser', user, user.username, user.id);
+  });
+}
+
+module.exports.memberDELETE = function (user) {
+  request.delete(`http://muricans.tk/api/members/${user.id.toString()}`, (err, res, body) => {
+    if (err) return console.log(err);
+    mbot.event.emit('deleteUser', user, user.username, user.id);
   });
 }
 
@@ -47,6 +54,7 @@ module.exports.imagePOST = function (url) {
     }
   }, (err, res, body) => {
     if (err) return console.log(err);
+    mbot.event.emit('newImage', url);
   });
 }
 
@@ -59,23 +67,20 @@ const endings = ['.png', '.jpg', '.gif'];
 const emojis = ['🍆', '💦', '😳', '🍌', '😏', '🍑', '😊'];
 module.exports.adminCommands = ['set', 'give', 'delete', 'echo', 'clean', 'prefix'];
 
-module.exports.shorten = function (url) {
+/*module.exports.shorten = function (url) {
   request({
-    uri: 'http://tinyurl.com/api-create.php?url=' + url
+    uri: `http://tinyurl.com/api-create.php?url=${url}`
   }, (err, response, body) => {
     if (err) {
       return console.log(err);
     }
     return body;
   });
-}
+}*/
 
 module.exports.setPoints = function (amnt, id) {
   db.run('UPDATE users SET points = ? WHERE id = ?', amnt, id);
-  mbot.event.emit('pointsUpdated', {
-    amount: amnt,
-    userId: id
-  });
+  mbot.event.emit('pointsUpdated', amnt, id);
 }
 
 module.exports.roulette = function (amnt, current, message, client, all) {

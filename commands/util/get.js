@@ -9,7 +9,7 @@ module.exports = {
         if (args.length === 0) {
             return message.reply('Please add params! !get <id>')
         }
-        request(`http://muricans.tk/api/members/id/${args[0]}`, (err, res, body) => {
+        request(`http://muricans.tk/api/members/${args[0]}`, (err, res, body) => {
             if (err) {
                 console.log(err);
             }
@@ -17,7 +17,6 @@ module.exports = {
                 body = JSON.parse(body);
                 const embed = new Discord.RichEmbed()
                     .setTitle(body.name)
-                    .addField('ID', body.id)
                     .addField('Discord ID', body.discordId)
                     .setFooter(`Requested by: ${message.author.username}`);
                 message.channel.send(embed);
