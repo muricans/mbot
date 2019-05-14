@@ -45,12 +45,25 @@ module.exports.registerCommands = function (client, mbot) {
   const thighs = ['datgap', 'thighhighs'];
   const traps = ['delicioustraps', 'futanari', 'traphentai', 'traps'];
 
+  let settingsData;
+  let settings;
+  let prefix;
+
+  function initPrefix() {
+    settings = JSON.parse(settingsData);
+    prefix = settings.prefix;
+  }
+
   client.on('message', async message => {
     //if (message.author.bot) return;
     if (message.channel.type === 'dm') return;
-    let stngs = fs.readFileSync('settings.json', 'utf8');
-    let settings = JSON.parse(stngs);
-    const prefix = settings.prefix;
+    fs.readFile('settings.json', 'utf8', (err, data) => {
+      if (err) console.log(err);
+      else {
+        settingsData = data;
+        initPrefix();
+      }
+    });
     if (message.content.indexOf(prefix) !== 0) return;
     const args = message.content.slice(settings.prefix.length).split(' ');
     const command = args.shift().toLowerCase();
