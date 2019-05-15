@@ -1,6 +1,0 @@
-{
-    "commands": [{
-        "name": "defaultcmdjson",
-        "message": "removing this may cause errors!"
-    }]
-}
