@@ -135,6 +135,9 @@ module.exports.registerCommands = function (client, mbot) {
       case "create":
         client.commands.get('create').execute(message, args);
         break;
+      case "danbooru":
+        client.commands.get('danbooru').execute(message, args);
+        break;
       case "delete":
         client.commands.get('delete').execute(message, args, client);
         break;
@@ -174,17 +177,14 @@ module.exports.registerCommands = function (client, mbot) {
       case "set":
         client.commands.get('set').execute(message, args, client);
         break;
-      case "userinfo":
-        client.commands.get('userinfo').execute(message, args, client);
-        break;
-      case "danbooru":
-        client.commands.get('danbooru').execute(message, args);
-        break;
       case "suggest":
         client.commands.get('suggest').execute(message, args);
         break;
       case "suggestions":
         client.commands.get('suggestions').execute(message, args);
+       break;
+      case "userinfo":
+        client.commands.get('userinfo').execute(message, args, client);
         break;
         /*case "get":
           client.commands.get('get').execute(message, args);

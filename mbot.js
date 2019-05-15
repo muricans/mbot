@@ -45,9 +45,9 @@ client.on('ready', async () => {
     }
   });
   console.log('mbot v' + package.version + " has been enabled.");
-  //game
+  //game | only allows for default emojis
   const games = ['Minecraft', 'Murdering Martine the BOT', 'nymnBridge PewDiePie', 'Acrozze a mega gay',
-    'This bot was made by me :)', 'help me'
+    'This bot was made by me 😃', 'help me'
   ];
   setInterval(function () {
     const randomStatus = games[Math.floor(Math.random() * games.length)];
