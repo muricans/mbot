@@ -30,6 +30,7 @@ function pageOne(edit, message) {
 module.exports = {
   name: 'help',
   usage: '[command]',
+  description: 'Gives you a list of help commands, or info on a specified command.',
   execute(message, args, client) {
     let stngs = fs.readFileSync('settings.json', 'utf8');
     let settings = JSON.parse(stngs);
@@ -59,7 +60,7 @@ module.exports = {
                 .setTitle('Commands')
                 .addField(prefix + 'help', 'Returns a list of commands for this bot')
                 .addField(prefix + 'imgur', 'Returns a random image from imgur')
-                .addField(prefix + 'meme', 'Returns a random meme')            
+                .addField(prefix + 'meme', 'Returns a random meme')
                 .addField(prefix + 'ping', 'Returns pong')
                 .addField(prefix + 'prefix <newPrefix>', 'Changes the bots prefix [admin only]')
                 .addField(prefix + 'points <@user>', "Returns the designated user's points")
@@ -111,7 +112,7 @@ module.exports = {
               //console.log(page);
               sent.edit(embed5);
               break;
-        }
+          }
 
 
           if (page > max) {
@@ -131,10 +132,17 @@ module.exports = {
     if (!cmd) {
       return message.channel.send(message.author + ' That command does not exist!');
     }
-    if (cmd.usage) {
+    const {
+      usage,
+      description,
+      name
+    } = cmd;
+    const desc = description || "No description defined.";
+    if (usage) {
       const embed = new Discord.RichEmbed()
-        .setTitle(prefix + cmd.name)
-        .addField('Usage ', cmd.usage);
+        .setTitle(prefix + name)
+        .addField('Usage ', usage)
+        .addField('Description', desc);
       return message.channel.send(embed);
     } else {
       return message.channel.send(message.author + ' No usage data foud for that command!');

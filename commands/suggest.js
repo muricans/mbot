@@ -2,6 +2,7 @@ const fs = require('fs');
 
 module.exports = {
     name: 'suggest',
+    usage: '<suggestion>',
     execute(message, args) {
         if (args.length === 0) {
             return message.reply('Please add params! !suggest <suggestion>');

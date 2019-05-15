@@ -94,7 +94,7 @@ module.exports.registerCommands = function (client, mbot) {
     }
 
 
-    const data = fs.readFileSync('commands.json', 'utf8');
+    const data = fs.readFileSync('./commands.json', 'utf8');
     const cmds = JSON.parse(data);
     const unfilteredCmd = cmds.commands;
     const cmd = unfilteredCmd.filter(x => {
@@ -148,7 +148,7 @@ module.exports.registerCommands = function (client, mbot) {
         client.commands.get('give').execute(message, args);
         break;
       case "help":
-        client.commands.get('help').execute(message, args);
+        client.commands.get('help').execute(message, args, client);
         break;
       case "imgur":
         client.commands.get('imgur').execute(message, args);
@@ -182,17 +182,10 @@ module.exports.registerCommands = function (client, mbot) {
         break;
       case "suggestions":
         client.commands.get('suggestions').execute(message, args);
-       break;
+        break;
       case "userinfo":
         client.commands.get('userinfo').execute(message, args, client);
         break;
-        /*case "get":
-          client.commands.get('get').execute(message, args);
-          break;*/
-
-        /*case "hey": only reason why checking if bot is needed.
-          message.channel.send('!hey');
-          break;*/
 
 
       case "meme":

@@ -6,6 +6,11 @@ const tools = require('./tools.js');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const sqlite = require('sqlite3').verbose();
+const express = require('express');
+const fs = require('fs');
+const app = express();
+
+app.use(express.json());
 
 module.exports.event = new tools.Event();
 let event = module.exports.event;
@@ -28,15 +33,15 @@ client.on('guildMemberAdd', (guildMember) => {
     db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', guildMember.user.id.toString(), 100);
     console.log('New user found, registering them to the bot database with ID of ' + guildMember.user.id.toString());
   });
-  //tools.memberPOST(guildMember.user);
 });
 
 client.on('guildMemberRemove', (guildMember) => {
-  //tools.memberDELETE(guildMember.user);
+
 });
 
 // actions
 client.on('ready', async () => {
+  event.emit('ready');
   db.serialize(function () {
     var u, user;
     for (u in client.users.array()) {
@@ -110,4 +115,13 @@ event.on('pointsUpdated', function (amnt, id) {
 
 commands.registerCommands(client, this);
 //login to the client
+
+app.get('/suggestions', (req, res) => {
+  fs.createReadStream('./suggestions.json', 'utf8').on('data', (chunk) => {
+    let suggestions = JSON.parse(chunk);
+    res.send(suggestions);
+  });
+});
+
+app.listen(80);
 client.login(settings.token);

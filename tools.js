@@ -2,7 +2,6 @@ const snekfetch = require('snekfetch');
 const Discord = require('discord.js');
 const settings = require('./settings.json');
 const sqlite = require('sqlite3').verbose();
-const request = require('request');
 const EventEmitter = require('events');
 const mbot = require('./mbot');
 
@@ -11,54 +10,6 @@ let db = new sqlite.Database('./mbot.db', (err) => {
     console.error(err.message);
   }
 });
-
-/*const domainAPI = 'http://3.14.161.22';
-
-module.exports.contactAPI = function (client) {
-  request(`${domainAPI}/api/members/`, (err, res, body) => {
-    if (err) return console.log(err);
-    //console.log(body);
-    let members = JSON.parse(body);
-    let u, user;
-    for (u in client.users.array()) {
-      user = client.users.array()[u];
-      const member = members.find(m => m.discordId === user.id.toString());
-      if (!member) {
-        module.exports.memberPOST(user);
-      }
-    }
-  });
-}
-
-module.exports.memberPOST = function (user) {
-  request.post(`${domainAPI}/api/members/`, {
-    json: {
-      name: user.username.toString(),
-      discordId: user.id.toString()
-    }
-  }, (err, res, body) => {
-    if (err) return console.log(err);
-    mbot.event.emit('newUser', user, user.username, user.id);
-  });
-}
-
-module.exports.memberDELETE = function (user) {
-  request.delete(`${domainAPI}/api/members/${user.id.toString()}`, (err, res, body) => {
-    if (err) return console.log(err);
-    mbot.event.emit('deleteUser', user, user.username, user.id);
-  });
-}
-
-module.exports.imagePOST = function (url) {
-  request.post(`${domainAPI}/api/images/`, {
-    json: {
-      url: url
-    }
-  }, (err, res, body) => {
-    if (err) return console.log(err);
-    mbot.event.emit('newImage', url);
-  });
-}*/
 
 const nsfw = "Please move to an nsfw channel :flushed:";
 const bannedLinks = ['pornhub.com', 'xvideos.com', 'erome.com', 'xnxx.com', 'xhamster.com', 'redtube.com', 'xmov.fun', 'porness.net',
