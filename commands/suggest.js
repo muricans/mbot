@@ -13,6 +13,7 @@ module.exports = {
         });
         fs.writeFile('./suggestions.json', JSON.stringify(suggestions), (err) => {
             if (err) console.log(err);
+            message.channel.send(`Added ${args.join(' ')} to suggestion list.`);
         });
     },
 };
