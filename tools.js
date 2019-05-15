@@ -12,7 +12,7 @@ let db = new sqlite.Database('./mbot.db', (err) => {
   }
 });
 
-const domainAPI = 'http://3.14.161.22';
+/*const domainAPI = 'http://3.14.161.22';
 
 module.exports.contactAPI = function (client) {
   request(`${domainAPI}/api/members/`, (err, res, body) => {
@@ -58,7 +58,7 @@ module.exports.imagePOST = function (url) {
     if (err) return console.log(err);
     mbot.event.emit('newImage', url);
   });
-}
+}*/
 
 const nsfw = "Please move to an nsfw channel :flushed:";
 const bannedLinks = ['pornhub.com', 'xvideos.com', 'erome.com', 'xnxx.com', 'xhamster.com', 'redtube.com', 'xmov.fun', 'porness.net',

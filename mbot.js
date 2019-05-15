@@ -28,11 +28,11 @@ client.on('guildMemberAdd', (guildMember) => {
     db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', guildMember.user.id.toString(), 100);
     console.log('New user found, registering them to the bot database with ID of ' + guildMember.user.id.toString());
   });
-  tools.memberPOST(guildMember.user);
+  //tools.memberPOST(guildMember.user);
 });
 
 client.on('guildMemberRemove', (guildMember) => {
-  tools.memberDELETE(guildMember.user);
+  //tools.memberDELETE(guildMember.user);
 });
 
 // actions
@@ -82,7 +82,7 @@ client.on('ready', async () => {
       });
     });
   }, 5000);*/
-  tools.contactAPI(client);
+  //tools.contactAPI(client);
   event.on('newUser', (user, username, id) => {
     console.log(`New user: ${username} with discord ID of ${id} added to the API.`);
   });

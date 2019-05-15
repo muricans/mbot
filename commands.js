@@ -180,9 +180,9 @@ module.exports.registerCommands = function (client, mbot) {
       case "danbooru":
         client.commands.get('danbooru').execute(message, args);
         break;
-      case "get":
-        client.commands.get('get').execute(message, args);
-        break;
+        /*case "get":
+          client.commands.get('get').execute(message, args);
+          break;*/
 
         /*case "hey": only reason why checking if bot is needed.
           message.channel.send('!hey');
