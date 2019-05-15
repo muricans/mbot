@@ -12,7 +12,7 @@ let db = new sqlite.Database('./mbot.db', (err) => {
   }
 });
 
-const domainAPI = 'http://ec2-3-14-161-22.us-east-2.compute.amazonaws.com';
+const domainAPI = 'http://3.14.161.22';
 
 module.exports.contactAPI = function (client) {
   request(`${domainAPI}/api/members/`, (err, res, body) => {
