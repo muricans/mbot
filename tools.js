@@ -12,8 +12,10 @@ let db = new sqlite.Database('./mbot.db', (err) => {
   }
 });
 
+const domainAPI = 'https://pepeeja.herokuapp.com';
+
 module.exports.contactAPI = function (client) {
-  request('http://muricans.tk/api/members/', (err, res, body) => {
+  request(`${domainAPI}/api/members/`, (err, res, body) => {
     if (err) return console.log(err);
     //console.log(body);
     let members = JSON.parse(body);
@@ -29,7 +31,7 @@ module.exports.contactAPI = function (client) {
 }
 
 module.exports.memberPOST = function (user) {
-  request.post('http://muricans.tk/api/members/', {
+  request.post(`'${domainAPI}/api/members/`, {
     json: {
       name: user.username.toString(),
       discordId: user.id.toString()
@@ -41,14 +43,14 @@ module.exports.memberPOST = function (user) {
 }
 
 module.exports.memberDELETE = function (user) {
-  request.delete(`http://muricans.tk/api/members/${user.id.toString()}`, (err, res, body) => {
+  request.delete(`${domainAPI}/api/members/${user.id.toString()}`, (err, res, body) => {
     if (err) return console.log(err);
     mbot.event.emit('deleteUser', user, user.username, user.id);
   });
 }
 
 module.exports.imagePOST = function (url) {
-  request.post('http://muricans.tk/api/images/', {
+  request.post(`${domainAPI}/api/images/`, {
     json: {
       url: url
     }
@@ -58,7 +60,7 @@ module.exports.imagePOST = function (url) {
   });
 }
 
-const errMsg = "Please move to an nsfw channel :flushed:";
+const nsfw = "Please move to an nsfw channel :flushed:";
 const bannedLinks = ['pornhub.com', 'xvideos.com', 'erome.com', 'xnxx.com', 'xhamster.com', 'redtube.com', 'xmov.fun', 'porness.net',
   'youtube.com', 'youtu.be', 'nhentai.net', 'efukt.com', 'hdpornhere.com', 'fm4.ru', 'xvieoxx.com', 'xtube.com'
 ];
@@ -279,7 +281,7 @@ module.exports.search = async function (list, time, message, filterBanned) {
         limit: 4000
       });
     const allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
-    if (!allowed.length) return message.channel.send(errMsg);
+    if (!allowed.length) return message.channel.send(nsfw);
     const rn = Math.floor(Math.random() * allowed.length);
     const postData = allowed[rn].data;
     const image = postData.url;
@@ -322,7 +324,7 @@ module.exports.rSearch = async function (list, time, message, filterBanned) {
         limit: 4000
       });
     const allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
-    if (!allowed.length) return message.channel.send(errMsg);
+    if (!allowed.length) return message.channel.send(nsfw);
     const rn = Math.floor(Math.random() * allowed.length);
     const postData = allowed[rn].data;
     const image = postData.url;
@@ -371,7 +373,7 @@ module.exports.find = async function (list, searchTerm, time, message, filterBan
     if (found < 1) {
       return message.channel.send('No results found!');
     }
-    if (!allowed.length) return message.channel.send(errMsg);
+    if (!allowed.length) return message.channel.send(nsfw);
     const postData = allowed[rn].data;
     const image = postData.url;
     const title = postData.title;

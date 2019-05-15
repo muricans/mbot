@@ -31,6 +31,10 @@ client.on('guildMemberAdd', (guildMember) => {
   tools.memberPOST(guildMember.user);
 });
 
+client.on('guildMemberRemove', (guildMember) => {
+  tools.memberDELETE(guildMember.user);
+});
+
 // actions
 client.on('ready', async () => {
   db.serialize(function () {
@@ -81,6 +85,9 @@ client.on('ready', async () => {
   tools.contactAPI(client);
   event.on('newUser', (user, username, id) => {
     console.log(`New user: ${username} with discord ID of ${id} added to the API.`);
+  });
+  event.on('deleteUser', (user, username, id) => {
+    console.log(`User ${username}:${id} has left the server, removing them from the API.`);
   });
 });
 
