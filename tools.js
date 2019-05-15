@@ -31,7 +31,7 @@ module.exports.contactAPI = function (client) {
 }
 
 module.exports.memberPOST = function (user) {
-  request.post(`'${domainAPI}/api/members/`, {
+  request.post(`${domainAPI}/api/members/`, {
     json: {
       name: user.username.toString(),
       discordId: user.id.toString()
