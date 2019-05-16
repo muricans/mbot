@@ -1,6 +1,7 @@
 module.exports = {
   name: 'clean',
   usage: '[user|all] [number]',
+  description: 'Deletes a specified amount of messages for a user [admin only]',
   execute(message, args, client) {
     const weirdChamp = client.emojis.get("572690273247821824");
     var hasTwoArgs;

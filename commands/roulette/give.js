@@ -9,7 +9,8 @@ let db = new sqlite.Database('./mbot.db', (err) => {
 
 module.exports = {
   name: 'give',
-  usage: '<user|all> <amount>',
+  usage: '<user> <amount|all>',
+  description: 'Gives a user [x] amount of points',
   execute(message, args) {
     if (args.length < 2) {
       return message.reply('Please add params: !give <@user> <amnt>');

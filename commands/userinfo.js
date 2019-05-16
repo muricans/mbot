@@ -3,6 +3,7 @@ const Discord = require('discord.js');
 module.exports = {
   name: 'userinfo',
   usage: '[user]',
+  description: `Returns the designated user's info`,
   execute(message, args, client) {
     if (args.length === 0) {
       let embed = new Discord.RichEmbed()

@@ -71,14 +71,14 @@ module.exports = {
               break;
             case 3:
               const embed3 = new Discord.RichEmbed()
-                .setTitle('NSFW Commands')
+                .setTitle('Commands')
                 .addField(prefix + 'random <subreddit> [time] [search]', 'Returns a random thread from a subreddit')
                 .addField(prefix + 'roulette <bet amount>', 'Returns win/loss and new total points')
                 .addField(prefix + 'roll <number>', 'Returns a random number between 1 and the chosen number')
                 .addField(prefix + 'suggest <suggestion>', 'Suggest a command or feature for the bot')
-                .addField(prefix + 'suggestions', 'Check the suggestions, (include <clear> [admin only] to clear the suggestions)')
-                .addField(prefix + 'userinfo <@user>', "Returns the designated user's info")
-                .addField(prefix + 'set <@user> points', 'Sets the users points [admin only]')
+                .addField(prefix + 'suggestions [clear]', 'Check the suggestions, (include <clear> [admin only] to clear the suggestions)')
+                .addField(prefix + 'userinfo [@user]', "Returns the designated user's info")
+                .addField(prefix + 'set <@user> <points>', 'Sets the users points [admin only]')
                 .addField('NSFW Commands on Page 4+5', '🔞')
                 .setFooter(pageData);
               //console.log(page);
@@ -102,7 +102,7 @@ module.exports = {
               const embed5 = new Discord.RichEmbed()
                 .setTitle('NSFW Commands')
                 .addField(prefix + 'pegging', 'Returns a pegging image')
-                .addField(prefix + 'r34xxx', 'Returns an image from rule34')
+                .addField(prefix + 'r34xxx [tags]', 'Returns an image from rule34')
                 .addField(prefix + 'rule34', 'Returns a rule34 image from reddit')
                 .addField(prefix + 'thighs', 'Retuns an image of thighs')
                 .addField(prefix + 'trap', 'Returns a trap image')
@@ -145,7 +145,7 @@ module.exports = {
         .addField('Description', desc);
       return message.channel.send(embed);
     } else {
-      return message.channel.send(message.author + ' No usage data foud for that command!');
+      return message.channel.send(`${message.author} No usage data found for that command!`);
     }
 
   },

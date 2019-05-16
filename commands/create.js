@@ -4,6 +4,7 @@ const tools = require('../tools.js');
 module.exports = {
   name: 'create',
   usage: '<commandName> <message>',
+  description: 'Adds a command to the bot',
   execute(message, args) {
     let stngs = fs.readFileSync('settings.json', 'utf8');
     let settings = JSON.parse(stngs);

@@ -9,6 +9,7 @@ let db = new sqlite.Database('./mbot.db', (err) => {
 module.exports = {
   name: 'points',
   usage: '[user]',
+  description: `Returns the designated user's points`,
   execute(message, args) {
     db.serialize(function () {
       if (args.length === 0) {

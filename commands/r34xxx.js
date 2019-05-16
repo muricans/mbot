@@ -3,6 +3,7 @@ const tools = require('../tools.js');
 module.exports = {
   name: 'r34xxx',
   usage: '[tags]',
+  description: 'Returns an image from rule34',
   execute(message, args) {
     message.delete(1000);
     if (!message.channel.nsfw) {

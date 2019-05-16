@@ -3,6 +3,7 @@ const fs = require('fs');
 module.exports = {
     name: 'suggest',
     usage: '<suggestion>',
+    description: 'Suggest a command or feature for the bot',
     execute(message, args) {
         if (args.length === 0) {
             return message.reply('Please add params! !suggest <suggestion>');

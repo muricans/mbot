@@ -10,6 +10,7 @@ let db = new sqlite.Database('./mbot.db', (err) => {
 module.exports = {
   name: 'roulette',
   usage: '<all|amount>',
+  description: 'Returns win/loss and new total points',
   execute(message, args, client) {
     if (args.length === 0) return message.channel.send('Please provide the amount you would like to roulette!');
     db.serialize(function () {
