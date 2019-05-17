@@ -99,17 +99,17 @@ module.exports.banned = function (string) {
 
 module.exports.webSearch = function (url, message) {
   if (url.includes('.gifv')) {
-    message.channel.send("Random Twitch Image")
+    message.channel.send("Web Search")
     message.channel.send(url);
     message.channel.send("Requested by: " + message.author.username);
   } else if (module.exports.end(url)) {
     const embed = new Discord.RichEmbed()
-      .setTitle("Random Twitch Image")
+      .setTitle("Web Search")
       .setImage(url)
       .setFooter("Requested by: " + message.author.username);
     message.channel.send(embed);
   } else {
-    message.channel.send("Random Twitch Image");
+    message.channel.send("Web Search");
     message.channel.send(url);
     message.channel.send("Requested by: " + message.author.username);
   }
