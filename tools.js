@@ -55,6 +55,9 @@ class Tools {
       banned = bannedLinks[b];
       if (string.includes(banned)) {
         contains = true;
+        if (settings.debug) {
+          console.log('Banned link found!');
+        }
       }
     }
     return contains;
@@ -390,14 +393,14 @@ class Tools {
       const title = postData.title;
       const up = postData.ups;
       const subreddit = postData.subreddit_name_prefixed;
-      if (module.exports.banned(image) && filterBanned) {
-        return module.exports.find(sub, searchTerm, time, message, filterBanned);
+      if (this.banned(image) && filterBanned) {
+        return this.find(sub, searchTerm, time, message, filterBanned);
       }
       if (image.includes('.gifv')) {
         message.channel.send(title)
         message.channel.send(image);
         message.channel.send("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
-      } else if (module.exports.end(image)) {
+      } else if (this.end(image)) {
         const embed = new Discord.RichEmbed()
           .setTitle(title)
           .setImage(image)
