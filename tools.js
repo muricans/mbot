@@ -28,7 +28,7 @@ module.exports.adminCommands = ['set', 'give', 'delete', 'echo', 'clean', 'prefi
 class Tools {
   /**
    * Checks if the string provided contains one of the endings in the ending list.
-   * @param {string} string 
+   * @param {string} string
    * @returns {boolean} Whether the string contains an item from the endings list.
    */
   end(string) {
@@ -45,7 +45,7 @@ class Tools {
 
   /**
    * Checks if the string provided contains one of the banned links in the bannedLinks list.
-   * @param {string} string 
+   * @param {string} string
    * @returns {boolean} Whether the string contains an item from the bannedLinks list.
    */
   banned(string) {
