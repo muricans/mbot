@@ -1,6 +1,7 @@
 module.exports = {
   name: 'echo',
-  usage: '<content>',
+  usage: '<message>',
+  description: 'Returns your message from the bot [admin only]',
   async execute(message, args, client) {
     const weirdChamp = client.emojis.get("572690273247821824");
     let hasAdmin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");

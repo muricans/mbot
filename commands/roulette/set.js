@@ -10,6 +10,7 @@ let db = new sqlite.Database('./mbot.db', (err) => {
 module.exports = {
   name: 'set',
   usage: '<user> <amount>',
+  description: 'Sets the users points [admin only]',
   execute(message, args, client) {
     const weirdChamp = client.emojis.get("572690273247821824");
     let hasAdmin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");

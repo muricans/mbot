@@ -3,6 +3,7 @@ const fs = require('fs');
 module.exports = {
     name: 'suggestions',
     usage: '[clear]',
+    description: 'Check the suggestions, (include <clear> [admin only] to clear the suggestions)',
     execute(message, args) {
         if (args.length === 0) {
             const suggestions = JSON.parse(fs.readFileSync('./suggestions.json', 'utf8'));

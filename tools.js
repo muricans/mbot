@@ -40,9 +40,9 @@ module.exports.roulette = function (amnt, current, message, client, all) {
   const smile = client.emojis.get("566861749324873738");
   const wtf = client.emojis.get("567905581868777492");
   const chance = Math.floor(Math.random() * 100);
-  var wonall;
-  var won;
-  var lost;
+  let wonall;
+  let won;
+  let lost;
   if (chance > 56) { // chance of winning
     if (all) {
       wonall = current * 2;
@@ -158,7 +158,7 @@ module.exports.rule34 = async function (message, hasTags, tags) {
   }
 }
 
-module.exports.danbooru = async function (message, hasTags, tags) {
+module.exports.danbooru = async function (message, hasTags, tags, isRedo) {
   let link, footer;
   if (hasTags) {
     link = "https://danbooru.donmai.us/posts.json?tags=" + tags;
@@ -195,7 +195,11 @@ module.exports.danbooru = async function (message, hasTags, tags) {
           message.channel.send(footer);
         }
       } else if (!message.channel.nsfw) {
-        return module.exports.danbooru(message, hasTags, tags);
+        if (isRedo) {
+          return message.channel.send(nsfw);
+        } else {
+          return module.exports.danbooru(message, hasTags, tags, true);
+        }
       }
     } else if (rating === "s") {
       if (imageData.includes('.gifv')) {

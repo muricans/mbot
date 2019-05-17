@@ -5,6 +5,7 @@ const fs = require('fs');
 module.exports = {
   name: 'prefix',
   usage: '<newPrefix>',
+  description: 'Changes the bots prefix [admin only]',
   execute(message, args, client) {
     const weirdChamp = client.emojis.get("572690273247821824");
 
