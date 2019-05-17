@@ -1,4 +1,5 @@
-const tools = require('./tools.js');
+const tls = require('./tools.js');
+const tools = new tls.Tools();
 const fs = require('fs');
 const Discord = require('discord.js');
 const sqlite = require('sqlite3').verbose();
@@ -252,9 +253,6 @@ module.exports.registerCommands = function (client, mbot) {
         tools.search(traps[Math.floor(Math.random() * traps.length)], 'all', message, true);
         message.delete(1000);
         break;
-
     }
-
-
   });
 }

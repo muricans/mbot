@@ -2,3 +2,6 @@ settings.json
 commands.json
 suggestions.json
 node_modules
+out
+mbot.db
+.DS_Store

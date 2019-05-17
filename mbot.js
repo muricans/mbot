@@ -1,6 +1,6 @@
 // init discord lib
 const settings = require('./settings.json');
-const package = require('./package.json');
+const pkg = require('./package.json');
 const commands = require('./commands.js');
 const tools = require('./tools.js');
 const Discord = require('discord.js');
@@ -49,7 +49,7 @@ client.on('ready', async () => {
       db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', user.id.toString(), 100);
     }
   });
-  console.log('mbot v' + package.version + " has been enabled.");
+  console.log('mbot v' + pkg.version + " has been enabled.");
   //game | only allows for default emojis
   const games = ['Minecraft', 'Murdering Martine the BOT', 'nymnBridge PewDiePie', 'Acrozze a mega gay',
     'This bot was made by me 😃', 'help me'

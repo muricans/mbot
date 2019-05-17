@@ -1,4 +1,5 @@
-const tools = require('../tools.js');
+const tls = require('../tools.js');
+const tools = new tls.Tools();
 
 module.exports = {
   name: 'r34xxx',

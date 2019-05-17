@@ -1,9 +1,9 @@
-const tools = require('../tools.js');
-const settings = require('../settings.json');
+const tls = require('../tools.js');
+const tools = new tls.Tools();
 
 module.exports = {
     name: 'imgur',
-    usage: '',
+    usage: 'No usage data.',
     description: 'Returns a random image from imgur',
     execute(message, args) {
         if (args.length === 0) {

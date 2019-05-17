@@ -1,5 +1,6 @@
 const sqlite = require('sqlite3').verbose();
-const tools = require('../../tools.js');
+const tls = require('../../tools.js');
+const tools = new tls.Tools();
 
 let db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
