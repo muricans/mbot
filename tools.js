@@ -422,6 +422,17 @@ class Tools {
 module.exports.Tools = Tools;
 
 /**
+ * @callback callback
+ * @returns {void}
+ */
+
+/**
+ * @callback data
+ * @param {*} data The data from the file being read.
+ * @returns {void}
+ */
+
+/**
  * Makes files.
  */
 class File {
@@ -460,9 +471,6 @@ class File {
   }
 
   /**
-   * @callback callback
-   * @returns {void}
-   * 
    * Add content to your file.
    * 
    * @param {*} content The content you will push to the file.
@@ -482,10 +490,6 @@ class File {
   }
 
   /**
-   * @callback data
-   * @param {*} data The data from the file being read.
-   * @returns {void}
-   * 
    * Read the contents of your file.
    * 
    * @param {data} [callback] Have a callback when the data is finished being read.
@@ -500,9 +504,6 @@ class File {
   }
 
   /**
-   * @callback callback
-   * @returns {void}
-   * 
    * Override all data currently in the file and write the content provided in its place.
    * 
    * @param {*} content The content you want to write to your file.
