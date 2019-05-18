@@ -2,14 +2,12 @@ const tls = require('./tools.js');
 const tools = new tls.Tools();
 const fs = require('fs');
 const Discord = require('discord.js');
-const sqlite = require('sqlite3').verbose();
 
-let db = new sqlite.Database('./mbot.db', (err) => {
-  if (err) {
-    console.error(err.message);
-  }
-});
-
+/**
+ * Register commands for the bot.
+ * @param {Discord.Client} client The bots client.
+ * @param mbot mbot main script.
+ */
 module.exports.registerCommands = function (client, mbot) {
   client.commands = new Discord.Collection();
   const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));

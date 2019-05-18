@@ -12,6 +12,9 @@ const app = express();
 
 app.use(express.json());
 
+/**
+ * This bots EventEmitter
+ */
 module.exports.event = new tools.Event();
 let event = module.exports.event;
 
@@ -101,6 +104,10 @@ setInterval(function () {
   event.emit('uptimeUp');
 }, 1000);
 
+/**
+ * Get the bots uptime (in seconds)
+ * @returns {number}
+ */
 module.exports.getUptime = function () {
   return uptime;
 }
@@ -114,7 +121,6 @@ event.on('pointsUpdated', function (amnt, id) {
 });
 
 commands.registerCommands(client, this);
-//login to the client
 
 app.get('/suggestions', (req, res) => {
   fs.createReadStream('./suggestions.json', 'utf8').on('data', (chunk) => {
@@ -123,5 +129,6 @@ app.get('/suggestions', (req, res) => {
   });
 });
 
-app.listen(80);
+//app.listen(80);
+//login to the client
 client.login(settings.token);

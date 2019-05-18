@@ -4,6 +4,7 @@ const settings = require('./settings.json');
 const sqlite = require('sqlite3').verbose();
 const EventEmitter = require('events');
 const mbot = require('./mbot');
+const fs = require('fs');
 
 let db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
@@ -257,9 +258,11 @@ class Tools {
     }
   }
 
-  // find a random post from reddit
   /**
-   * Get a random post from a subreddit
+   * @deprecated rSearch is a better function which correctly utilizes the time.
+   * @see #rSearch
+   * 
+   * @description Get a random post from a subreddit
    * @param {string} sub The subreddit to search.
    * @param {string} time The timeframe to find posts. (All, Year, Month, Week, Day)
    * @param {Discord.Message} message The message to respond to.
@@ -418,5 +421,94 @@ class Tools {
 }
 module.exports.Tools = Tools;
 
+/**
+ * Makes files.
+ */
+class File {
+  /**
+   * The files data.
+   * 
+   * @param {string} name The name of the file you want to make.
+   * @param {string} location The location of which the file will be made in.
+   * @param {string} type The type of file you want to make. (Currently only supports JSON)
+   */
+  constructor(name, location, type) {
+    this.name = name;
+    this.location = location;
+    switch (type) {
+      case "json":
+        this.type = ".json";
+        break;
+      default:
+        throw new Error('Please use json, as it is the only supported file extension currently.');
+    }
+    this.file = `${this.location}${this.name}${this.type}`;
+    this.make(JSON.stringify([]));
+  }
+
+  make(content) {
+    fs.exists(this.file, (exists) => {
+      this.exists = exists;
+      if (exists)
+        if (settings.debug) return console.log('File already exists');
+        else return;
+      else fs.writeFile(this.file, content, (err) => {
+        if (err) return console.log(err);
+        console.log(`Made ${this.file} successfully!`);
+      });
+    });
+  }
+
+  /**
+   * Add content to your file.
+   * 
+   * @param {JSON} content The content you will push to the file.
+   * @param {Function} [callback] Have a callback when the data is finished being added.
+   */
+  add(content, callback) {
+    fs.readFile(this.file, 'utf8', (err, data) => {
+      if (err) return console.log(err);
+      // assume array
+      const parsed = JSON.parse(data);
+      parsed.push(content);
+      fs.writeFile(this.file, JSON.stringify(parsed), (err) => {
+        if (err) return console.log(err);
+        if (callback != null) callback();
+      });
+    });
+  }
+
+  /**
+   * Read the contents of your file.
+   * 
+   * @param {Function} [callback] Have a callback when the data is finished being read.
+   */
+  read(callback) {
+    if (callback != null) return fs.readFile(this.file, 'utf8', (err, data) => {
+      if (err) return console.log(err);
+      callback(JSON.parse(data));
+    });
+    return JSON.parse(fs.readFileSync(this.file, 'utf8'));
+  }
+
+  /**
+   * Override all data currently in the file and write the content provided in its place.
+   * 
+   * @param {JSON} content The content you want to write to your file.
+   * @param {Function} [callback] Have a callback when the data is finished being written.
+   */
+  write(content, callback) {
+    fs.writeFile(this.file, JSON.stringify(content), (err) => {
+      if (err) return console.log(err);
+      if (callback != null) callback();
+    });
+  }
+}
+module.exports.File = File;
+
+/**
+ * An event emitter.
+ */
 class Event extends EventEmitter {}
+
 module.exports.Event = Event;

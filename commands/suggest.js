@@ -1,4 +1,6 @@
 const fs = require('fs');
+const tls = require('../tools');
+const suggestions = new tls.File('suggestions', './', 'json');
 
 module.exports = {
     name: 'suggest',
@@ -8,14 +10,11 @@ module.exports = {
         if (args.length === 0) {
             return message.reply('Please add params! !suggest <suggestion>');
         }
-        const suggestions = JSON.parse(fs.readFileSync('./suggestions.json', 'utf8'));
-        suggestions.push({
+        suggestions.add({
             "suggestion": args.join(' '),
             "by": message.author.username
-        });
-        fs.writeFile('./suggestions.json', JSON.stringify(suggestions), (err) => {
-            if (err) console.log(err);
-            message.channel.send(`Added ${args.join(' ')} to suggestion list.`);
+        }, () => {
+            return message.channel.send(`Added ${args.join(' ')} to suggestion list.`);
         });
     },
 };
