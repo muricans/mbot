@@ -90,7 +90,6 @@ client.on('ready', async () => {
       });
     });
   }, 5000);*/
-  //tools.contactAPI(client);
   event.on('newUser', (user, username, id) => {
     console.log(`New user: ${username} with discord ID of ${id} added to the API.`);
   });
@@ -129,6 +128,6 @@ app.get('/suggestions', (req, res) => {
   });
 });
 
-//app.listen(80);
+app.listen(80);
 //login to the client
 client.login(settings.token);

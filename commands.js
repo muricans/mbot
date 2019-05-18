@@ -185,6 +185,9 @@ module.exports.registerCommands = function (client, mbot) {
       case "userinfo":
         client.commands.get('userinfo').execute(message, args, client);
         break;
+      case "version":
+        client.commands.get('version').execute(message, args);
+        break;
 
 
       case "meme":

@@ -1,4 +1,3 @@
-const fs = require('fs');
 const tls = require('../tools');
 const suggestions = new tls.File('suggestions', './', 'json');
 
@@ -18,8 +17,9 @@ module.exports = {
             let hasAdmin = message.channel.permissionsFor(message.author).has("ADMINISTRATOR");
             if (!hasAdmin) return message.channel.send(message.author + ' You do not have permission to use this command!');
             else {
-                suggestions.write([]);
-                return message.channel.send('Cleared suggestions list.');
+                suggestions.write([], () => {
+                    return message.channel.send('Cleared suggestions list.');
+                });
             }
         } else {
             return message.channel.send('Invalid usage! !suggestions [clear]');

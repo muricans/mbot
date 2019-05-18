@@ -460,10 +460,13 @@ class File {
   }
 
   /**
+   * @callback callback
+   * @returns {void}
+   * 
    * Add content to your file.
    * 
-   * @param {JSON} content The content you will push to the file.
-   * @param {Function} [callback] Have a callback when the data is finished being added.
+   * @param {*} content The content you will push to the file.
+   * @param {callback} [callback] Have a callback when the data is finished being added.
    */
   add(content, callback) {
     fs.readFile(this.file, 'utf8', (err, data) => {
@@ -479,23 +482,31 @@ class File {
   }
 
   /**
+   * @callback data
+   * @param {*} data The data from the file being read.
+   * @returns {void}
+   * 
    * Read the contents of your file.
    * 
-   * @param {Function} [callback] Have a callback when the data is finished being read.
+   * @param {data} [callback] Have a callback when the data is finished being read.
    */
   read(callback) {
-    if (callback != null) return fs.readFile(this.file, 'utf8', (err, data) => {
+    if (callback != null) return fs.readFile(this.file, 'utf8', (err, d) => {
       if (err) return console.log(err);
-      callback(JSON.parse(data));
+      const data = JSON.parse(d);
+      callback(data);
     });
     return JSON.parse(fs.readFileSync(this.file, 'utf8'));
   }
 
   /**
+   * @callback callback
+   * @returns {void}
+   * 
    * Override all data currently in the file and write the content provided in its place.
    * 
-   * @param {JSON} content The content you want to write to your file.
-   * @param {Function} [callback] Have a callback when the data is finished being written.
+   * @param {*} content The content you want to write to your file.
+   * @param {callback} [callback] Have a callback when the data is finished being written.
    */
   write(content, callback) {
     fs.writeFile(this.file, JSON.stringify(content), (err) => {
