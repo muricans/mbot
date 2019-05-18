@@ -28,7 +28,7 @@ module.exports = {
       }
       cmd = JSON.parse(data);
       cmd.commands.push({
-        name: args[0],
+        name: args[0].toLowerCase(),
         message: msg
       });
       const json = JSON.stringify(cmd);
@@ -38,6 +38,6 @@ module.exports = {
         }
       });
     });
-    return message.channel.send(message.author + ' New command added! ' + prefix + args[0] + ', which returns ' + msg);
+    return message.channel.send(message.author + ' New command added! ' + prefix + args[0].toLowerCase() + ', which returns ' + msg);
   },
 };

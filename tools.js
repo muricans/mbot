@@ -451,15 +451,26 @@ class File {
         this.type = ".json";
         break;
       default:
-        throw new Error('Please use json, as it is the only supported file extension currently.');
+        let err = new InvalidFileError('unsupported file extension! use json.');
+        this.exist = false;
+        return console.log(err);
     }
     this.file = `${this.location}${this.name}${this.type}`;
     this.make(JSON.stringify([]));
   }
 
+  exists() {
+    if (!this.exist) {
+      if (settings.debug) {
+        return console.log('File does not exist!');
+      }
+      return;
+    }
+  }
+
   make(content) {
     fs.exists(this.file, (exists) => {
-      this.exists = exists;
+      this.exist = exists;
       if (exists)
         if (settings.debug) return console.log('File already exists');
         else return;
@@ -477,6 +488,7 @@ class File {
    * @param {callback} [callback] Have a callback when the data is finished being added.
    */
   add(content, callback) {
+    this.exists();
     fs.readFile(this.file, 'utf8', (err, data) => {
       if (err) return console.log(err);
       // assume array
@@ -495,6 +507,7 @@ class File {
    * @param {data} [callback] Have a callback when the data is finished being read.
    */
   read(callback) {
+    this.exists();
     if (callback != null) return fs.readFile(this.file, 'utf8', (err, d) => {
       if (err) return console.log(err);
       const data = JSON.parse(d);
@@ -510,6 +523,7 @@ class File {
    * @param {callback} [callback] Have a callback when the data is finished being written.
    */
   write(content, callback) {
+    this.exists();
     fs.writeFile(this.file, JSON.stringify(content), (err) => {
       if (err) return console.log(err);
       if (callback != null) callback();
@@ -517,6 +531,13 @@ class File {
   }
 }
 module.exports.File = File;
+
+class InvalidFileError extends Error {
+  constructor(...args) {
+    super(...args);
+    Error.captureStackTrace(this, InvalidFileError);
+  }
+}
 
 /**
  * An event emitter.

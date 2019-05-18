@@ -11,6 +11,12 @@ const fs = require('fs');
 const app = express();
 
 app.use(express.json());
+const test = new tools.File('test', './', 'json');
+test.add({
+  "content": true
+}, () => {
+  console.log('oops');
+});
 
 /**
  * This bots EventEmitter
@@ -128,6 +134,6 @@ app.get('/suggestions', (req, res) => {
   });
 });
 
-app.listen(80);
+//app.listen(80);
 //login to the client
 client.login(settings.token);

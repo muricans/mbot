@@ -1,4 +1,5 @@
-const fs = require('fs');
+const tools = require('../tools');
+const commands = new tools.File('commands', './', 'json');
 
 module.exports = {
   name: 'delete',
@@ -13,21 +14,18 @@ module.exports = {
     if (args.length < 1) {
       return message.reply('Please add more params! !delete <commandName>');
     }
-    const data = fs.readFileSync('commands.json', 'utf8');
-    const cmds = JSON.parse(data);
-    const cmd = cmds.commands;
-    let i, jsonCmd;
-    for (i = 0; i < cmd.length; i++) {
-      if (cmd[i] === null) {
-        continue;
+    commands.read((data) => {
+      const cmds = data;
+      const cmd = cmds.commands;
+      let jsonCmd = cmd.find(c => c.name.toLowerCase() === args[0].toLowerCase());
+      if (!jsonCmd) {
+        return message.reply('That command does not exist!');
       }
-      jsonCmd = cmd[i].name;
-      if (args[0] === jsonCmd) {
-        delete cmd[i];
-        message.channel.send(message.author + " Command " + jsonCmd + " deleted!");
-        const json = JSON.stringify(cmds);
-        fs.writeFileSync('commands.json', json);
-      }
-    }
+      const cmdIndex = cmd.indexOf(jsonCmd);
+      cmd.splice(cmdIndex, 1);
+      commands.write(cmds, () => {
+        return message.channel.send(`${message.author} Command ${args[0].toLowerCase()} was deleted!`);
+      });
+    });
   },
 };
