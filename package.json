@@ -1,6 +1,6 @@
 {
   "name": "mbot",
-  "version": "6.1.2",
+  "version": "6.2.0",
   "description": "Private discord bot",
   "main": "mbot.js",
   "scripts": {

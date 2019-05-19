@@ -106,20 +106,7 @@ module.exports.registerCommands = function (client, mbot) {
 
       if (command === jsonCmd) {
         if (jsonMsg.startsWith('{module}')) {
-          let mention = message.mentions.users.first();
-          let date = new Date();
-          let options = {
-            hour: '2-digit',
-            minute: '2-digit'
-          };
-          if (!mention) {
-            mention = message.author;
-          }
-          let formattedMsg = jsonMsg
-            .replace('{mention}', mention)
-            .replace('{id}', mention.id.toString())
-            .replace('{time}', date.toLocaleString('en-us', options));
-          return message.channel.send(formattedMsg.slice(9));
+          return tools.parseCommandModule(message, jsonMsg);
         }
         message.channel.send(jsonMsg);
       }

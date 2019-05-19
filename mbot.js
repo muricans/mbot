@@ -9,6 +9,7 @@ const sqlite = require('sqlite3').verbose();
 const express = require('express');
 const fs = require('fs');
 const app = express();
+const Logger = require('./logger');
 
 app.use(express.json());
 
@@ -22,7 +23,7 @@ let db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
     console.error(err.message);
   }
-  console.log('Connected to bot database');
+  Logger.info('Connected to bot database');
 });
 
 let uptime = 0;
@@ -34,7 +35,9 @@ db.serialize(function () {
 client.on('guildMemberAdd', (guildMember) => {
   db.serialize(function () {
     db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', guildMember.user.id.toString(), 100);
-    console.log('New user found, registering them to the bot database with ID of ' + guildMember.user.id.toString());
+    if (settings.debug) {
+      Logger.debug('New user found, registering them to the bot database with ID of ' + guildMember.user.id.toString());
+    }
   });
 });
 
@@ -52,7 +55,7 @@ client.on('ready', async () => {
       db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', user.id.toString(), 100);
     }
   });
-  console.log('mbot v' + pkg.version + " has been enabled.");
+  Logger.info('mbot v' + pkg.version + " has been enabled.");
   //game | only allows for default emojis
   const games = ['Minecraft', 'Murdering Martine the BOT', 'nymnBridge PewDiePie', 'Acrozze a mega gay',
     'This bot was made by me 😃', 'help me'
@@ -69,7 +72,7 @@ client.on('ready', async () => {
   if (settings.debug) {
     try {
       let link = await client.generateInvite(["ADMINISTRATOR"]);
-      console.log(link);
+      Logger.debug(link);
     } catch (err) {
       console.log(err);
     }
@@ -90,12 +93,6 @@ client.on('ready', async () => {
       });
     });
   }, 5000);*/
-  event.on('newUser', (user, username, id) => {
-    console.log(`New user: ${username} with discord ID of ${id} added to the API.`);
-  });
-  event.on('deleteUser', (user, username, id) => {
-    console.log(`User ${username}:${id} has left the server, removing them from the API.`);
-  });
 });
 
 setInterval(function () {
@@ -112,11 +109,13 @@ module.exports.getUptime = function () {
 }
 
 event.on('filesLoaded', function () {
-  console.log('Command files loaded!');
+  Logger.file('Command files loaded!');
 });
 
 event.on('pointsUpdated', function (amnt, id) {
-  console.log(`Set ${id}'s points to ${amnt}!`);
+  if (settings.debug) {
+    Logger.debug(`Set ${id}'s points to ${amnt}!`);
+  }
 });
 
 commands.registerCommands(client, this);
@@ -128,6 +127,6 @@ app.get('/suggestions', (req, res) => {
   });
 });
 
-//app.listen(80);
+app.listen(80);
 //login to the client
 client.login(settings.token);

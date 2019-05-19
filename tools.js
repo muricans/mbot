@@ -5,6 +5,7 @@ const sqlite = require('sqlite3').verbose();
 const EventEmitter = require('events');
 const mbot = require('./mbot');
 const fs = require('fs');
+const Logger = require('./logger');
 
 let db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
@@ -24,7 +25,10 @@ const emojis = ['🍆', '💦', '😳', '🍌', '😏', '🍑', '😊'];
  */
 module.exports.adminCommands = ['set', 'give', 'delete', 'echo', 'clean', 'prefix', 'suggestions'];
 /**
- * @class Functions for the bot.
+ * Functions for the bot.
+ * @example
+ * const tls = require('./tools');
+ * const tools = new tls.Tools();
  */
 class Tools {
   /**
@@ -57,7 +61,7 @@ class Tools {
       if (string.includes(banned)) {
         contains = true;
         if (settings.debug) {
-          console.log('Banned link found!');
+          Logger.debug('Banned link found!');
         }
       }
     }
@@ -418,6 +422,27 @@ class Tools {
       console.log(err);
     }
   }
+
+  parseCommandModule(message, jsonMsg) {
+    let mention = message.mentions.users.first();
+    const date = new Date();
+    let options = {
+      hour: '2-digit',
+      minute: '2-digit'
+    };
+    if (!mention) {
+      mention = message.author;
+    }
+    const formattedMsg = jsonMsg
+      .replace('{mention}', mention)
+      .replace('{id}', mention.id.toString())
+      .replace('{time}', date.toLocaleString('en-us', options));
+    return message.channel.send(formattedMsg.slice(9));
+  }
+
+  users(client) {
+    return client.users.array();
+  }
 }
 module.exports.Tools = Tools;
 
@@ -434,6 +459,9 @@ module.exports.Tools = Tools;
 
 /**
  * Makes files.
+ * @example
+ * const tls = require('./tools');
+ * const file = new tls.File('myFile', './', 'json');
  */
 class File {
   /**
@@ -451,9 +479,9 @@ class File {
         this.type = ".json";
         break;
       default:
-        let err = new InvalidFileError('unsupported file extension! use json.');
+        let err = new InvalidFileError(`${name} has an unsupported file extension! please use json.`);
         this.exist = false;
-        return console.log(err);
+        return Logger.error(err.stack);
     }
     this.file = `${this.location}${this.name}${this.type}`;
     this.make(JSON.stringify([]));
@@ -462,7 +490,7 @@ class File {
   exists() {
     if (!this.exist) {
       if (settings.debug) {
-        return console.log('File does not exist!');
+        return Logger.debug(`File: ${this.file} does not exist!`);
       }
       return;
     }
@@ -472,11 +500,11 @@ class File {
     fs.exists(this.file, (exists) => {
       this.exist = exists;
       if (exists)
-        if (settings.debug) return console.log('File already exists');
+        if (settings.debug) return Logger.debug(`File: ${this.file} already exists!`);
         else return;
       else fs.writeFile(this.file, content, (err) => {
         if (err) return console.log(err);
-        console.log(`Made ${this.file} successfully!`);
+        Logger.file(`Made ${this.file} successfully!`);
       });
     });
   }
@@ -486,6 +514,10 @@ class File {
    * 
    * @param {*} content The content you will push to the file.
    * @param {callback} [callback] Have a callback when the data is finished being added.
+   * @example
+   * file.add({"someString": "someResponse"}, () => {
+   *  //stuff here
+   * });
    */
   add(content, callback) {
     this.exists();
@@ -505,6 +537,10 @@ class File {
    * Read the contents of your file.
    * 
    * @param {data} [callback] Have a callback when the data is finished being read.
+   * @example
+   * file.read((data) => {
+   * console.log(data);
+   * });
    */
   read(callback) {
     this.exists();
@@ -521,6 +557,11 @@ class File {
    * 
    * @param {*} content The content you want to write to your file.
    * @param {callback} [callback] Have a callback when the data is finished being written.
+   * 
+   * @example
+   * file.write(["some": {"thing": ['here']}], () => {
+   * // stuff here
+   * });
    */
   write(content, callback) {
     this.exists();
