@@ -8,30 +8,38 @@ and edited by [felanbird](https://www.twitch.tv/felanbird)
 ## Installation
 mbot runs using [Node.js](https://nodejs.org/)
 
-Clone the reposoitory and make a settings.json file in the root of where you cloned the git.
+
+Clone the reposoitory.
+```sh
+$ git clone https://github.com/muricans/mbot.git
+```
+
+After that is completed run the install script.
+
+```sh
+$ chmod +x install.sh
+$ ./install.sh
+```
+
+When you are finished running the install script, edit the settings.json file to add your token.
 
 ```json
 {
     "prefix": "!",
-    "token": "BOT_TOKEN_HERE",
+    "token": "YOURTOKEN",
     "debug": false,
     "memory": 50
 }
 ```
 
-After that is completed install the needed dependencies.
+Your installation should now be complete. To run the bot execute the start script.
 
 ```sh
-$ npm install discord.js
-$ npm install snekfetch
-$ npm install sqlite3
-$ npm install express
+$ ./start.sh
 ```
-When you are finished installing the dependencies, run the start.sh script.
-You may need to give the script permissions to run, you can do so by entering the following.
+
+Should you want to update the bot, simply run the update script.
 
 ```sh
-$ chmod +x start.sh
+$ ./update.sh
 ```
-
-Your installation should now be complete.

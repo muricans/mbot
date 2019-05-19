@@ -11,6 +11,11 @@ const fs = require('fs');
 const app = express();
 const Logger = require('./logger');
 
+if (settings.token === "YOURTOKEN") {
+  Logger.error('Please add your token to the bot!');
+  return process.exit(1);
+}
+
 app.use(express.json());
 
 /**
