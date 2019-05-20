@@ -132,6 +132,6 @@ app.get('/suggestions', (req, res) => {
   });
 });
 
-app.listen(80);
+//app.listen(80);
 //login to the client
 client.login(settings.token);
