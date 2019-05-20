@@ -5,3 +5,4 @@ node_modules
 out
 mbot.db
 .DS_Store
+logs/mbot.log

@@ -1,3 +1,9 @@
+const fs = require('fs');
+const settings = require('./settings.json');
+
+const mbotLogStream = fs.createWriteStream('logs/mbot.log');
+const isFileLogging = settings.fileLogging;
+
 /**
  * Used to have more detailed logging.
  * @example
@@ -62,6 +68,13 @@ class Logger {
 
 function rawLog(message, type) {
     console.log(`[${time()} LEVEL-${type}]: ${message}`);
+    if (isFileLogging) {
+        mbotLogStream.write(writeLog(message, type));
+    }
+}
+
+function writeLog(message, type) {
+    return `[${time()} LEVEL-${type}]: ${message}\n`;
 }
 
 function time() {
