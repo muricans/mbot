@@ -83,9 +83,8 @@ client.on('ready', async () => {
       console.log(err);
     }
   }
-  /*setInterval(function () {
+  setInterval(function () {
     db.serialize(function (err) {
-      var uPoints;
       db.each("SELECT points points, id id FROM users", function (err, row) {
         if (err) {
           console.log(err);
@@ -93,12 +92,13 @@ client.on('ready', async () => {
         var u, user;
         for (u in client.users.array()) {
           user = client.users.array()[u];
-          tools.setPoints((row.points + 10), user.id.toString());
-          return console.log("Set " + user.id.toString() + " to " + row.points);
+          if (row.id === user.id.toString()) {
+            return new tools.Tools().setPoints((row.points + 10), user.id.toString());
+          }
         }
       });
     });
-  }, 5000);*/
+  }, 60000);
 });
 
 setInterval(function () {
