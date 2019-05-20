@@ -28,6 +28,7 @@ When you are finished running the install script, edit the settings.json file to
     "prefix": "!",
     "token": "YOURTOKEN",
     "debug": false,
+    "fileLogging": true,
     "memory": 50
 }
 ```
