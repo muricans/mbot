@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const fs = require('fs');
 
-// 16 commands + [5 admin only commands] + 14 nsfw commands
+// 17 commands + [5 admin only commands] + 14 nsfw commands
 // seperate admin only commands at a later time
 const min = 1;
 const max = 5;
@@ -79,6 +79,7 @@ module.exports = {
                 .addField(prefix + 'suggestions [clear]', 'Check the suggestions, (include <clear> [admin only] to clear the suggestions)')
                 .addField(prefix + 'userinfo [@user]', "Returns the designated user's info")
                 .addField(prefix + 'set <@user> <points>', 'Sets the users points [admin only]')
+                .addField(prefix + 'version', 'Returns the bot version and information')
                 .addField('NSFW Commands on Page 4+5', '🔞')
                 .setFooter(pageData);
               //console.log(page);
