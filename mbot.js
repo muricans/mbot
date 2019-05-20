@@ -20,9 +20,10 @@ app.use(express.json());
 
 /**
  * This bots EventEmitter
+ * @type {tools.Event}
  */
 module.exports.event = new tools.Event();
-let event = module.exports.event;
+const event = module.exports.event;
 
 let db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {

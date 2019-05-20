@@ -7,6 +7,7 @@ and edited by [felanbird](https://www.twitch.tv/felanbird)
 
 ## Installation
 mbot runs using [Node.js](https://nodejs.org/)
+mbot also uses [jq](https://stedolan.github.io/jq/download/) However, it can run without jq if you remove the memory variable from the start script.
 
 
 Clone the reposoitory.
