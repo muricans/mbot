@@ -44,7 +44,11 @@ module.exports.registerCommands = function (client, mbot) {
   const thighs = ['datgap', 'thighhighs'];
   const traps = ['delicioustraps', 'futanari', 'traphentai', 'traps'];
 
-  const othercmds = ['ping', 'test', 'meme', 'trap', 'thighs', 'rule34', 'pegging', 'nsfw', 'hentai', 'hardcore', 'gay', 'dick', 'boobs', 'blowjob', 'ass', 'anal'];
+  const othercmds = [
+    'ping', 'test', 'meme', 'trap', 'thighs', 'rule34', 'pegging',
+    'nsfw', 'hentai', 'hardcore', 'gay', 'dick', 'boobs', 'blowjob',
+    'ass', 'anal', 'uptime'
+  ];
 
   function handleOther(command, message, args) {
     if (command === 'test') {
@@ -64,16 +68,15 @@ module.exports.registerCommands = function (client, mbot) {
 
     const ppHop = client.emojis.get("572687346529468428");
     if (command === 'ping') {
-      let minutes = Math.floor(mbot.getUptime() / 60);
-      let seconds = Math.floor(mbot.getUptime() - minutes * 60);
-      let hours = Math.floor(seconds / 3600);
-      let time = hours + ':' + minutes + ':' + seconds;
-      message.reply('pong ' + ppHop);
-      message.channel.send('mbot has been up for: ' + time);
+      message.reply('pong ' + ppHop + '\n mbot has been up for: ' + mbot.getUptime());
     }
 
 
     switch (command) {
+      case "uptime":
+        message.channel.send(`${message.author} mbot has been up for: ${mbot.getUptime()}`);
+        break;
+
       case "meme":
         tools.search(meme[Math.floor(Math.random() * meme.length)], 'all', message, false);
         message.delete(1000);
