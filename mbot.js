@@ -101,26 +101,18 @@ client.on('ready', async () => {
       });
     });
   }, (60000 * 10));
-});
-setTimeout(() => {
   setInterval(() => {
     seconds++;
     if (seconds >= 60) {
-      seconds = 1;
+      seconds = 0;
+      minutes++;
+      if (minutes >= 60) {
+        minutes = 0;
+        hours++;
+      }
     }
   }, 1000);
-
-  setInterval(() => {
-    minutes++;
-    if (minutes >= 60) {
-      minutes = 1;
-    }
-  }, (1000 * 60));
-
-  setInterval(() => {
-    hours++;
-  }, (1000 * 3600));
-}, 1000);
+});
 
 /**
  * Get the bots uptime in hh:mm:ss format.
