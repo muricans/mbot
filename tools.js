@@ -118,24 +118,37 @@ class Tools {
     }
   }
 
+  /**
+   * @deprecated Isn't very reliable.
+   * 
+   * @description Web search a url, specifically better for images.
+   * @param {string} url The url to search. 
+   * @param {Discord.Message} message The message to respond to.
+   */
   webSearch(url, message) {
     if (url.includes('.gifv')) {
-      message.channel.send("Random Twitch Image")
+      message.channel.send("Random Web Search")
       message.channel.send(url);
       message.channel.send("Requested by: " + message.author.username);
     } else if (this.end(url)) {
       const embed = new Discord.RichEmbed()
-        .setTitle("Random Twitch Image")
+        .setTitle("Random Web Search")
         .setImage(url)
         .setFooter("Requested by: " + message.author.username);
       message.channel.send(embed);
     } else {
-      message.channel.send("Random Twitch Image");
+      message.channel.send("Random Web Search");
       message.channel.send(url);
       message.channel.send("Requested by: " + message.author.username);
     }
   }
 
+  /**
+   * @deprecated Most of the imgur links it sends are dead links, it's very unreliable.
+   * 
+   * @description Get a random imgur image
+   * @param {Discord.Message} message The message to respond to.
+   */
   async getImage(message) {
     try {
       const {

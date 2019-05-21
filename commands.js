@@ -44,29 +44,13 @@ module.exports.registerCommands = function (client, mbot) {
   const thighs = ['datgap', 'thighhighs'];
   const traps = ['delicioustraps', 'futanari', 'traphentai', 'traps'];
 
-  let settingsData;
-  let settings;
-  let prefix;
+  const othercmds = [
+    'ping', 'test', 'meme', 'trap', 'thighs', 'rule34', 'pegging',
+    'nsfw', 'hentai', 'hardcore', 'gay', 'dick', 'boobs', 'blowjob',
+    'ass', 'anal', 'uptime'
+  ];
 
-  function initPrefix() {
-    settings = JSON.parse(settingsData);
-    prefix = settings.prefix;
-  }
-
-  client.on('message', async message => {
-    //if (message.author.bot) return;
-    if (message.channel.type === 'dm') return;
-    fs.readFile('settings.json', 'utf8', (err, data) => {
-      if (err) console.log(err);
-      else {
-        settingsData = data;
-        initPrefix();
-      }
-    });
-    if (message.content.indexOf(prefix) !== 0) return;
-    const args = message.content.slice(settings.prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-
+  function handleOther(command, message, args) {
     if (command === 'test') {
       message.channel.send("Test recieved").then(async sent => {
         sent.react("🔼");
@@ -84,98 +68,14 @@ module.exports.registerCommands = function (client, mbot) {
 
     const ppHop = client.emojis.get("572687346529468428");
     if (command === 'ping') {
-      let minutes = Math.floor(mbot.getUptime() / 60);
-      let seconds = Math.floor(mbot.getUptime() - minutes * 60);
-      let hours = Math.floor(seconds / 3600);
-      let time = hours + ':' + minutes + ':' + seconds;
-      message.reply('pong ' + ppHop);
-      message.channel.send('mbot has been up for: ' + time);
+      message.reply('pong ' + ppHop + '\n mbot has been up for: ' + mbot.getUptime());
     }
 
 
-    const data = fs.readFileSync('./commands.json', 'utf8');
-    const cmds = JSON.parse(data);
-    const unfilteredCmd = cmds.commands;
-    const cmd = unfilteredCmd.filter(x => {
-      return x != null;
-    });
-    var i, jsonCmd, jsonMsg;
-    for (i in cmd) {
-      jsonCmd = cmd[i].name;
-      jsonMsg = cmd[i].message;
-
-      if (command === jsonCmd) {
-        if (jsonMsg.startsWith('{module}')) {
-          return tools.parseCommandModule(message, jsonMsg);
-        }
-        message.channel.send(jsonMsg);
-      }
-    }
     switch (command) {
-      case "8ball":
-        client.commands.get('8ball').execute(message, args, client);
+      case "uptime":
+        message.channel.send(`${message.author} mbot has been up for: ${mbot.getUptime()}`);
         break;
-      case "clean":
-        client.commands.get('clean').execute(message, args, client);
-        break;
-      case "create":
-        client.commands.get('create').execute(message, args);
-        break;
-      case "danbooru":
-        client.commands.get('danbooru').execute(message, args);
-        break;
-      case "delete":
-        client.commands.get('delete').execute(message, args, client);
-        break;
-      case "echo":
-        client.commands.get('echo').execute(message, args, client);
-        break;
-      case "give":
-        client.commands.get('give').execute(message, args);
-        break;
-      case "help":
-        client.commands.get('help').execute(message, args, client);
-        break;
-      case "imgur":
-        client.commands.get('imgur').execute(message, args);
-        break;
-      case "prefix":
-        client.commands.get('prefix').execute(message, args, client);
-        break;
-      case "points":
-        client.commands.get('points').execute(message, args);
-        break;
-      case "qr":
-        client.commands.get('qr').execute(message, args);
-        break;
-      case "r34xxx":
-        client.commands.get('r34xxx').execute(message, args);
-        break;
-      case "random":
-        client.commands.get('random').execute(message, args);
-        break;
-      case "roll":
-        client.commands.get('roll').execute(message, args);
-        break;
-      case "roulette":
-        client.commands.get('roulette').execute(message, args, client);
-        break;
-      case "set":
-        client.commands.get('set').execute(message, args, client);
-        break;
-      case "suggest":
-        client.commands.get('suggest').execute(message, args);
-        break;
-      case "suggestions":
-        client.commands.get('suggestions').execute(message, args);
-        break;
-      case "userinfo":
-        client.commands.get('userinfo').execute(message, args, client);
-        break;
-      case "version":
-        client.commands.get('version').execute(message, args);
-        break;
-
 
       case "meme":
         tools.search(meme[Math.floor(Math.random() * meme.length)], 'all', message, false);
@@ -241,6 +141,63 @@ module.exports.registerCommands = function (client, mbot) {
         tools.search(traps[Math.floor(Math.random() * traps.length)], 'all', message, true);
         message.delete(1000);
         break;
+    }
+  }
+
+  let settingsData;
+  let settings;
+  let prefix;
+
+  function initPrefix() {
+    settings = JSON.parse(settingsData);
+    prefix = settings.prefix;
+  }
+
+  client.on('message', async message => {
+    //if (message.author.bot) return;
+    if (message.channel.type === 'dm') return;
+    fs.readFile('settings.json', 'utf8', (err, data) => {
+      if (err) console.log(err);
+      else {
+        settingsData = data;
+        initPrefix();
+      }
+    });
+    if (message.content.indexOf(prefix) !== 0) return;
+    const args = message.content.slice(settings.prefix.length).split(' ');
+    const command = args.shift().toLowerCase();
+
+    const data = fs.readFileSync('./commands.json', 'utf8');
+    const cmds = JSON.parse(data);
+    const unfilteredCmd = cmds.commands;
+    const cmd = unfilteredCmd.filter(x => {
+      return x != null;
+    });
+    var i, jsonCmd, jsonMsg;
+    for (i in cmd) {
+      jsonCmd = cmd[i].name;
+      jsonMsg = cmd[i].message;
+
+      if (command === jsonCmd) {
+        if (jsonMsg.startsWith('{module}')) {
+          return tools.parseCommandModule(message, jsonMsg);
+        }
+        return message.channel.send(jsonMsg);
+      }
+    }
+
+    for (let i in othercmds) {
+      const othercmd = othercmds[i];
+      if (command === othercmd) {
+        return handleOther(command, message, args);
+      }
+    }
+
+    const comm = client.commands.get(command);
+    try {
+      return comm.execute(message, args, client);
+    } catch (err) {
+      //console.log(err);
     }
   });
 }

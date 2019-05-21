@@ -20,9 +20,10 @@ app.use(express.json());
 
 /**
  * This bots EventEmitter
+ * @type {tools.Event}
  */
 module.exports.event = new tools.Event();
-let event = module.exports.event;
+const event = module.exports.event;
 
 let db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
@@ -31,7 +32,9 @@ let db = new sqlite.Database('./mbot.db', (err) => {
   Logger.info('Connected to bot database');
 });
 
-let uptime = 0;
+let seconds = 0;
+let minutes = 0;
+let hours = 0;
 
 db.serialize(function () {
   db.run('CREATE TABLE if not exists users(id TEXT, points INTEGER, UNIQUE(id))');
@@ -82,9 +85,8 @@ client.on('ready', async () => {
       console.log(err);
     }
   }
-  /*setInterval(function () {
-    db.serialize(function (err) {
-      var uPoints;
+  setInterval(function () {
+    db.serialize(function () {
       db.each("SELECT points points, id id FROM users", function (err, row) {
         if (err) {
           console.log(err);
@@ -92,25 +94,42 @@ client.on('ready', async () => {
         var u, user;
         for (u in client.users.array()) {
           user = client.users.array()[u];
-          tools.setPoints((row.points + 10), user.id.toString());
-          return console.log("Set " + user.id.toString() + " to " + row.points);
+          if (row.id === user.id.toString()) {
+            return new tools.Tools().setPoints((row.points + 10), user.id.toString());
+          }
         }
       });
     });
-  }, 5000);*/
+  }, (60000 * 10));
 });
 
 setInterval(function () {
-  uptime++;
-  event.emit('uptimeUp');
+  if (seconds >= 59) {
+    seconds = 0;
+  }
+  seconds++;
 }, 1000);
 
+setInterval(function () {
+  if (minutes >= 59) {
+    minutes = 0;
+  }
+  minutes++;
+}, 60000);
+
+setInterval(function () {
+  hours++;
+}, (60000 * 3600));
+
 /**
- * Get the bots uptime (in seconds)
- * @returns {number}
+ * Get the bots uptime in hh:mm:ss format.
+ * @returns {string}
  */
 module.exports.getUptime = function () {
-  return uptime;
+  const h = hours < 10 ? "0" + hours : hours;
+  const m = minutes < 10 ? "0" + minutes : minutes;
+  const s = seconds < 10 ? "0" + seconds : seconds;
+  return `${h}:${m}:${s}`;
 }
 
 event.on('filesLoaded', function () {
@@ -132,6 +151,6 @@ app.get('/suggestions', (req, res) => {
   });
 });
 
-app.listen(80);
+//app.listen(80);
 //login to the client
 client.login(settings.token);
