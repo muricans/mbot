@@ -78,6 +78,15 @@ class Tools {
     mbot.event.emit('pointsUpdated', amnt, id);
   }
 
+  getStartMessage(id, callback) {
+    db.get('SELECT use use, message message, channel channel FROM welcomeMessage WHERE id = ' + id, (err, row) => {
+      if (err) {
+        return console.log(err);
+      }
+      callback(row.use, row.message, row.channel);
+    });
+  }
+
   /**
    * Roulette a users points.
    * @param {number} amnt The amount of points the user will be rouletting.
