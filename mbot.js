@@ -39,22 +39,48 @@ let hours = 0;
 db.serialize(function () {
   db.run('CREATE TABLE if not exists users(id TEXT, points INTEGER, UNIQUE(id))');
   db.run('CREATE TABLE if not exists welcomeMessage(id TEXT, use INTEGER, message TEXT, channel TEXT, UNIQUE(id))');
+  db.run('CREATE TABLE if not exists leaveMessage(id TEXT, use INTEGER, message TEXT, channel TEXT, UNIQUE(id))');
+  db.run('CREATE TABLE if not exists prefix(id TEXT, prefix TEXT, UNIQUE(id))');
 });
 
-client.on('guildCreate', (guild) => {
+function initDb(guild) {
   db.serialize(() => {
     db.run('INSERT OR IGNORE INTO welcomeMessage(id, use, message, channel) VALUES(?,?,?,?)',
       guild.id.toString(),
       0,
       'User $user has joined the server!',
       'general');
+    db.run('INSERT OR IGNORE INTO leaveMessage(id, use, message, channel) VALUES(?,?,?,?)',
+      guild.id.toString(),
+      0,
+      'User $user has left the server!',
+      'general');
+    db.run('INSERT OR IGNORE INTO prefix(id, prefix) VALUES(?,?)',
+      guild.id.toString(),
+      '!');
   });
+}
+
+event.on('ready', () => {
+  for (let i in client.guilds.array()) {
+    const guild = client.guilds.array()[i];
+    initDb(guild);
+  }
+});
+
+client.on('guildCreate', (guild) => {
+  initDb(guild);
 });
 
 client.on('guildMemberAdd', (guildMember) => {
-  new tools.Tools().getStartMessage(guildMember.guild.id.toString(), (use, msg, channel) => {
+  new tools.Tools().getNLMessage('welcomeMessage', guildMember.guild.id.toString(), (use, msg, chl) => {
     if (use === 1) {
-      guildMember.guild.channels.find("name", channel).send(msg.replace('$user', guildMember.user.username));
+      const channel = guildMember.guild.channels.find((channel => channel.name === chl));
+      if (!channel) {
+
+      } else {
+        channel.send(msg.replace('$user', guildMember.user.username));
+      }
     }
   });
   db.serialize(function () {
@@ -66,7 +92,16 @@ client.on('guildMemberAdd', (guildMember) => {
 });
 
 client.on('guildMemberRemove', (guildMember) => {
+  new tools.Tools().getNLMessage('leaveMessage', guildMember.guild.id.toString(), (use, msg, chl) => {
+    if (use === 1) {
+      const channel = guildMember.guild.channels.find((channel => channel.name === chl));
+      if (!channel) {
 
+      } else {
+        channel.send(msg.replace('$user', guildMember.user.username));
+      }
+    }
+  });
 });
 
 // actions

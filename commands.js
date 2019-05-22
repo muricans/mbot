@@ -144,60 +144,53 @@ module.exports.registerCommands = function (client, mbot) {
     }
   }
 
-  let settingsData;
-  let settings;
-  let prefix;
-
-  function initPrefix() {
-    settings = JSON.parse(settingsData);
-    prefix = settings.prefix;
-  }
-
   client.on('message', async message => {
     //if (message.author.bot) return;
     if (message.channel.type === 'dm') return;
-    fs.readFile('settings.json', 'utf8', (err, data) => {
+    /*fs.readFile('settings.json', 'utf8', (err, data) => {
       if (err) console.log(err);
       else {
         settingsData = data;
         initPrefix();
       }
-    });
-    if (message.content.indexOf(prefix) !== 0) return;
-    const args = message.content.slice(settings.prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
+    });*/
+    tools.getPrefix(message.guild.id.toString(), (prefix) => {
+      if (message.content.indexOf(prefix) !== 0) return;
+      const args = message.content.slice(prefix.length).split(' ');
+      const command = args.shift().toLowerCase();
 
-    const data = fs.readFileSync('./commands.json', 'utf8');
-    const cmds = JSON.parse(data);
-    const unfilteredCmd = cmds.commands;
-    const cmd = unfilteredCmd.filter(x => {
-      return x != null;
-    });
-    var i, jsonCmd, jsonMsg;
-    for (i in cmd) {
-      jsonCmd = cmd[i].name;
-      jsonMsg = cmd[i].message;
+      const data = fs.readFileSync('./commands.json', 'utf8');
+      const cmds = JSON.parse(data);
+      const unfilteredCmd = cmds.commands;
+      const cmd = unfilteredCmd.filter(x => {
+        return x != null;
+      });
+      var i, jsonCmd, jsonMsg;
+      for (i in cmd) {
+        jsonCmd = cmd[i].name;
+        jsonMsg = cmd[i].message;
 
-      if (command === jsonCmd) {
-        if (jsonMsg.startsWith('{module}')) {
-          return tools.parseCommandModule(message, jsonMsg);
+        if (command === jsonCmd) {
+          if (jsonMsg.startsWith('{module}')) {
+            return tools.parseCommandModule(message, jsonMsg);
+          }
+          return message.channel.send(jsonMsg);
         }
-        return message.channel.send(jsonMsg);
       }
-    }
 
-    for (let i in othercmds) {
-      const othercmd = othercmds[i];
-      if (command === othercmd) {
-        return handleOther(command, message, args);
+      for (let i in othercmds) {
+        const othercmd = othercmds[i];
+        if (command === othercmd) {
+          return handleOther(command, message, args);
+        }
       }
-    }
 
-    const comm = client.commands.get(command);
-    try {
-      return comm.execute(message, args, client);
-    } catch (err) {
-      //console.log(err);
-    }
+      const comm = client.commands.get(command);
+      try {
+        return comm.execute(message, args, client, prefix);
+      } catch (err) {
+        //console.log(err);
+      }
+    });
   });
 }

@@ -27,6 +27,10 @@ module.exports = {
         return console.log(err);
       }
       cmd = JSON.parse(data);
+      const exists = cmd.commands.find((cmd => cmd.name === args[0].toLowerCase()));
+      if (exists) {
+        return message.channel.send(`${message.author} That command already exists!`);
+      }
       cmd.commands.push({
         name: args[0].toLowerCase(),
         message: msg
@@ -36,8 +40,8 @@ module.exports = {
         if (err) {
           return console.log(err);
         }
+        message.channel.send(message.author + ' New command added! ' + prefix + args[0].toLowerCase() + ', which returns ' + msg);
       });
     });
-    return message.channel.send(message.author + ' New command added! ' + prefix + args[0].toLowerCase() + ', which returns ' + msg);
   },
 };

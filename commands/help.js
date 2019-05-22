@@ -1,15 +1,14 @@
 const Discord = require('discord.js');
 const fs = require('fs');
+const tls = require('../tools');
+const tools = new tls.Tools();
 
 // 17 commands + [5 admin only commands] + 14 nsfw commands
 // seperate admin only commands at a later time
 const min = 1;
 const max = 5;
 
-function pageOne(edit, message) {
-  let stngs = fs.readFileSync('settings.json', 'utf8');
-  let settings = JSON.parse(stngs);
-  const prefix = settings.prefix;
+function pageOne(edit, message, prefix) {
   const embed = new Discord.RichEmbed()
     .setTitle('Commands')
     .addField(prefix + '8ball <question>', 'Ask the bot a question')
@@ -31,13 +30,10 @@ module.exports = {
   name: 'help',
   usage: '[command]',
   description: 'Gives you a list of help commands, or info on a specified command.',
-  execute(message, args, client) {
-    let stngs = fs.readFileSync('settings.json', 'utf8');
-    let settings = JSON.parse(stngs);
-    const prefix = settings.prefix;
+  execute(message, args, client, prefix) {
     if (args.length === 0) {
       let page = 0;
-      pageOne(false, message).then(async sent => {
+      pageOne(false, message, prefix).then(async sent => {
         await sent.react("◀");
         await sent.react("▶");
         sent.awaitReactions(reaction => {
@@ -53,7 +49,7 @@ module.exports = {
 
           switch (page) {
             case 1:
-              pageOne(true, sent);
+              pageOne(true, sent, prefix);
               break;
             case 2:
               const embed2 = new Discord.RichEmbed()

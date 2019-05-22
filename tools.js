@@ -78,12 +78,19 @@ class Tools {
     mbot.event.emit('pointsUpdated', amnt, id);
   }
 
-  getStartMessage(id, callback) {
-    db.get('SELECT use use, message message, channel channel FROM welcomeMessage WHERE id = ' + id, (err, row) => {
+  getNLMessage(name, id, callback) {
+    db.get(`SELECT use use, message message, channel channel FROM ${name} WHERE id = ${id}`, (err, row) => {
       if (err) {
         return console.log(err);
       }
       callback(row.use, row.message, row.channel);
+    });
+  }
+
+  getPrefix(id, callback) {
+    db.get(`SELECT prefix prefix FROM prefix WHERE id = ${id}`, (err, row) => {
+      if (err) return console.log(err);
+      callback(row.prefix);
     });
   }
 

@@ -1,6 +1,10 @@
-const fs = require('fs');
+const sqlite = require('sqlite3').verbose();
 
-// configuration at later time
+let db = new sqlite.Database('./mbot.db', (err) => {
+  if (err) {
+    console.error(err.message);
+  }
+});
 
 module.exports = {
   name: 'prefix',
@@ -16,14 +20,8 @@ module.exports = {
     if (args.length === 0) {
       return message.reply('Please add params! !prefix <newPrefix>');
     }
-    let data = fs.readFileSync('settings.json', 'utf8');
-    let parsedData = JSON.parse(data);
-    parsedData.prefix = args[0];
-    fs.writeFileSync('settings.json', JSON.stringify(parsedData), function (err) {
-      if (err) {
-        return console.log(err);
-      }
-    });
-    message.channel.send(message.author + " New prefix set: " + args[0]);
+    const newPrefix = args[0].toString();
+    db.run(`UPDATE prefix SET prefix = ? WHERE id = ?`, newPrefix, message.guild.id.toString());
+    return message.channel.send(message.author + " New prefix set: " + args[0]);
   },
 };
