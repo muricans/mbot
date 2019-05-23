@@ -153,6 +153,42 @@ module.exports.registerCommands = async function (client, mbot) {
     }
   }
 
+  function doCommand(comm, message, prefix, args) {
+    if (comm.args) {
+      if (args.length < comm.minArgs) {
+        return message.channel.send(`${message.author} Please add params! ${prefix}${comm.name} ${comm.usage}`);
+      }
+    }
+    if (message.author.id === "399121700429627393") {
+      try {
+        return comm.execute(message, args, client, prefix);
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      try {
+        if (!cooldowns.has(comm.name)) {
+          cooldowns.set(comm.name, new Discord.Collection());
+        }
+        const now = Date.now();
+        const timestamps = cooldowns.get(comm.name);
+        const cooldown = (comm.cooldown || 0) * 1000;
+        if (timestamps.has(message.author.id)) {
+          const exp = timestamps.get(message.author.id) + cooldown;
+          if (now < exp) {
+            const left = (exp - now) / 1000;
+            return message.channel.send(`${message.author} Please wait ${left.toFixed(1)} second(s) before running that command again!`);
+          }
+        }
+        comm.execute(message, args, client, prefix);
+        timestamps.set(message.author.id, now);
+        setTimeout(() => timestamps.delete(message.author.id), cooldown);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }
+
   client.on('message', async message => {
     //if (message.author.bot) return;
     if (message.channel.type === 'dm') return;
@@ -193,38 +229,22 @@ module.exports.registerCommands = async function (client, mbot) {
       if (!comm) {
         return;
       }
-      if (comm.args) {
-        if (args.length < comm.minArgs) {
-          return message.channel.send(`${message.author} Please add params! ${prefix}${comm.name} ${comm.usage}`);
-        }
-      }
-      if (message.author.id === "399121700429627393") {
-        try {
-          return comm.execute(message, args, client, prefix);
-        } catch (err) {
-          console.log(err);
-        }
-      } else {
-        try {
-          if (!cooldowns.has(comm.name)) {
-            cooldowns.set(comm.name, new Discord.Collection());
-          }
-          const now = Date.now();
-          const timestamps = cooldowns.get(comm.name);
-          const cooldown = (comm.cooldown || 0) * 1000;
-          if (timestamps.has(message.author.id)) {
-            const exp = timestamps.get(message.author.id) + cooldown;
-            if (now < exp) {
-              const left = (exp - now) / 1000;
-              return message.channel.send(`${message.author} Please wait ${left.toFixed(1)} second(s) before running that command again!`);
+
+      if (comm.owner) {
+        return fs.readFile('./settings.json', 'utf8', (err, data) => {
+          if (err) return console.log(err);
+          const settings = JSON.parse(data);
+          for (let i in settings.bot_owners_id) {
+            const owner = settings.bot_owners_id[i];
+            if (message.author.id != owner) {
+              return message.channel.send(`${message.author} You don't have permission to use this command!`);
+            } else {
+              return doCommand(comm, message, prefix, args);
             }
           }
-          comm.execute(message, args, client, prefix);
-          timestamps.set(message.author.id, now);
-          setTimeout(() => timestamps.delete(message.author.id), cooldown);
-        } catch (err) {
-          console.log(err);
-        }
+        });
+      } else {
+        return doCommand(comm, message, prefix, args);
       }
     });
   });

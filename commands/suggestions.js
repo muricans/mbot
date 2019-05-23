@@ -5,6 +5,7 @@ module.exports = {
     name: 'suggestions',
     usage: '[clear]',
     description: 'Check the suggestions, (include <clear> [admin only] to clear the suggestions)',
+    owner: true,
     execute(message, args, client, prefix) {
         if (message.author.id != "399121700429627393") {
             return message.channel.send(`${message.author} You do not have permission to use this command!`);

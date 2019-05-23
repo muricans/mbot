@@ -14,6 +14,7 @@ module.exports = {
   description: 'Sets the users points [dev only]',
   args: true,
   minArgs: 2,
+  owner: true,
   execute(message, args, client) {
     const weirdChamp = client.emojis.get("572690273247821824");
     if (message.author.id != "399121700429627393") {
