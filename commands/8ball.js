@@ -4,9 +4,9 @@ module.exports = {
   name: '8ball',
   usage: '<question>',
   description: 'Ask the bot a question',
-  execute(message, args, client) {
+  execute(message, args, client, prefix) {
     if (args.length === 0) {
-      return message.reply('Please add params! !8ball <question>');
+      return message.reply(`Please add params! ${prefix}8ball <question>`);
     }
     const data = fs.readFileSync('response.json', 'utf8');
     const responses = JSON.parse(data);

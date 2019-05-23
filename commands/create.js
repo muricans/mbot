@@ -1,14 +1,11 @@
-const fs = require('fs');
 const tools = require('../tools.js');
+const fs = require('fs');
 
 module.exports = {
   name: 'create',
   usage: '<commandName> <message>',
   description: 'Adds a command to the bot',
-  execute(message, args) {
-    let stngs = fs.readFileSync('settings.json', 'utf8');
-    let settings = JSON.parse(stngs);
-    const prefix = settings.prefix;
+  execute(message, args, client, prefix) {
     if (args.length < 2) {
       return message.reply('Please add params! ' + prefix + 'create <commandName> <message>');
     }
@@ -27,16 +24,17 @@ module.exports = {
         return console.log(err);
       }
       cmd = JSON.parse(data);
-      const exists = cmd.commands.find((cmd => cmd.name === args[0].toLowerCase()));
+      const exists = cmd.commands.find(cmd => cmd.name === args[0].toLowerCase() && cmd.server === message.guild.id.toString());
       if (exists) {
         return message.channel.send(`${message.author} That command already exists!`);
       }
       cmd.commands.push({
+        server: message.guild.id.toString(),
         name: args[0].toLowerCase(),
         message: msg
       });
       const json = JSON.stringify(cmd);
-      fs.writeFile('commands.json', json, 'utf8', function (err) {
+      fs.writeFile('commands.json', json, (err) => {
         if (err) {
           return console.log(err);
         }

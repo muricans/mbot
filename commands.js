@@ -1,14 +1,21 @@
 const tls = require('./tools.js');
 const tools = new tls.Tools();
 const fs = require('fs');
+const sqlite = require('sqlite3').verbose();
 const Discord = require('discord.js');
+
+let db = new sqlite.Database('./mbot.db', (err) => {
+  if (err) {
+    console.error(err.message);
+  }
+});
 
 /**
  * Register commands for the bot.
  * @param {Discord.Client} client The bots client.
  * @param mbot mbot main script.
  */
-module.exports.registerCommands = function (client, mbot) {
+module.exports.registerCommands = async function (client, mbot) {
   client.commands = new Discord.Collection();
   const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
   for (const file of commandFiles) {
@@ -154,29 +161,31 @@ module.exports.registerCommands = function (client, mbot) {
         initPrefix();
       }
     });*/
-    tools.getPrefix(message.guild.id.toString(), (prefix) => {
+    tools.getPrefix(message.guild.id.toString(), async (prefix) => {
       if (message.content.indexOf(prefix) !== 0) return;
       const args = message.content.slice(prefix.length).split(' ');
       const command = args.shift().toLowerCase();
 
-      const data = fs.readFileSync('./commands.json', 'utf8');
-      const cmds = JSON.parse(data);
-      const unfilteredCmd = cmds.commands;
-      const cmd = unfilteredCmd.filter(x => {
-        return x != null;
-      });
-      var i, jsonCmd, jsonMsg;
-      for (i in cmd) {
-        jsonCmd = cmd[i].name;
-        jsonMsg = cmd[i].message;
+      fs.readFile('./commands.json', 'utf8', (err, data) => {
+        if (err) return console.log(err);
+        const cmds = JSON.parse(data);
+        const unfilteredCmd = cmds.commands;
+        let cmd = unfilteredCmd.filter(x => {
+          return x != null;
+        });
+        var i, jsonCmd, jsonMsg;
+        for (i in cmd) {
+          jsonCmd = cmd[i].name;
+          jsonMsg = cmd[i].message;
 
-        if (command === jsonCmd) {
-          if (jsonMsg.startsWith('{module}')) {
-            return tools.parseCommandModule(message, jsonMsg);
+          if (command === jsonCmd && cmd[i].server === message.guild.id.toString()) {
+            if (jsonMsg.startsWith('{module}')) {
+              return tools.parseCommandModule(message, jsonMsg);
+            }
+            return message.channel.send(jsonMsg);
           }
-          return message.channel.send(jsonMsg);
         }
-      }
+      });
 
       for (let i in othercmds) {
         const othercmd = othercmds[i];

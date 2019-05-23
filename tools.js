@@ -87,7 +87,7 @@ class Tools {
     });
   }
 
-  getPrefix(id, callback) {
+  async getPrefix(id, callback) {
     db.get(`SELECT prefix prefix FROM prefix WHERE id = ${id}`, (err, row) => {
       if (err) return console.log(err);
       callback(row.prefix);

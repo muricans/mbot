@@ -12,9 +12,9 @@ module.exports = {
     name: "modules",
     usage: "<moduleName> <moduleOption> [setTo]",
     description: "Use modules for your server.",
-    execute(message, args) {
+    execute(message, args, client, prefix) {
         if (!args.length) {
-            return message.reply('Please add params! !modules <moduleName> <moduleOption> [setTo]');
+            return message.reply(`Please add params! ${prefix}modules <moduleName> <moduleOption> [setTo]`);
         }
 
         //0=moduleName
@@ -31,7 +31,7 @@ module.exports = {
                     case "edit":
                         const msg = args.slice(2, args.length).join(' ');
                         if (!args[2]) {
-                            return message.reply('Please add params! !modules welcomemessage edit <message>');
+                            return message.reply(`Please add params! ${prefix}modules welcomemessage edit <message>`);
                         }
                         db.run('UPDATE welcomeMessage SET message = ? WHERE id = ?', msg, message.guild.id.toString());
                         return message.channel.send(`${message.author} Set welcome message to ${msg}!`);
@@ -47,13 +47,13 @@ module.exports = {
                                 message.channel.send(`${message.author} Disabled use of sending welcome messages on join!`);
                                 break;
                             default:
-                                message.reply(`Please add params! !modules welcomemessage use <true|false>`);
+                                message.reply(`Please add params! ${prefix}modules welcomemessage use <true|false>`);
                                 break;
                         }
                         break;
                     case "channel":
                         if (!args[2]) {
-                            return message.reply('Please add params! !modules welcomemessage channel <channel>');
+                            return message.reply(`Please add params! ${prefix}modules welcomemessage channel <channel>`);
                         }
                         const channel = message.guild.channels.find((channel => channel.name === args[2]));
                         if (!channel) {
@@ -75,7 +75,7 @@ module.exports = {
                     case "edit":
                         const msg = args.slice(2, args.length).join(' ');
                         if (!args[2]) {
-                            return message.reply('Please add params! !modules leavemessage edit <message>');
+                            return message.reply(`Please add params! ${prefix}modules leavemessage edit <message>`);
                         }
                         db.run('UPDATE leaveMessage SET message = ? WHERE id = ?', msg, message.guild.id.toString());
                         return message.channel.send(`${message.author} Set leave message to ${msg}!`);
@@ -91,13 +91,13 @@ module.exports = {
                                 message.channel.send(`${message.author} Disabled use of sending leave messages on leave!`);
                                 break;
                             default:
-                                message.reply(`Please add params! !modules leavemessage use <true|false>`);
+                                message.reply(`Please add params! ${prefix}modules leavemessage use <true|false>`);
                                 break;
                         }
                         break;
                     case "channel":
                         if (!args[2]) {
-                            return message.reply('Please add params! !modules leavemessage channel <channel>');
+                            return message.reply(`Please add params! ${prefix}modules leavemessage channel <channel>`);
                         }
                         const channel = message.guild.channels.find((channel => channel.name === args[2]));
                         if (!channel) {
