@@ -10,10 +10,12 @@ let db = new sqlite.Database('./mbot.db', (err) => {
 
 module.exports = {
   name: 'roulette',
-  usage: '<all|amount>',
+  usage: '<all|amount|percent>',
   description: 'Returns win/loss and new total points',
+  cooldown: 5,
+  args: true,
+  minArgs: 1,
   execute(message, args, client) {
-    if (args.length === 0) return message.channel.send('Please provide the amount you would like to roulette!');
     db.serialize(function () {
       db.get("SELECT points points FROM users WHERE id = " + message.author.id.toString(), function (err, row) {
         if (err) {

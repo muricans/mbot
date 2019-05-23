@@ -4,10 +4,10 @@ module.exports = {
     name: 'qr',
     usage: '<text|info>',
     description: 'Returns a QR code with the designated information',
+    cooldown: 10,
+    args: true,
+    minArgs: 1,
     execute(message, args, client, prefix) {
-        if (args.length === 0) {
-            return message.channel.send(message.author + ' Please add params!' + prefix + 'qr <information>');
-        }
         const newArgs = args.join(' ');
         const encoded = encodeURI(newArgs);
         message.delete();

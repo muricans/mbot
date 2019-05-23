@@ -11,15 +11,13 @@ let db = new sqlite.Database('./mbot.db', (err) => {
 module.exports = {
   name: 'set',
   usage: '<user> <amount>',
-  description: 'Sets the users points [admin only]',
-  execute(message, args, client, prefix) {
+  description: 'Sets the users points [dev only]',
+  args: true,
+  minArgs: 2,
+  execute(message, args, client) {
     const weirdChamp = client.emojis.get("572690273247821824");
-    let hasAdmin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");
-    if (!hasAdmin) {
-      return message.channel.send(message.author + " You don't have permission to use this command! " + weirdChamp);
-    }
-    if (args.length < 2) {
-      return message.reply(`Please add params! ${prefix}set <@user> <points>`);
+    if (message.author.id != "399121700429627393") {
+      return message.channel.send(`${message.author} You don't have permission to use this command! ${weirdChamp}`);
     }
     if (!message.mentions.users.first()) {
       return message.reply('That user does not exist!');

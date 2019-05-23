@@ -5,10 +5,10 @@ module.exports = {
   name: 'create',
   usage: '<commandName> <message>',
   description: 'Adds a command to the bot',
+  cooldown: 600,
+  args: true,
+  minArgs: 2,
   execute(message, args, client, prefix) {
-    if (args.length < 2) {
-      return message.reply('Please add params! ' + prefix + 'create <commandName> <message>');
-    }
     let cmd = {
       commands: []
     };

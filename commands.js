@@ -33,6 +33,8 @@ module.exports.registerCommands = async function (client, mbot) {
     client.commands.set(utl.name, utl);
   }
 
+  const cooldowns = new Discord.Collection();
+
   mbot.event.emit('filesLoaded');
 
   const meme = ['comedycemetery', 'comedyheaven', 'dankmemes', 'me_irl', 'teenagers'];
@@ -154,13 +156,6 @@ module.exports.registerCommands = async function (client, mbot) {
   client.on('message', async message => {
     //if (message.author.bot) return;
     if (message.channel.type === 'dm') return;
-    /*fs.readFile('settings.json', 'utf8', (err, data) => {
-      if (err) console.log(err);
-      else {
-        settingsData = data;
-        initPrefix();
-      }
-    });*/
     tools.getPrefix(message.guild.id.toString(), async (prefix) => {
       if (message.content.indexOf(prefix) !== 0) return;
       const args = message.content.slice(prefix.length).split(' ');
@@ -195,10 +190,41 @@ module.exports.registerCommands = async function (client, mbot) {
       }
 
       const comm = client.commands.get(command);
-      try {
-        return comm.execute(message, args, client, prefix);
-      } catch (err) {
-        //console.log(err);
+      if (!comm) {
+        return;
+      }
+      if (comm.args) {
+        if (args.length < comm.minArgs) {
+          return message.channel.send(`${message.author} Please add params! ${prefix}${comm.name} ${comm.usage}`);
+        }
+      }
+      if (message.author.id === "399121700429627393") {
+        try {
+          return comm.execute(message, args, client, prefix);
+        } catch (err) {
+          console.log(err);
+        }
+      } else {
+        try {
+          if (!cooldowns.has(comm.name)) {
+            cooldowns.set(comm.name, new Discord.Collection());
+          }
+          const now = Date.now();
+          const timestamps = cooldowns.get(comm.name);
+          const cooldown = (comm.cooldown || 0) * 1000;
+          if (timestamps.has(message.author.id)) {
+            const exp = timestamps.get(message.author.id) + cooldown;
+            if (now < exp) {
+              const left = (exp - now) / 1000;
+              return message.channel.send(`${message.author} Please wait ${left.toFixed(1)} second(s) before running that command again!`);
+            }
+          }
+          comm.execute(message, args, client, prefix);
+          timestamps.set(message.author.id, now);
+          setTimeout(() => timestamps.delete(message.author.id), cooldown);
+        } catch (err) {
+          console.log(err);
+        }
       }
     });
   });

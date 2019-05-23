@@ -5,6 +5,9 @@ module.exports = {
   name: 'delete',
   usage: '<command>',
   description: 'Deletes a command [added by !create] from the bot [admin only]',
+  cooldown: 5,
+  args: true,
+  minArgs: 1,
   execute(message, args, client, prefix) {
     const weirdChamp = client.emojis.get("572690273247821824");
     let hasAdmin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");

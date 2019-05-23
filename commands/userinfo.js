@@ -1,5 +1,7 @@
 const Discord = require('discord.js');
 
+module.exports.cooldown = 0;
+
 module.exports = {
   name: 'userinfo',
   usage: '[user]',
@@ -22,7 +24,9 @@ module.exports = {
       .addField('Full Username', `${mention.username}#${mention.discriminator}`)
       .addField('ID', mention.id)
       .addField('Time of Creation', mention.createdAt)
-      .addField('Avatar URL', mention.avatarURL);
+      .addField('Avatar URL', mention.avatarURL)
+      .setThumbnail(mention.avatarURL);
+    module.exports.cooldown = 5;
     return message.channel.send(embed);
     /*const mention = client.fetchUser(id);
     let embed = new Discord.RichEmbed()

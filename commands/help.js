@@ -30,6 +30,7 @@ module.exports = {
   name: 'help',
   usage: '[command]',
   description: 'Gives you a list of help commands, or info on a specified command.',
+  cooldown: 3,
   execute(message, args, client, prefix) {
     if (args.length === 0) {
       let page = 0;
