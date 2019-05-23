@@ -26,7 +26,7 @@ When you are finished running the install script, edit the settings.json file to
 
 ```json
 {
-    "prefix": "!",
+    "bot_owners_id": ["YOUR_DISCORD_USER_ID"],
     "token": "YOURTOKEN",
     "debug": false,
     "fileLogging": true,

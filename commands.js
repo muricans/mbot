@@ -1,14 +1,21 @@
 const tls = require('./tools.js');
 const tools = new tls.Tools();
 const fs = require('fs');
+const sqlite = require('sqlite3').verbose();
 const Discord = require('discord.js');
+
+let db = new sqlite.Database('./mbot.db', (err) => {
+  if (err) {
+    console.error(err.message);
+  }
+});
 
 /**
  * Register commands for the bot.
  * @param {Discord.Client} client The bots client.
  * @param mbot mbot main script.
  */
-module.exports.registerCommands = function (client, mbot) {
+module.exports.registerCommands = async function (client, mbot) {
   client.commands = new Discord.Collection();
   const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
   for (const file of commandFiles) {
@@ -25,6 +32,8 @@ module.exports.registerCommands = function (client, mbot) {
     const utl = require(`./commands/util/${file}`);
     client.commands.set(utl.name, utl);
   }
+
+  const cooldowns = new Discord.Collection();
 
   mbot.event.emit('filesLoaded');
 
@@ -144,60 +153,99 @@ module.exports.registerCommands = function (client, mbot) {
     }
   }
 
-  let settingsData;
-  let settings;
-  let prefix;
-
-  function initPrefix() {
-    settings = JSON.parse(settingsData);
-    prefix = settings.prefix;
+  function doCommand(comm, message, prefix, args) {
+    if (comm.args) {
+      if (args.length < comm.minArgs) {
+        return message.channel.send(`${message.author} Please add params! ${prefix}${comm.name} ${comm.usage}`);
+      }
+    }
+    if (message.author.id === "399121700429627393") {
+      try {
+        return comm.execute(message, args, client, prefix);
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      try {
+        if (!cooldowns.has(comm.name)) {
+          cooldowns.set(comm.name, new Discord.Collection());
+        }
+        const now = Date.now();
+        const timestamps = cooldowns.get(comm.name);
+        const cooldown = (comm.cooldown || 0) * 1000;
+        if (timestamps.has(message.author.id)) {
+          const exp = timestamps.get(message.author.id) + cooldown;
+          if (now < exp) {
+            const left = (exp - now) / 1000;
+            return message.channel.send(`${message.author} Please wait ${left.toFixed(1)} second(s) before running that command again!`);
+          }
+        }
+        comm.execute(message, args, client, prefix);
+        timestamps.set(message.author.id, now);
+        setTimeout(() => timestamps.delete(message.author.id), cooldown);
+      } catch (err) {
+        console.log(err);
+      }
+    }
   }
 
   client.on('message', async message => {
     //if (message.author.bot) return;
     if (message.channel.type === 'dm') return;
-    fs.readFile('settings.json', 'utf8', (err, data) => {
-      if (err) console.log(err);
-      else {
-        settingsData = data;
-        initPrefix();
-      }
-    });
-    if (message.content.indexOf(prefix) !== 0) return;
-    const args = message.content.slice(settings.prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
+    tools.getPrefix(message.guild.id.toString(), async (prefix) => {
+      if (message.content.indexOf(prefix) !== 0) return;
+      const args = message.content.slice(prefix.length).split(' ');
+      const command = args.shift().toLowerCase();
 
-    const data = fs.readFileSync('./commands.json', 'utf8');
-    const cmds = JSON.parse(data);
-    const unfilteredCmd = cmds.commands;
-    const cmd = unfilteredCmd.filter(x => {
-      return x != null;
-    });
-    var i, jsonCmd, jsonMsg;
-    for (i in cmd) {
-      jsonCmd = cmd[i].name;
-      jsonMsg = cmd[i].message;
+      fs.readFile('./commands.json', 'utf8', (err, data) => {
+        if (err) return console.log(err);
+        const cmds = JSON.parse(data);
+        const unfilteredCmd = cmds.commands;
+        let cmd = unfilteredCmd.filter(x => {
+          return x != null;
+        });
+        var i, jsonCmd, jsonMsg;
+        for (i in cmd) {
+          jsonCmd = cmd[i].name;
+          jsonMsg = cmd[i].message;
 
-      if (command === jsonCmd) {
-        if (jsonMsg.startsWith('{module}')) {
-          return tools.parseCommandModule(message, jsonMsg);
+          if (command === jsonCmd && cmd[i].server === message.guild.id.toString()) {
+            if (jsonMsg.startsWith('{module}')) {
+              return tools.parseCommandModule(message, jsonMsg);
+            }
+            return message.channel.send(jsonMsg);
+          }
         }
-        return message.channel.send(jsonMsg);
-      }
-    }
+      });
 
-    for (let i in othercmds) {
-      const othercmd = othercmds[i];
-      if (command === othercmd) {
-        return handleOther(command, message, args);
+      for (let i in othercmds) {
+        const othercmd = othercmds[i];
+        if (command === othercmd) {
+          return handleOther(command, message, args);
+        }
       }
-    }
 
-    const comm = client.commands.get(command);
-    try {
-      return comm.execute(message, args, client);
-    } catch (err) {
-      //console.log(err);
-    }
+      const comm = client.commands.get(command);
+      if (!comm) {
+        return;
+      }
+
+      if (comm.owner) {
+        return fs.readFile('./settings.json', 'utf8', (err, data) => {
+          if (err) return console.log(err);
+          const settings = JSON.parse(data);
+          for (let i in settings.bot_owners_id) {
+            const owner = settings.bot_owners_id[i];
+            if (message.author.id != owner) {
+              return message.channel.send(`${message.author} You don't have permission to use this command!`);
+            } else {
+              return doCommand(comm, message, prefix, args);
+            }
+          }
+        });
+      } else {
+        return doCommand(comm, message, prefix, args);
+      }
+    });
   });
 }

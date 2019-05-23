@@ -12,10 +12,10 @@ module.exports = {
   name: 'give',
   usage: '<user> <amount|all>',
   description: 'Gives a user [x] amount of points',
+  cooldown: 3,
+  args: true,
+  minArgs: 2,
   execute(message, args) {
-    if (args.length < 2) {
-      return message.reply('Please add params: !give <@user> <amnt>');
-    }
     if (message.mentions.users.first() === message.author) {
       return message.reply('You cannot give points to yourself!');
     }

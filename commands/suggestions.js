@@ -5,7 +5,11 @@ module.exports = {
     name: 'suggestions',
     usage: '[clear]',
     description: 'Check the suggestions, (include <clear> [admin only] to clear the suggestions)',
-    execute(message, args) {
+    owner: true,
+    execute(message, args, client, prefix) {
+        if (message.author.id != "399121700429627393") {
+            return message.channel.send(`${message.author} You do not have permission to use this command!`);
+        }
         if (args.length === 0) {
             const current = suggestions.read();
             for (var i in current) {
@@ -14,15 +18,15 @@ module.exports = {
             return;
         }
         if (args[0] === "clear") {
-            let hasAdmin = message.channel.permissionsFor(message.author).has("ADMINISTRATOR");
-            if (!hasAdmin) return message.channel.send(message.author + ' You do not have permission to use this command!');
-            else {
-                suggestions.write([], () => {
-                    return message.channel.send('Cleared suggestions list.');
-                });
-            }
+            //let hasAdmin = message.channel.permissionsFor(message.author).has("ADMINISTRATOR");
+            //if (!hasAdmin) return message.channel.send(message.author + ' You do not have permission to use this command!');
+            //else {
+            suggestions.write([], () => {
+                return message.channel.send('Cleared suggestions list.');
+            });
+            //}
         } else {
-            return message.channel.send('Invalid usage! !suggestions [clear]');
+            return message.channel.send(`Invalid usage! ${prefix}suggestions [clear]`);
         }
     },
 };

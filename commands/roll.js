@@ -2,6 +2,7 @@ module.exports = {
   name: 'roll',
   usage: '[number]',
   description: 'Returns a random number between 1 and the chosen number',
+  cooldown: 5,
   execute(message, args) {
     if (args.length === 0) {
       const roll = Math.floor(Math.random() * 6 + 1);

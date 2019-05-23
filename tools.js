@@ -78,6 +78,22 @@ class Tools {
     mbot.event.emit('pointsUpdated', amnt, id);
   }
 
+  getNLMessage(name, id, callback) {
+    db.get(`SELECT use use, message message, channel channel FROM ${name} WHERE id = ${id}`, (err, row) => {
+      if (err) {
+        return console.log(err);
+      }
+      callback(row.use, row.message, row.channel);
+    });
+  }
+
+  async getPrefix(id, callback) {
+    db.get(`SELECT prefix prefix FROM prefix WHERE id = ${id}`, (err, row) => {
+      if (err) return console.log(err);
+      callback(row.prefix);
+    });
+  }
+
   /**
    * Roulette a users points.
    * @param {number} amnt The amount of points the user will be rouletting.

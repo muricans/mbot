@@ -5,6 +5,7 @@ module.exports = {
     name: 'version',
     usage: 'No usage data',
     description: 'Gets the current version of the bot',
+    cooldown: 3,
     execute(message, args) {
         const embed = new Discord.RichEmbed()
             .setTitle('mbot info')

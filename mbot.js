@@ -38,9 +38,51 @@ let hours = 0;
 
 db.serialize(function () {
   db.run('CREATE TABLE if not exists users(id TEXT, points INTEGER, UNIQUE(id))');
+  db.run('CREATE TABLE if not exists welcomeMessage(id TEXT, use INTEGER, message TEXT, channel TEXT, UNIQUE(id))');
+  db.run('CREATE TABLE if not exists leaveMessage(id TEXT, use INTEGER, message TEXT, channel TEXT, UNIQUE(id))');
+  db.run('CREATE TABLE if not exists prefix(id TEXT, prefix TEXT, UNIQUE(id))');
+});
+
+function initDb(guild) {
+  db.serialize(() => {
+    db.run('INSERT OR IGNORE INTO welcomeMessage(id, use, message, channel) VALUES(?,?,?,?)',
+      guild.id.toString(),
+      0,
+      'User $user has joined the server!',
+      'general');
+    db.run('INSERT OR IGNORE INTO leaveMessage(id, use, message, channel) VALUES(?,?,?,?)',
+      guild.id.toString(),
+      0,
+      'User $user has left the server!',
+      'general');
+    db.run('INSERT OR IGNORE INTO prefix(id, prefix) VALUES(?,?)',
+      guild.id.toString(),
+      '!');
+  });
+}
+
+event.on('ready', () => {
+  for (let i in client.guilds.array()) {
+    const guild = client.guilds.array()[i];
+    initDb(guild);
+  }
+});
+
+client.on('guildCreate', (guild) => {
+  initDb(guild);
 });
 
 client.on('guildMemberAdd', (guildMember) => {
+  new tools.Tools().getNLMessage('welcomeMessage', guildMember.guild.id.toString(), (use, msg, chl) => {
+    if (use === 1) {
+      const channel = guildMember.guild.channels.find((channel => channel.name === chl));
+      if (!channel) {
+
+      } else {
+        channel.send(msg.replace('$user', guildMember.user.username));
+      }
+    }
+  });
   db.serialize(function () {
     db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', guildMember.user.id.toString(), 100);
     if (settings.debug) {
@@ -50,7 +92,16 @@ client.on('guildMemberAdd', (guildMember) => {
 });
 
 client.on('guildMemberRemove', (guildMember) => {
+  new tools.Tools().getNLMessage('leaveMessage', guildMember.guild.id.toString(), (use, msg, chl) => {
+    if (use === 1) {
+      const channel = guildMember.guild.channels.find((channel => channel.name === chl));
+      if (!channel) {
 
+      } else {
+        channel.send(msg.replace('$user', guildMember.user.username));
+      }
+    }
+  });
 });
 
 // actions
@@ -64,19 +115,6 @@ client.on('ready', async () => {
     }
   });
   Logger.info('mbot v' + pkg.version + " has been enabled.");
-  //game | only allows for default emojis
-  const games = ['Minecraft', 'Murdering Martine the BOT', 'nymnBridge PewDiePie', 'Acrozze a mega gay',
-    'This bot was made by me 😃', 'help me'
-  ];
-  setInterval(function () {
-    const randomStatus = games[Math.floor(Math.random() * games.length)];
-    client.user.setPresence({
-      satus: 'online',
-      game: {
-        name: randomStatus
-      }
-    });
-  }, 60000);
   if (settings.debug) {
     try {
       let link = await client.generateInvite(["ADMINISTRATOR"]);
@@ -106,6 +144,7 @@ client.on('ready', async () => {
     if (seconds >= 60) {
       seconds = 0;
       minutes++;
+      event.emit('uptimeMinute');
       if (minutes >= 60) {
         minutes = 0;
         hours++;
@@ -124,6 +163,20 @@ module.exports.getUptime = function () {
   const s = seconds < 10 ? "0" + seconds : seconds;
   return `${h}:${m}:${s}`;
 }
+
+//game | only allows for default emojis
+const games = ['Minecraft', 'Murdering Martine the BOT', 'nymnBridge PewDiePie', 'Acrozze a mega gay',
+  'This bot was made by me 😃', 'help me'
+];
+event.on('uptimeMinute', () => {
+  const randomStatus = games[Math.floor(Math.random() * games.length)];
+  client.user.setPresence({
+    satus: 'online',
+    game: {
+      name: randomStatus
+    }
+  });
+});
 
 event.on('filesLoaded', function () {
   Logger.file('Command files loaded!');

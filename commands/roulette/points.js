@@ -6,6 +6,8 @@ let db = new sqlite.Database('./mbot.db', (err) => {
   }
 });
 
+module.exports.cooldown = 0;
+
 module.exports = {
   name: 'points',
   usage: '[user]',
@@ -21,6 +23,7 @@ module.exports = {
         });
       }
       if (args.length > 0) {
+        module.exports.cooldown = 3;
         db.get('SELECT points points FROM users WHERE id = ' + message.mentions.users.first().id.toString(), function (err, row) {
           if (err) {
             return message.reply('No such user exists!');

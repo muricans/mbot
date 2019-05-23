@@ -6,13 +6,15 @@ module.exports = {
     name: 'suggest',
     usage: '<suggestion>',
     description: 'Suggest a command or feature for the bot',
+    cooldown: 86400,
+    args: true,
+    minArgs: 1,
     execute(message, args) {
-        if (args.length === 0) {
-            return message.reply('Please add params! !suggest <suggestion>');
-        }
         suggestions.add({
             "suggestion": args.join(' '),
-            "by": message.author.username
+            "by": message.author.username,
+            "id": message.author.id,
+            "guild": message.guild.id
         }, () => {
             return message.channel.send(`Added ${args.join(' ')} to suggestion list.`);
         });

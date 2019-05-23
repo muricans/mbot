@@ -5,13 +5,12 @@ module.exports = {
   name: 'random',
   usage: '<subreddit> [search|date] [search]',
   description: 'Returns a random thread from a subreddit',
-  execute(message, args) {
+  args: true,
+  minArgs: 1,
+  execute(message, args, client, prefix) {
     // 1 = subreddit
     // 2 = date
     // 3 = search
-    if (!args.length) {
-      return message.channel.send('Please add params! !random <subreddit> [search|date] [search]');
-    }
     if (args.length === 1) {
       return tools.rSearch(args, 'day', message);
     }
