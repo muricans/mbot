@@ -8,29 +8,25 @@ module.exports = {
   args: true,
   minArgs: 1,
   execute(message) {
-    const data = fs.readFileSync('response.json', 'utf8');
-    const responses = JSON.parse(data);
-    const good = responses.good;
-    const unsure = responses.unsure;
-    const bad = responses.bad;
-    const all = [good.response, unsure.response, bad.response];
-    const response = all[Math.floor(Math.random() * all.length)];
-    switch (response) {
-      case good.response:
-        message.channel.send(message.author + " " + good.response[Math.floor(Math.random() * good.response.length)] + " " +
-          good.emotes[Math.floor(Math.random() * good.emotes.length)]);
-        break;
-      case unsure.response:
-        message.channel.send(message.author + " " + unsure.response[Math.floor(Math.random() * unsure.response.length)] + " " +
-          unsure.emotes[Math.floor(Math.random() * unsure.emotes.length)]);
-        break;
-      case bad.response:
-        message.channel.send(message.author + " " + bad.response[Math.floor(Math.random() * bad.response.length)] + " " +
-          bad.emotes[Math.floor(Math.random() * bad.emotes.length)]);
-        break;
-      default:
-        message.channel.send('Error occured.');
-        break;
-    }
+    fs.readFile('response.json', 'utf8', (err, data) => {
+      if (err) return console.log(err);
+      const res = JSON.parse(data).responses;
+      const randomRes = res[Math.floor(Math.random() * res.length)];
+      let emotes;
+      switch (randomRes.type) {
+        case "good":
+          emotes = ["<:peepoPog:572621873393958913>", "<:ThanosSmile:566861749324873738>"];
+          message.channel.send(`${message.author} ${randomRes.response} ${emotes[Math.floor(Math.random() * emotes.length)]}`);
+          break;
+        case "unsure":
+          emotes = ["<:forsenE:462106457429639179>", "<:Pepege:568221587912917002>"];
+          message.channel.send(`${message.author} ${randomRes.response} ${emotes[Math.floor(Math.random() * emotes.length)]}`);
+          break;
+        case "bad":
+          emotes = ["<:SadChamp:572621419251499008>", "<:peepoWTF:567905581868777492>"];
+          message.channel.send(`${message.author} ${randomRes.response} ${emotes[Math.floor(Math.random() * emotes.length)]}`);
+          break;
+      }
+    });
   },
 };
