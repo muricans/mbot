@@ -1,4 +1,6 @@
 const Discord = require('discord.js');
+const tls = require('../../tools');
+const tools = new tls.Tools();
 
 module.exports.cooldown = 0;
 
@@ -31,7 +33,7 @@ module.exports = {
         .addField('Time of Creation', mention.createdAt)
         .addField('Avatar URL', mention.avatarURL)
         .setThumbnail(mention.avatarURL);
-      module.exports.cooldown = 5;
+      tools.addCooldown(module.exports.name, 5, message);
       return message.channel.send(embed);
     } else if (!isNaN(args[0])) {
       client.fetchUser(args[0].toString()).then((mention) => {
@@ -43,7 +45,7 @@ module.exports = {
           .addField('Time of Creation', mention.createdAt)
           .addField('Avatar URL', mention.avatarURL)
           .setThumbnail(mention.avatarURL);
-        module.exports.cooldown = 5;
+        tools.addCooldown(module.exports.name, 5, message);
         return message.channel.send(embed);
       }).catch((err) => {
         return message.channel.send(`${message.author} Could not find that user!`);

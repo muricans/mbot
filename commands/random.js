@@ -7,7 +7,7 @@ module.exports = {
   description: 'Returns a random thread from a subreddit',
   args: true,
   minArgs: 1,
-  execute(message, args, client, prefix) {
+  execute(message, args) {
     // 1 = subreddit
     // 2 = date
     // 3 = search

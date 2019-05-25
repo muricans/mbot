@@ -8,14 +8,12 @@ let db = new sqlite.Database('./mbot.db', (err) => {
     }
 });
 
-module.exports.cooldown = 0;
-
 module.exports = {
     name: "modules",
     usage: "<moduleName> <moduleOption> [setTo]",
     description: "Use modules for your server.",
     args: true,
-    minArgs: 3,
+    minArgs: 2,
     execute(message, args, client, prefix) {
         //0=moduleName
         //1=moduleOption
@@ -34,19 +32,19 @@ module.exports = {
                             return message.reply(`Please add params! ${prefix}modules welcomemessage edit <message>`);
                         }
                         db.run('UPDATE welcomeMessage SET message = ? WHERE id = ?', msg, message.guild.id.toString());
-                        module.exports.cooldown = 10;
+                        tools.addCooldown(module.exports.name, 10, message);
                         return message.channel.send(`${message.author} Set welcome message to ${msg}!`);
                         break;
                     case "use":
                         switch (args[2]) {
                             case "true":
                                 db.run('UPDATE welcomeMessage SET use = ? WHERE id = ?', 1, message.guild.id.toString());
-                                module.exports.cooldown = 10;
+                                tools.addCooldown(module.exports.name, 10, message);
                                 message.channel.send(`${message.author} Enabled use of sending welcome messages on join!`);
                                 break;
                             case "false":
                                 db.run('UPDATE welcomeMessage SET use = ? WHERE id = ?', 0, message.guild.id.toString());
-                                module.exports.cooldown = 10;
+                                tools.addCooldown(module.exports.name, 10, message);
                                 message.channel.send(`${message.author} Disabled use of sending welcome messages on join!`);
                                 break;
                             default:
@@ -63,7 +61,7 @@ module.exports = {
                             return message.channel.send(`${message.author} That channel does not seem to exist on this server!`);
                         } else {
                             db.run(`UPDATE welcomeMessage SET channel = ? WHERE id = ?`, args[2], message.guild.id.toString());
-                            module.exports.cooldown = 10;
+                            tools.addCooldown(module.exports.name, 10, message);
                             return message.channel.send(`${message.author} Set the welcomemessage channel to ${args[2]}!`);
                         }
                         break;
@@ -82,19 +80,19 @@ module.exports = {
                             return message.reply(`Please add params! ${prefix}modules leavemessage edit <message>`);
                         }
                         db.run('UPDATE leaveMessage SET message = ? WHERE id = ?', msg, message.guild.id.toString());
-                        module.exports.cooldown = 10;
+                        tools.addCooldown(module.exports.name, 10, message);
                         return message.channel.send(`${message.author} Set leave message to ${msg}!`);
                         break;
                     case "use":
                         switch (args[2]) {
                             case "true":
                                 db.run('UPDATE leaveMessage SET use = ? WHERE id = ?', 1, message.guild.id.toString());
-                                module.exports.cooldown = 10;
+                                tools.addCooldown(module.exports.name, 10, message);
                                 message.channel.send(`${message.author} Enabled use of sending leave messages on leave!`);
                                 break;
                             case "false":
                                 db.run('UPDATE leaveMessage SET use = ? WHERE id = ?', 0, message.guild.id.toString());
-                                module.exports.cooldown = 10;
+                                tools.addCooldown(module.exports.name, 10, message);
                                 message.channel.send(`${message.author} Disabled use of sending leave messages on leave!`);
                                 break;
                             default:
@@ -111,8 +109,29 @@ module.exports = {
                             return message.channel.send(`${message.author} That channel does not seem to exist on this server!`);
                         } else {
                             db.run(`UPDATE leaveMessage SET channel = ? WHERE id = ?`, args[2], message.guild.id.toString());
-                            module.exports.cooldown = 10;
+                            tools.addCooldown(module.exports.name, 10, message);
                             return message.channel.send(`${message.author} Set the leavemessage channel to ${args[2]}!`);
+                        }
+                        break;
+                }
+                break;
+            case "serverinfo":
+                switch (args[1]) {
+                    case "use":
+                        switch (args[2]) {
+                            case "true":
+                                db.run('UPDATE serverInfo SET use = ? WHERE id = ?', 1, message.guild.id.toString());
+                                tools.addCooldown(module.exports.name, 10, message);
+                                message.channel.send(`${message.author} Enabled use of serverinfo command!`);
+                                break;
+                            case "false":
+                                db.run('UPDATE serverInfo SET use = ? WHERE id = ?', 0, message.guild.id.toString());
+                                tools.addCooldown(module.exports.name, 10, message);
+                                message.channel.send(`${message.author} Disabled use of serverinfo commnad!`);
+                                break;
+                            default:
+                                message.reply(`Please add params! ${prefix}modules serverinfo use <true|false>`);
+                                break;
                         }
                         break;
                 }
