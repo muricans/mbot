@@ -6,6 +6,7 @@ const EventEmitter = require('events');
 const mbot = require('./mbot');
 const fs = require('fs');
 const Logger = require('./logger');
+const commands = require('./commands');
 
 let db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
@@ -24,6 +25,9 @@ const emojis = ['🍆', '💦', '😳', '🍌', '😏', '🍑', '😊'];
  * A list of all admin commands for the bot.
  */
 module.exports.adminCommands = ['set', 'give', 'delete', 'echo', 'clean', 'prefix', 'suggestions'];
+
+const cooldowns = new Discord.Collection();
+
 /**
  * Functions for the bot.
  * @example
@@ -31,6 +35,32 @@ module.exports.adminCommands = ['set', 'give', 'delete', 'echo', 'clean', 'prefi
  * const tools = new tls.Tools();
  */
 class Tools {
+  initCooldown(command) {
+    if (!cooldowns.has(command)) {
+      cooldowns.set(command, new Discord.Collection());
+    }
+  }
+
+  addCooldown(command, time, message) {
+    if (!cooldowns.has(command)) {
+      cooldowns.set(command, new Discord.Collection());
+    }
+    const now = Date.now();
+    const timestamps = cooldowns.get(command);
+    const cooldown = (time || 0) * 1000;
+    timestamps.set(message.author.id, now);
+    setTimeout(() => timestamps.delete(message.author.id), cooldown);
+  }
+
+  hasCooldown(command, message) {
+    const timestamps = cooldowns.get(command);
+    return timestamps.has(message.author.id);
+  }
+
+  getTimestamps(command) {
+    return cooldowns.get(command);
+  }
+
   /**
    * Checks if the string provided contains one of the endings in the ending list.
    * @param {string} string
@@ -78,6 +108,20 @@ class Tools {
     mbot.event.emit('pointsUpdated', amnt, id);
   }
 
+  /**
+   * @callback nlMessage
+   * @param {number} use Whether the module is being used. Gives a 1 or 0.
+   * @param {string} message The message being sent.
+   * @param {string} channel The channel being sent the message.
+   * @returns {void}
+   */
+
+  /**
+   * 
+   * @param {string} name Takes either welcomeMessage or leaveMessage
+   * @param {string} id The server id to get information from.
+   * @param {nlMessage} callback 
+   */
   getNLMessage(name, id, callback) {
     db.get(`SELECT use use, message message, channel channel FROM ${name} WHERE id = ${id}`, (err, row) => {
       if (err) {
@@ -87,10 +131,39 @@ class Tools {
     });
   }
 
+  /**
+   * @callback prefix
+   * @param {string} prefix The servers prefix.
+   * @returns {void}
+   */
+
+  /**
+   * 
+   * @param {string} id The server id to get information from.
+   * @param {prefix} callback 
+   */
   async getPrefix(id, callback) {
     db.get(`SELECT prefix prefix FROM prefix WHERE id = ${id}`, (err, row) => {
       if (err) return console.log(err);
       callback(row.prefix);
+    });
+  }
+
+  /**
+   * @callback serverInfo
+   * @param {number} use Whether the server is using the serverinfo or not. Returns 1 or 0.
+   * @returns {void}
+   */
+
+  /**
+   * 
+   * @param {string} id The server id to get information from.
+   * @param {serverInfo} callback 
+   */
+  useServerInfo(id, callback) {
+    db.get(`SELECT use use FROM serverInfo WHERE id = ${id}`, (err, row) => {
+      if (err) return console.log(err);
+      callback(row.use);
     });
   }
 

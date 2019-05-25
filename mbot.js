@@ -41,6 +41,7 @@ db.serialize(function () {
   db.run('CREATE TABLE if not exists welcomeMessage(id TEXT, use INTEGER, message TEXT, channel TEXT, UNIQUE(id))');
   db.run('CREATE TABLE if not exists leaveMessage(id TEXT, use INTEGER, message TEXT, channel TEXT, UNIQUE(id))');
   db.run('CREATE TABLE if not exists prefix(id TEXT, prefix TEXT, UNIQUE(id))');
+  db.run('CREATE TABLE if not exists serverInfo(id TEXT, use INTEGER, UNIQUE(id))');
 });
 
 function initDb(guild) {
@@ -58,6 +59,9 @@ function initDb(guild) {
     db.run('INSERT OR IGNORE INTO prefix(id, prefix) VALUES(?,?)',
       guild.id.toString(),
       '!');
+    db.run('INSERT OR IGNORE INTO serverInfo(id, use) VALUES(?,?)',
+      guild.id.toString(),
+      1);
   });
 }
 

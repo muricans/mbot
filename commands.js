@@ -10,6 +10,11 @@ let db = new sqlite.Database('./mbot.db', (err) => {
   }
 });
 
+const cooldowns = new Discord.Collection();
+module.exports.getCooldowns = function (key) {
+  return cooldowns.get(key);
+}
+
 /**
  * Register commands for the bot.
  * @param {Discord.Client} client The bots client.
@@ -32,8 +37,6 @@ module.exports.registerCommands = async function (client, mbot) {
     const utl = require(`./commands/util/${file}`);
     client.commands.set(utl.name, utl);
   }
-
-  const cooldowns = new Discord.Collection();
 
   mbot.event.emit('filesLoaded');
 
@@ -159,7 +162,7 @@ module.exports.registerCommands = async function (client, mbot) {
         return message.channel.send(`${message.author} Please add params! ${prefix}${comm.name} ${comm.usage}`);
       }
     }
-    if (message.author.id === "399121700429627393") {
+    if (message.author.id === "399121700429627393del") {
       try {
         return comm.execute(message, args, client, prefix);
       } catch (err) {
@@ -167,12 +170,17 @@ module.exports.registerCommands = async function (client, mbot) {
       }
     } else {
       try {
+        tools.initCooldown(comm.name);
         if (!cooldowns.has(comm.name)) {
           cooldowns.set(comm.name, new Discord.Collection());
         }
         const now = Date.now();
-        const timestamps = cooldowns.get(comm.name);
+        const timestamps = module.exports.getCooldowns(comm.name);
+        module.exports.timestamps = timestamps;
         const cooldown = (comm.cooldown || 0) * 1000;
+        if (tools.hasCooldown(comm.name, message)) {
+          return message.channel.send(`${message.author} Please wait some time before using this command again!`);
+        }
         if (timestamps.has(message.author.id)) {
           const exp = timestamps.get(message.author.id) + cooldown;
           if (now < exp) {
