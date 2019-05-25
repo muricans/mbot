@@ -17,7 +17,9 @@ class Logger {
      * @param {string} text The text you want to send to console.
      */
     static debug(text) {
-        rawLog(text, 'DEBUG');
+        if (settings.debug) {
+            rawLog(text, 'DEBUG');
+        }
     }
 
     /**

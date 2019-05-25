@@ -7,7 +7,6 @@ chmod +x update.sh
 chmod +x start.sh
 
 curl https://muricans.github.io/settings.json -o settings.json
-curl https://muricans.github.io/commands.json -o commands.json
 
 git show --format="%h" --no-patch > version.txt
 

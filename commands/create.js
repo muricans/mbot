@@ -1,5 +1,13 @@
 const tools = require('../tools.js');
-const fs = require('fs');
+const mbot = require('../mbot');
+const sqlite = require('sqlite3').verbose();
+const cCommands = mbot.cCommands;
+
+let db = new sqlite.Database('./mbot.db', (err) => {
+  if (err) {
+    console.error(err.message);
+  }
+});
 
 module.exports = {
   name: 'create',
@@ -9,37 +17,23 @@ module.exports = {
   args: true,
   minArgs: 2,
   execute(message, args, client, prefix) {
-    let cmd = {
-      commands: []
-    };
-    let newArgs = args.slice(1, args.length);
+    const newArgs = args.slice(1, args.length);
     const msg = newArgs.join(' ');
-    for (var i in tools.adminCommands) {
+    for (let i in tools.adminCommands) {
       if (msg.includes(prefix + tools.adminCommands[i])) {
         return message.channel.send(message.author + ' Cannot run admin commands!');
       }
     }
-    fs.readFile('commands.json', 'utf8', function (err, data) {
-      if (err) {
-        return console.log(err);
-      }
-      cmd = JSON.parse(data);
-      const exists = cmd.commands.find(cmd => cmd.name === args[0].toLowerCase() && cmd.server === message.guild.id.toString());
-      if (exists) {
-        return message.channel.send(`${message.author} That command already exists!`);
-      }
-      cmd.commands.push({
-        server: message.guild.id.toString(),
-        name: args[0].toLowerCase(),
-        message: msg
-      });
-      const json = JSON.stringify(cmd);
-      fs.writeFile('commands.json', json, (err) => {
-        if (err) {
-          return console.log(err);
-        }
-        message.channel.send(message.author + ' New command added! ' + prefix + args[0].toLowerCase() + ', which returns ' + msg);
-      });
-    });
+    const cmds = cCommands.filter(cmd => cmd.id === message.guild.id);
+    const exists = cmds.find(cmd => cmd.name === args[0].toLowerCase());
+    if (exists) {
+      return message.channel.send(`${message.author} That command already exists!`);
+    }
+    db.run('INSERT INTO commands(id, name, message) VALUES(?,?,?)',
+      message.guild.id,
+      args[0].toLowerCase(),
+      msg);
+    mbot.event.emit('newCommand', message.guild.id, args[0].toLowerCase(), msg);
+    return message.channel.send(`${message.author} New command added! ${prefix}${args[0].toLowerCase()}, which returns ${msg}`);
   },
 };
