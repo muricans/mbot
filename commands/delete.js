@@ -1,5 +1,12 @@
-const tools = require('../tools');
-const commands = new tools.File('commands', './', 'json');
+const sqlite = require('sqlite3').verbose();
+const mbot = require('../mbot');
+const cCommands = mbot.cCommands;
+
+let db = new sqlite.Database('./mbot.db', (err) => {
+  if (err) {
+    console.error(err.message);
+  }
+});
 
 module.exports = {
   name: 'delete',
@@ -14,21 +21,13 @@ module.exports = {
     if (!hasAdmin) {
       return message.channel.send(message.author + " You don't have permission to use this command! " + weirdChamp);
     }
-    if (args.length < 1) {
-      return message.reply(`Please add more params! ${prefix}delete <commandName>`);
+    const cmds = cCommands.filter(cmd => cmd.id === message.guild.id);
+    const exists = cmds.find(cmd => cmd.name === args[0].toLowerCase());
+    if (!exists) {
+      return message.channel.send(`${message.author} That command doesn't exist!`);
     }
-    commands.read((data) => {
-      const cmds = data;
-      const cmd = cmds.commands;
-      let jsonCmd = cmd.find(c => c.name.toLowerCase() === args[0].toLowerCase() && c.server === message.guild.id.toString());
-      if (!jsonCmd) {
-        return message.reply('That command does not exist!');
-      }
-      const cmdIndex = cmd.indexOf(jsonCmd);
-      cmd.splice(cmdIndex, 1);
-      commands.write(cmds, () => {
-        return message.channel.send(`${message.author} Command ${args[0].toLowerCase()} was deleted!`);
-      });
-    });
+    db.run('DELETE FROM commands WHERE id = ? AND name = ? AND message = ?', exists.id, exists.name, exists.message);
+    mbot.event.emit('deleteCommand', exists.id, exists.name, exists.message);
+    return message.channel.send(`${message.author} Command ${args[0].toLowerCase()} was deleted!`);
   },
 };

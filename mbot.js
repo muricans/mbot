@@ -25,6 +25,11 @@ app.use(express.json());
 module.exports.event = new tools.Event();
 const event = module.exports.event;
 
+/**
+ * The custom commands in the server.
+ */
+module.exports.cCommands = [];
+
 let db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
     console.error(err.message);
@@ -42,6 +47,7 @@ db.serialize(function () {
   db.run('CREATE TABLE if not exists leaveMessage(id TEXT, use INTEGER, message TEXT, channel TEXT, UNIQUE(id))');
   db.run('CREATE TABLE if not exists prefix(id TEXT, prefix TEXT, UNIQUE(id))');
   db.run('CREATE TABLE if not exists serverInfo(id TEXT, use INTEGER, UNIQUE(id))');
+  db.run('CREATE TABLE if not exists serverInfo(id TEXT, name TEXT, message TEXT)');
 });
 
 function initDb(guild) {
@@ -70,6 +76,13 @@ event.on('ready', () => {
     const guild = client.guilds.array()[i];
     initDb(guild);
   }
+  db.each('SELECT id id, name name, message message FROM commands', (err, row) => {
+    module.exports.cCommands.push({
+      "id": row.id,
+      "name": row.name,
+      "message": row.message
+    });
+  });
 });
 
 client.on('guildCreate', (guild) => {
@@ -190,6 +203,22 @@ event.on('pointsUpdated', function (amnt, id) {
   if (settings.debug) {
     Logger.debug(`Set ${id}'s points to ${amnt}!`);
   }
+});
+
+event.on('newCommand', (id, name, message) => {
+  module.exports.cCommands.push({
+    "id": id,
+    "name": name,
+    "message": message
+  });
+  Logger.debug(`Command ${name} was created in server ${id}.`);
+});
+
+event.on('deleteCommand', (id, name) => {
+  const jsonCmd = module.exports.cCommands.find(c => c.name.toLowerCase() === name && c.id === id);
+  const cmdIndex = module.exports.cCommands.indexOf(jsonCmd);
+  module.exports.cCommands.splice(cmdIndex, 1);
+  Logger.debug(`Command ${name} was deleted from server ${id}.`);
 });
 
 commands.registerCommands(client, this);

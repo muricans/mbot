@@ -162,7 +162,7 @@ module.exports.registerCommands = async function (client, mbot) {
         return message.channel.send(`${message.author} Please add params! ${prefix}${comm.name} ${comm.usage}`);
       }
     }
-    if (message.author.id === "399121700429627393del") {
+    if (message.author.id === "399121700429627393") {
       try {
         return comm.execute(message, args, client, prefix);
       } catch (err) {
@@ -205,26 +205,16 @@ module.exports.registerCommands = async function (client, mbot) {
       const args = message.content.slice(prefix.length).split(' ');
       const command = args.shift().toLowerCase();
 
-      fs.readFile('./commands.json', 'utf8', (err, data) => {
-        if (err) return console.log(err);
-        const cmds = JSON.parse(data);
-        const unfilteredCmd = cmds.commands;
-        let cmd = unfilteredCmd.filter(x => {
-          return x != null;
-        });
-        var i, jsonCmd, jsonMsg;
-        for (i in cmd) {
-          jsonCmd = cmd[i].name;
-          jsonMsg = cmd[i].message;
-
-          if (command === jsonCmd && cmd[i].server === message.guild.id.toString()) {
-            if (jsonMsg.startsWith('{module}')) {
-              return tools.parseCommandModule(message, jsonMsg);
-            }
-            return message.channel.send(jsonMsg);
+      for (let i in mbot.cCommands) {
+        const jsonCmd = mbot.cCommands[i].name;
+        const jsonMsg = mbot.cCommands[i].message;
+        if (command === jsonCmd && mbot.cCommands[i].id === message.guild.id) {
+          if (jsonMsg.startsWith('{module}')) {
+            return tools.parseCommandModule(message, jsonMsg);
           }
+          return message.channel.send(jsonMsg);
         }
-      });
+      }
 
       for (let i in othercmds) {
         const othercmd = othercmds[i];

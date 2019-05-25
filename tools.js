@@ -121,6 +121,10 @@ class Tools {
    * @param {string} name Takes either welcomeMessage or leaveMessage
    * @param {string} id The server id to get information from.
    * @param {nlMessage} callback 
+   * @example
+   * tools.getNLMessage('welcomeMessage', "someserverid", (use, message, channel) => {
+   *  // stuff here
+   * });
    */
   getNLMessage(name, id, callback) {
     db.get(`SELECT use use, message message, channel channel FROM ${name} WHERE id = ${id}`, (err, row) => {
@@ -141,6 +145,10 @@ class Tools {
    * 
    * @param {string} id The server id to get information from.
    * @param {prefix} callback 
+   * @example
+   * tools.getPrefix("someserverid", (prefix) => {
+   *  // stuff here
+   * });
    */
   async getPrefix(id, callback) {
     db.get(`SELECT prefix prefix FROM prefix WHERE id = ${id}`, (err, row) => {
@@ -151,7 +159,7 @@ class Tools {
 
   /**
    * @callback serverInfo
-   * @param {number} use Whether the server is using the serverinfo or not. Returns 1 or 0.
+   * @param {number} use Whether the server is using the serverinfo command or not. Returns 1 or 0.
    * @returns {void}
    */
 
@@ -159,6 +167,10 @@ class Tools {
    * 
    * @param {string} id The server id to get information from.
    * @param {serverInfo} callback 
+   * @example
+   * tools.useServerInfo("someserverid", (use) => {
+   *  // stuff here
+   * });
    */
   useServerInfo(id, callback) {
     db.get(`SELECT use use FROM serverInfo WHERE id = ${id}`, (err, row) => {
