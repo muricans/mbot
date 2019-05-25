@@ -77,6 +77,10 @@ event.on('ready', () => {
     initDb(guild);
   }
   db.each('SELECT id id, name name, message message FROM commands', (err, row) => {
+    if (err) return console.log(err);
+    if (!row) {
+      return;
+    }
     module.exports.cCommands.push({
       "id": row.id,
       "name": row.name,
