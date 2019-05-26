@@ -192,7 +192,8 @@ module.exports = {
                         if (!args[2]) {
                             return message.channel.send(`${message.author} Please add params! ${prefix}modules roles default <roleName>`);
                         }
-                        const role = message.guild.roles.find((role => role.name === args[2]));
+                        const findRole = args.slice(2, args.length).join(' ');
+                        const role = message.guild.roles.find((role => role.name === findRole));
                         if (!role) {
                             return message.channel.send(`${message.author} Could not find that role!`);
                         }
