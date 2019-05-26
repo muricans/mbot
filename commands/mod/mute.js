@@ -39,19 +39,19 @@ module.exports = {
         }
         const isAdmin = message.channel.permissionsFor(message.guild.member(mention)).has("ADMINISTRATOR");
         const admin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");
-        const canBan = message.channel.permissionsFor(message.guild.member(mention)).has("BAN_MEMBERS");
-        const canManage = message.channel.permissionsFor(message.guild.member(mention)).has("MANAGE_SERVER");
-        const mKick = message.channel.permissionsFor(message.guild.member(mention)).has("KICK_MEMBERS");
-        if (isAdmin || canBan || mKick || canManage) {
-            if (!admin) {
-                return message.channel.send(`${message.author} You don't have permission to mute that user!`);
-            }
+        if (isAdmin && !admin) {
+            return message.channel.send(`${message.author} You don't have permission to mute that user!`);
+        }
+        const mRole = message.guild.member(mention).highestRole;
+        const role = message.member.highestRole;
+        if (mRole.comparePositionTo(role) > 0 || mRole.position === role.position) {
+            return message.channel.send(`${message.author} That user has a higher role than you!`);
         }
         let sec;
         let mil;
         let minutes;
         let out;
-        if (args[1].includes("min")) {
+        if (hasMin(args[1])) {
             minutes = parseInt(args[1]);
             sec = (parseInt(args[1]) * 60);
             mil = (sec * 1000);
@@ -60,15 +60,11 @@ module.exports = {
                 hours = Math.floor(minutes / 60);
             }
             out = minutes >= 60 ? `${hours} hour(s)` : `${minutes} minute(s)`;
-            muteMember(muted, mention.id, mil, message.guild.member(mention));
-            return message.channel.send(`${message.author} muted ${mention} for ${out}!`);
-        } else if (args[1].includes("hour")) {
+        } else if (hasHour(args[1])) {
             const hours = (parseInt(args[1]));
             sec = (hours * 3600);
             mil = (sec * 1000);
             out = `${hours} hour(s)`;
-            muteMember(muted, mention.id, mil, message.guild.member(mention));
-            return message.channel.send(`${message.author} muted ${mention} for ${out}!`);
         } else {
             sec = (parseInt(args[1]));
             mil = (sec * 1000);
@@ -76,14 +72,33 @@ module.exports = {
                 minutes = Math.floor(sec / 60);
             }
             out = sec >= 60 ? `${minutes} minute(s)` : `${sec} second(s)`;
-            muteMember(muted, mention.id, mil, message.guild.member(mention));
-            return message.channel.send(`${message.author} muted ${mention} for ${out}!`);
         }
+        muteMember(muted, mention.id, mil);
+        return message.channel.send(`${message.author} muted ${mention} for ${out}!`);
     },
 }
 
-function muteMember(muted, id, mil, member) {
+function muteMember(muted, id, mil) {
     module.exports.mutes.set(id, Date.now());
     muted.set(id, mil);
     setTimeout(() => muted.delete(id), mil);
+}
+
+const minAlias = ['min', 'minute', 'm', 'minutes', 'mins'];
+const hourAlias = ['hour', 'hours', 'h', 'hr', 'hrs'];
+
+function hasMin(string) {
+    let contains = false;
+    for (let i in minAlias) {
+        if (string.includes(minAlias[i])) contains = true;
+    }
+    return contains;
+}
+
+function hasHour(string) {
+    let contains = false;
+    for (let i in hourAlias) {
+        if (string.includes(hourAlias[i])) contains = true;
+    }
+    return contains;
 }

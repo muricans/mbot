@@ -186,6 +186,13 @@ class Tools {
     });
   }
 
+  getDefaultRole(id, callback) {
+    db.get(`SELECT def def, use use FROM roles WHERE id = ${id}`, (err, row) => {
+      if (err) return console.log(err);
+      callback(row.def, row.use);
+    });
+  }
+
   /**
    * Roulette a users points.
    * @param {number} amnt The amount of points the user will be rouletting.

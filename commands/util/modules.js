@@ -1,6 +1,7 @@
 const sqlite = require('sqlite3').verbose();
 const tls = require('../../tools');
 const tools = new tls.Tools();
+const Discord = require('discord.js');
 
 let db = new sqlite.Database('./mbot.db', (err) => {
     if (err) {
@@ -14,6 +15,13 @@ module.exports = {
     description: "Use modules for your server.",
     args: true,
     minArgs: 2,
+    /**
+     * 
+     * @param {Discord.Message} message 
+     * @param {*} args 
+     * @param {*} client 
+     * @param {*} prefix 
+     */
     execute(message, args, client, prefix) {
         //0=moduleName
         //1=moduleOption
@@ -173,6 +181,39 @@ module.exports = {
                                 break;
                             default:
                                 message.reply(`${message.author} Please add params! ${prefix}modules commands use <true|false>`);
+                                break;
+                        }
+                        break;
+                }
+                break;
+            case "roles":
+                switch (args[1]) {
+                    case "default":
+                        if (!args[2]) {
+                            return message.channel.send(`${message.author} Please add params! ${prefix}modules roles default <roleName>`);
+                        }
+                        const role = message.guild.roles.find((role => role.name === args[2]));
+                        if (!role) {
+                            return message.channel.send(`${message.author} Could not find that role!`);
+                        }
+                        db.run('UPDATE roles SET def = ? WHERE id = ?', role.name, message.guild.id);
+                        tools.addCooldown(module.exports.name, 10, message);
+                        message.channel.send(`${message.author} Set the default role for new users to ${role.name}!`);
+                        break;
+                    case "use":
+                        switch (args[2]) {
+                            case "true":
+                                db.run('UPDATE roles SET use = ? WHERE id = ?', 1, message.guild.id.toString());
+                                tools.addCooldown(module.exports.name, 10, message);
+                                message.channel.send(`${message.author} Enabled use of setting default role on new user join!`);
+                                break;
+                            case "false":
+                                db.run('UPDATE commandOptions SET use = ? WHERE id = ?', 0, message.guild.id.toString());
+                                tools.addCooldown(module.exports.name, 10, message);
+                                message.channel.send(`${message.author} Disabled use of setting default role on new user join!`);
+                                break;
+                            default:
+                                message.reply(`${message.author} Please add params! ${prefix}modules roles use <true|false>`);
                                 break;
                         }
                         break;
