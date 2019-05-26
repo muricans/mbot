@@ -8,6 +8,12 @@ module.exports = {
     description: 'Keeps a player from chatting for specified time.',
     args: true,
     minArgs: 2,
+    /**
+     * 
+     * @param {Discord.Message} message 
+     * @param {*} args 
+     * @param {*} client 
+     */
     execute(message, args, client) {
         const canKick = message.channel.permissionsFor(message.member).has("KICK_MEMBERS");
         if (!canKick) {
@@ -53,18 +59,14 @@ module.exports = {
                 hours = Math.floor(minutes / 60);
             }
             out = minutes >= 60 ? `${hours} hour(s)` : `${minutes} minute(s)`;
-            muted.set(mention.id, mil);
-            this.mutes.set(mention.id, Date.now());
-            setTimeout(() => muted.delete(mention.id), mil);
+            muteMember(muted, mention.id, mil, message.guild.member(mention));
             return message.channel.send(`${message.author} muted ${mention} for ${out}!`);
         } else if (args[1].includes("hour")) {
             const hours = (parseInt(args[1]));
             sec = (hours * 3600);
             mil = (sec * 1000);
             out = `${hours} hour(s)`;
-            muted.set(mention.id, mil);
-            this.mutes.set(mention.id, Date.now());
-            setTimeout(() => muted.delete(mention.id), mil);
+            muteMember(muted, mention.id, mil, message.guild.member(mention));
             return message.channel.send(`${message.author} muted ${mention} for ${out}!`);
         } else {
             sec = (parseInt(args[1]));
@@ -73,10 +75,18 @@ module.exports = {
                 minutes = Math.floor(sec / 60);
             }
             out = sec >= 60 ? `${minutes} minute(s)` : `${sec} second(s)`;
-            muted.set(mention.id, mil);
-            this.mutes.set(mention.id, Date.now());
-            setTimeout(() => muted.delete(mention.id), mil);
+            muteMember(muted, mention.id, mil, message.guild.member(mention));
             return message.channel.send(`${message.author} muted ${mention} for ${out}!`);
         }
     },
+}
+
+function muteMember(muted, id, mil, member) {
+    module.exports.mutes.set(id, Date.now());
+    muted.set(id, mil);
+    member.addRole('muted');
+    setTimeout(() => {
+        muted.delete(id);
+        member.removeRole('muted');
+    }, mil);
 }

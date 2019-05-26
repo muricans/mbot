@@ -1,4 +1,5 @@
 const mute = require('./mute');
+const Discord = require('discord.js');
 
 module.exports = {
     name: 'unmute',
@@ -6,6 +7,11 @@ module.exports = {
     description: 'Unmute a muted user.',
     args: true,
     minArgs: 1,
+    /**
+     * 
+     * @param {Discord.Message} message 
+     * @param {*} args 
+     */
     execute(message, args) {
         const canKick = message.channel.permissionsFor(message.member).has("KICK_MEMBERS");
         if (!canKick) {
@@ -20,6 +26,7 @@ module.exports = {
             return message.channel.send(`${message.author} That user is not currently muted!`);
         }
         muted.delete(mention.id);
+        message.member.removeRole('muted');
         return message.channel.send(`${message.author} Unmuted ${mention} successfully!`);
     },
 }
