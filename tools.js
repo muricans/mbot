@@ -16,7 +16,7 @@ let db = new sqlite.Database('./mbot.db', (err) => {
 
 const nsfw = "Please move to an nsfw channel :flushed:";
 const bannedLinks = ['pornhub.com', 'xvideos.com', 'erome.com', 'xnxx.com', 'xhamster.com', 'redtube.com', 'xmov.fun', 'porness.net',
-  'youtube.com', 'youtu.be', 'nhentai.net', 'efukt.com', 'hdpornhere.com', 'fm4.ru', 'xvieoxx.com', 'xtube.com'
+  'youtube.com', 'youtu.be', 'nhentai.net', 'efukt.com', 'hdpornhere.com', 'fm4.ru', 'xvieoxx.com', 'xtube.com', 'youporn.com'
 ];
 // allowed embed endings
 const endings = ['.png', '.jpg', '.gif'];
@@ -554,6 +554,11 @@ class Tools {
     return message.channel.send(formattedMsg.slice(9));
   }
 
+  /**
+   * Get an array of all users the bot can see.
+   * 
+   * @param {Discord.Client} client The client to retrieve users from.
+   */
   users(client) {
     return client.users.array();
   }

@@ -3,6 +3,7 @@ const tools = new tls.Tools();
 const fs = require('fs');
 const sqlite = require('sqlite3').verbose();
 const Discord = require('discord.js');
+const mute = require('./commands/mod/mute');
 
 let db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
@@ -36,6 +37,11 @@ module.exports.registerCommands = async function (client, mbot) {
   for (const file of utilFiles) {
     const utl = require(`./commands/util/${file}`);
     client.commands.set(utl.name, utl);
+  }
+  const modFiles = fs.readdirSync('./commands/mod').filter(file => file.endsWith('.js'));
+  for (const file of modFiles) {
+    const mod = require(`./commands/mod/${file}`);
+    client.commands.set(mod.name, mod);
   }
 
   mbot.event.emit('filesLoaded');
@@ -90,68 +96,97 @@ module.exports.registerCommands = async function (client, mbot) {
         break;
 
       case "meme":
+        message.channel.startTyping();
         tools.search(meme[Math.floor(Math.random() * meme.length)], 'all', message, false);
         message.delete(1000);
+        message.channel.stopTyping(true);
         break;
 
 
         // porn commands
 
       case "anal":
+        message.channel.startTyping();
         tools.search(anal[Math.floor(Math.random() * anal.length)], 'all', message, true);
         message.delete(1000);
+        message.channel.stopTyping(true);
         break;
       case "ass":
+        message.channel.startTyping();
         tools.search(ass[Math.floor(Math.random() * ass.length)], 'all', message, true);
         message.delete(1000);
+        message.channel.stopTyping(true);
         break;
       case "blowjob":
+        message.channel.startTyping();
         tools.search(blowjob[Math.floor(Math.random() * blowjob.length)], 'all', message, true);
         message.delete(1000);
+        message.channel.stopTyping(true);
         break;
       case "boobs":
+        message.channel.startTyping();
         tools.search(boobs[Math.floor(Math.random() * boobs.length)], 'all', message, true);
         message.delete(1000);
+        message.channel.stopTyping(true);
         break;
       case "dick":
+        message.channel.startTyping();
         tools.search(dick[Math.floor(Math.random() * dick.length)], 'all', message, true);
         message.delete(1000);
+        message.channel.stopTyping(true);
         break;
       case "gay":
+        message.channel.startTyping();
         tools.search(gay[Math.floor(Math.random() * gay.length)], 'all', message, true);
         message.delete(1000);
+        message.channel.stopTyping(true);
         break;
       case "hardcore":
+        message.channel.startTyping();
         tools.search(hardcore[Math.floor(Math.random() * hardcore.length)], 'all', message, true);
         message.delete(1000);
+        message.channel.stopTyping(true);
         break;
       case "hentai":
+        message.channel.startTyping();
         tools.search(hentai[Math.floor(Math.random() * hentai.length)], 'all', message, true);
         message.delete(1000);
+        message.channel.stopTyping(true);
         break;
       case "nsfw":
+        message.channel.startTyping();
         tools.search(nsfw[Math.floor(Math.random() * nsfw.length)], 'all', message, true);
         message.delete(1000);
+        message.channel.stopTyping(true);
         break;
       case "pegging":
+        message.channel.startTyping();
         tools.search(pegging[Math.floor(Math.random() * pegging.length)], 'all', message, true);
         message.delete(1000);
+        message.channel.stopTyping(true);
         break;
         // rule34 code different than others
       case "rule34":
+        message.channel.startTyping();
         if (!args.length) {
           tools.search(rule34[Math.floor(Math.random() * rule34.length)], 'all', message, true);
-          return message.delete(1000);
+          message.delete(1000);
+          return message.channel.stopTyping(true);
         }
         tools.find(rule34[Math.floor(Math.random() * rule34.length)], args.toString().replace(' ', '+'), 'all', message, true);
+        message.channel.stopTyping(true);
         break;
       case "thighs":
+        message.channel.startTyping();
         tools.search(thighs[Math.floor(Math.random() * thighs.length)], 'all', message, true);
         message.delete(1000);
+        message.channel.stopTyping(true);
         break;
       case "trap":
+        message.channel.startTyping();
         tools.search(traps[Math.floor(Math.random() * traps.length)], 'all', message, true);
         message.delete(1000);
+        message.channel.stopTyping(true);
         break;
     }
   }
@@ -200,12 +235,50 @@ module.exports.registerCommands = async function (client, mbot) {
   client.on('message', async message => {
     //if (message.author.bot) return;
     if (message.channel.type === 'dm') return;
+    if (!mute.guilds.has(message.guild.id)) {
+      mute.guilds.set(message.guild.id, new Discord.Collection());
+    }
+    const muted = mute.guilds.get(message.guild.id);
+    if (muted.has(message.author.id)) {
+      message.delete();
+      const now = Date.now();
+      const exp = mute.mutes.get(message.author.id) + muted.get(message.author.id);
+      if (now < exp) {
+        const left = (exp - now) / 1000;
+        let out;
+        if (left.toFixed(1) >= 3600) {
+          let result = left.toFixed() / 3600;
+          result = Math.round(result);
+          out = `${result} hour(s)`;
+        } else if ((left.toFixed(1)) >= 60) {
+          let result = left.toFixed() / 60;
+          result = Math.round(result);
+          out = `${result} minute(s)`;
+        } else {
+          out = `${left.toFixed(1)} second(s)`;
+        }
+        return message.author.send(`You are currently muted on ${message.guild.name}. Please wait around ${out} before typing again!`).catch((err) => {
+          if (err) return;
+        });
+      }
+    }
     tools.getPrefix(message.guild.id.toString(), async (prefix) => {
       if (message.content.indexOf(prefix) !== 0) return;
       const args = message.content.slice(prefix.length).split(' ');
       const command = args.shift().toLowerCase();
 
-      for (let i in mbot.cCommands) {
+      mbot.cCommands.map((value, i, cCommands) => {
+        const jsonCmd = cCommands[i].name;
+        const jsonMsg = cCommands[i].message;
+        if (command === jsonCmd && cCommands[i].id === message.guild.id) {
+          if (jsonMsg.startsWith('{module}')) {
+            return tools.parseCommandModule(message, jsonMsg);
+          }
+          return message.channel.send(jsonMsg);
+        }
+      });
+
+      /*for (let i in mbot.cCommands) {
         const jsonCmd = mbot.cCommands[i].name;
         const jsonMsg = mbot.cCommands[i].message;
         if (command === jsonCmd && mbot.cCommands[i].id === message.guild.id) {
@@ -214,14 +287,21 @@ module.exports.registerCommands = async function (client, mbot) {
           }
           return message.channel.send(jsonMsg);
         }
-      }
+      }*/
 
-      for (let i in othercmds) {
+      othercmds.map((value, i, other) => {
+        const othercmd = other[i];
+        if (command === othercmd) {
+          return handleOther(command, message, args);
+        }
+      });
+
+      /*for (let i in othercmds) {
         const othercmd = othercmds[i];
         if (command === othercmd) {
           return handleOther(command, message, args);
         }
-      }
+      }*/
 
       const comm = client.commands.get(command);
       if (!comm) {
