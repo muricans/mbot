@@ -31,6 +31,15 @@ module.exports = {
         if (mention.id === client.user.id) {
             return message.channel.send(`${message.author} You cannot mute the bot!`);
         }
+        const isAdmin = message.channel.permissionsFor(message.guild.member(mention)).has("ADMINISTRATOR");
+        const admin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");
+        const canBan = message.channel.permissionsFor(message.guild.member(mention)).has("BAN_MEMBERS");
+        const mKick = message.channel.permissionsFor(message.guild.member(mention)).has("KICK_MEMBERS");
+        if (isAdmin || canBan || mKick) {
+            if (!admin) {
+                return message.channel.send(`${message.author} You don't have permission to mute that user!`);
+            }
+        }
         let sec;
         let mil;
         let minutes;
