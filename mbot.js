@@ -158,7 +158,7 @@ client.on('ready', async () => {
   Logger.info('mbot v' + pkg.version + " has been enabled.");
   if (settings.debug) {
     try {
-      let link = await client.generateInvite(["ADMINISTRATOR"]);
+      let link = await client.generateInvite(268823670);
       Logger.debug(link);
     } catch (err) {
       console.log(err);

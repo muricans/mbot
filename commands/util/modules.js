@@ -12,7 +12,7 @@ let db = new sqlite.Database('./mbot.db', (err) => {
 module.exports = {
     name: "modules",
     usage: "<moduleName> <moduleOption> [setTo]",
-    description: "Use modules for your server.",
+    description: "Use modules for your server. [Documentation](https://muricans.github.io/mbot/",
     args: true,
     minArgs: 2,
     /**
