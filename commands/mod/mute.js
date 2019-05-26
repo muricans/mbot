@@ -84,9 +84,5 @@ module.exports = {
 function muteMember(muted, id, mil, member) {
     module.exports.mutes.set(id, Date.now());
     muted.set(id, mil);
-    member.addRole('muted');
-    setTimeout(() => {
-        muted.delete(id);
-        member.removeRole('muted');
-    }, mil);
+    setTimeout(() => muted.delete(id), mil);
 }

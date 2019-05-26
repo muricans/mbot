@@ -26,7 +26,6 @@ module.exports = {
             return message.channel.send(`${message.author} That user is not currently muted!`);
         }
         muted.delete(mention.id);
-        message.member.removeRole('muted');
         return message.channel.send(`${message.author} Unmuted ${mention} successfully!`);
     },
 }

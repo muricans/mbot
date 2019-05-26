@@ -69,15 +69,6 @@ function initDb(guild) {
       guild.id.toString(),
       1);
   });
-  const muted = guild.roles.find(role => role.name === "muted");
-  if (!muted) {
-    guild.createRole({
-      name: 'muted',
-      permissions: {
-        "SEND_MESSAGES": false
-      }
-    });
-  }
 }
 
 event.on('ready', () => {
