@@ -179,6 +179,13 @@ class Tools {
     });
   }
 
+  getCommandOptions(id, callback) {
+    db.get(`SELECT everyone everyone, use use FROM commandOptions WHERE id = ${id}`, (err, row) => {
+      if (err) return console.log(err);
+      callback(row.everyone, row.use);
+    });
+  }
+
   /**
    * Roulette a users points.
    * @param {number} amnt The amount of points the user will be rouletting.

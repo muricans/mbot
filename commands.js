@@ -271,10 +271,15 @@ module.exports.registerCommands = async function (client, mbot) {
         const jsonCmd = cCommands[i].name;
         const jsonMsg = cCommands[i].message;
         if (command === jsonCmd && cCommands[i].id === message.guild.id) {
-          if (jsonMsg.startsWith('{module}')) {
-            return tools.parseCommandModule(message, jsonMsg);
-          }
-          return message.channel.send(jsonMsg);
+          return tools.getCommandOptions(message.guild.id, (everyone, use) => {
+            if (use != 1) {
+              return;
+            }
+            if (jsonMsg.startsWith('{module}')) {
+              return tools.parseCommandModule(message, jsonMsg);
+            }
+            return message.channel.send(jsonMsg);
+          });
         }
       });
 

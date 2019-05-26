@@ -33,7 +33,7 @@ module.exports = {
                     case "edit":
                         const msg = args.slice(2, args.length).join(' ');
                         if (!args[2]) {
-                            return message.reply(`Please add params! ${prefix}modules welcomemessage edit <message>`);
+                            return message.reply(`${message.author} Please add params! ${prefix}modules welcomemessage edit <message>`);
                         }
                         db.run('UPDATE welcomeMessage SET message = ? WHERE id = ?', msg, message.guild.id.toString());
                         tools.addCooldown(module.exports.name, 10, message);
@@ -52,13 +52,13 @@ module.exports = {
                                 message.channel.send(`${message.author} Disabled use of sending welcome messages on join!`);
                                 break;
                             default:
-                                message.reply(`Please add params! ${prefix}modules welcomemessage use <true|false>`);
+                                message.reply(`${message.author} Please add params! ${prefix}modules welcomemessage use <true|false>`);
                                 break;
                         }
                         break;
                     case "channel":
                         if (!args[2]) {
-                            return message.reply(`Please add params! ${prefix}modules welcomemessage channel <channel>`);
+                            return message.reply(`${message.author} Please add params! ${prefix}modules welcomemessage channel <channel>`);
                         }
                         const channel = message.guild.channels.find((channel => channel.name === args[2]));
                         if (!channel) {
@@ -81,7 +81,7 @@ module.exports = {
                     case "edit":
                         const msg = args.slice(2, args.length).join(' ');
                         if (!args[2]) {
-                            return message.reply(`Please add params! ${prefix}modules leavemessage edit <message>`);
+                            return message.reply(`${message.author} Please add params! ${prefix}modules leavemessage edit <message>`);
                         }
                         db.run('UPDATE leaveMessage SET message = ? WHERE id = ?', msg, message.guild.id.toString());
                         tools.addCooldown(module.exports.name, 10, message);
@@ -100,13 +100,13 @@ module.exports = {
                                 message.channel.send(`${message.author} Disabled use of sending leave messages on leave!`);
                                 break;
                             default:
-                                message.reply(`Please add params! ${prefix}modules leavemessage use <true|false>`);
+                                message.reply(`${message.author} Please add params! ${prefix}modules leavemessage use <true|false>`);
                                 break;
                         }
                         break;
                     case "channel":
                         if (!args[2]) {
-                            return message.reply(`Please add params! ${prefix}modules leavemessage channel <channel>`);
+                            return message.reply(`${message.author} Please add params! ${prefix}modules leavemessage channel <channel>`);
                         }
                         const channel = message.guild.channels.find((channel => channel.name === args[2]));
                         if (!channel) {
@@ -134,7 +134,45 @@ module.exports = {
                                 message.channel.send(`${message.author} Disabled use of serverinfo commnad!`);
                                 break;
                             default:
-                                message.reply(`Please add params! ${prefix}modules serverinfo use <true|false>`);
+                                message.reply(`${message.author} Please add params! ${prefix}modules serverinfo use <true|false>`);
+                                break;
+                        }
+                        break;
+                }
+                break;
+            case "commands":
+                switch (args[1]) {
+                    case "everyone":
+                        switch (args[2]) {
+                            case "true":
+                                db.run('UPDATE commandOptions SET everyone = ? WHERE id = ?', 1, message.guild.id.toString());
+                                tools.addCooldown(module.exports.name, 10, message);
+                                message.channel.send(`${message.author} Enabled use of allowing all users to create custom commands!`);
+                                break;
+                            case "false":
+                                db.run('UPDATE commandOptions SET everyone = ? WHERE id = ?', 0, message.guild.id.toString());
+                                tools.addCooldown(module.exports.name, 10, message);
+                                message.channel.send(`${message.author} Disabled use of allowing all users to create custom commands!`);
+                                break;
+                            default:
+                                message.reply(`${message.author} Please add params! ${prefix}modules commands everyone <true|false>`);
+                                break;
+                        }
+                        break;
+                    case "use":
+                        switch (args[2]) {
+                            case "true":
+                                db.run('UPDATE commandOptions SET use = ? WHERE id = ?', 1, message.guild.id.toString());
+                                tools.addCooldown(module.exports.name, 10, message);
+                                message.channel.send(`${message.author} Enabled use of custom commands!`);
+                                break;
+                            case "false":
+                                db.run('UPDATE commandOptions SET use = ? WHERE id = ?', 0, message.guild.id.toString());
+                                tools.addCooldown(module.exports.name, 10, message);
+                                message.channel.send(`${message.author} Disabled use of custom commands!`);
+                                break;
+                            default:
+                                message.reply(`${message.author} Please add params! ${prefix}modules commands use <true|false>`);
                                 break;
                         }
                         break;
