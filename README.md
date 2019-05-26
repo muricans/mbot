@@ -5,6 +5,8 @@
 [mbot](https://github.com/muricans/mbot) is a discord bot created by [muricans](https://www.twitch.tv/muricanslol)
 and edited by [felanbird](https://www.twitch.tv/felanbird)
 
+[useful info](https://muricans.github.io/mbot/)
+
 ## Installation
 mbot runs using [Node.js](https://nodejs.org/)
 mbot also uses [jq](https://stedolan.github.io/jq/download/) However, it can run without jq if you remove the memory variable from the start script.
