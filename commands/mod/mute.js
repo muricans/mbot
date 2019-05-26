@@ -40,8 +40,9 @@ module.exports = {
         const isAdmin = message.channel.permissionsFor(message.guild.member(mention)).has("ADMINISTRATOR");
         const admin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");
         const canBan = message.channel.permissionsFor(message.guild.member(mention)).has("BAN_MEMBERS");
+        const canManage = message.channel.permissionsFor(message.guild.member(mention)).has("MANAGE_SERVER");
         const mKick = message.channel.permissionsFor(message.guild.member(mention)).has("KICK_MEMBERS");
-        if (isAdmin || canBan || mKick) {
+        if (isAdmin || canBan || mKick || canManage) {
             if (!admin) {
                 return message.channel.send(`${message.author} You don't have permission to mute that user!`);
             }

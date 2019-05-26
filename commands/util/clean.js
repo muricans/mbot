@@ -15,6 +15,12 @@ module.exports = {
       hasTwoArgs = true;
     }
 
+    let canDelOth = message.channel.permissionsFor(message.member).has("MANAGE_MESSAGES");
+    let hasAdmin = message.channel.permissionsFor(message.author).has("ADMINISTRATOR");
+    if (!canDelOth) {
+      return message.channel.send(message.author + " You don't have permission to use this command! " + weirdChamp);
+    }
+
     var amnt;
     if (hasTwoArgs) {
       amnt = parseInt(args[1]);
@@ -40,12 +46,6 @@ module.exports = {
           });
         });
       });
-    }
-
-    let canDelOth = message.channel.permissionsFor(message.member).has("MANAGE_MESSAGES");
-    let hasAdmin = message.channel.permissionsFor(message.author).has("ADMINISTRATOR");
-    if (!canDelOth) {
-      return message.channel.send(message.author + " You don't have permission to use this command! " + weirdChamp);
     }
 
     if (args[0] === "all") {
