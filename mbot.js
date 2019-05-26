@@ -47,7 +47,7 @@ db.serialize(function () {
   db.run('CREATE TABLE if not exists leaveMessage(id TEXT, use INTEGER, message TEXT, channel TEXT, UNIQUE(id))');
   db.run('CREATE TABLE if not exists prefix(id TEXT, prefix TEXT, UNIQUE(id))');
   db.run('CREATE TABLE if not exists serverInfo(id TEXT, use INTEGER, UNIQUE(id))');
-  db.run('CREATE TABLE if not exists serverInfo(id TEXT, name TEXT, message TEXT)');
+  db.run('CREATE TABLE if not exists commands(id TEXT, name TEXT, message TEXT)');
 });
 
 function initDb(guild) {
@@ -77,6 +77,10 @@ event.on('ready', () => {
     initDb(guild);
   }
   db.each('SELECT id id, name name, message message FROM commands', (err, row) => {
+    if (err) return console.log(err);
+    if (!row) {
+      return;
+    }
     module.exports.cCommands.push({
       "id": row.id,
       "name": row.name,
