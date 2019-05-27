@@ -6,7 +6,7 @@ const EventEmitter = require('events');
 const mbot = require('./mbot');
 const fs = require('fs');
 const Logger = require('./logger');
-const commands = require('./commands');
+const https = require('https');
 
 let db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
@@ -191,6 +191,94 @@ class Tools {
       if (err) return console.log(err);
       callback(row.def, row.use);
     });
+  }
+
+  /**
+   * @callback gallery
+   * @param {Object} body The body of the gallery it returns.
+   * @returns {void}
+   */
+
+  /**
+   * Get gallery information
+   * 
+   * @param {gallery} callback
+   */
+  gallery(callback) {
+    const options = {
+      'method': 'GET',
+      'hostname': 'api.imgur.com',
+      'path': '/3/gallery/hot/viral/day/?showViral=true&mature=false&album_previews=false',
+      'headers': {
+        'Authorization': 'Client-ID d7cfb4c79f57468'
+      }
+    };
+
+    const req = https.request(options, function (res) {
+      var chunks = [];
+
+      res.on("data", function (chunk) {
+        chunks.push(chunk);
+      });
+
+      res.on("end", function (chunk) {
+        const body = Buffer.concat(chunks);
+        callback(JSON.parse(body));
+      });
+
+      res.on("error", function (error) {
+        console.error(error);
+      });
+    });
+
+    const postData = "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; ------WebKitFormBoundary7MA4YWxkTrZu0gW--";
+    req.setHeader('content-type', 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW');
+    req.write(postData);
+    req.end();
+  }
+
+  /**
+   * @callback imgur
+   * @param err Error if any.
+   * @param {Object} body The body of the image.
+   */
+
+  /**
+   * 
+   * @param {string} hash The hash of the image to find.
+   * @param {imgur} callback 
+   */
+  imgur(hash, callback) {
+    const options = {
+      'method': 'GET',
+      'hostname': 'api.imgur.com',
+      'path': '/3/image/' + hash,
+      'headers': {
+        'Authorization': 'Client-ID d7cfb4c79f57468'
+      }
+    };
+
+    const req = https.request(options, function (res) {
+      const chunks = [];
+
+      res.on("data", function (chunk) {
+        chunks.push(chunk);
+      });
+
+      res.on("end", function (chunk) {
+        const body = Buffer.concat(chunks);
+        callback(JSON.parse(body).data.error, JSON.parse(body));
+      });
+
+      res.on("error", function (error) {
+        console.log(error);
+      });
+    });
+
+    const postData = "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; ------WebKitFormBoundary7MA4YWxkTrZu0gW--";
+    req.setHeader('content-type', 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW');
+    req.write(postData);
+    req.end();
   }
 
   /**

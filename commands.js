@@ -72,8 +72,9 @@ module.exports.registerCommands = async function (client, mbot) {
     if (command === 'test') {
       message.channel.send("Test recieved").then(async sent => {
         sent.react("🔼");
-        await sent.awaitReactions(reaction => {
-          if (reaction.emoji.name === "🔼") {
+        await sent.awaitReactions((reaction, user) => {
+          if (reaction.emoji.name === "🔼" && user.id != client.user.id) {
+            reaction.remove(message.author);
             sent.channel.send("Emoji recieved");
           }
         }, {
