@@ -1,7 +1,7 @@
 const sqlite = require('sqlite3').verbose();
 const tls = require('../../tools');
 const tools = new tls.Tools();
-const Discord = require('discord.js');
+const mbot = require('../../mbot');
 
 let db = new sqlite.Database('./mbot.db', (err) => {
     if (err) {
@@ -9,19 +9,13 @@ let db = new sqlite.Database('./mbot.db', (err) => {
     }
 });
 
+
 module.exports = {
     name: "modules",
-    usage: "<moduleName> <moduleOption> [setTo]",
+    usage: "<moduleName> <moduleOption> [setTo, ?name] [?setTo]",
     description: "Use modules for your server. [Documentation](https://muricans.github.io/mbot/)",
     args: true,
     minArgs: 2,
-    /**
-     * 
-     * @param {Discord.Message} message 
-     * @param {*} args 
-     * @param {*} client 
-     * @param {*} prefix 
-     */
     execute(message, args, client, prefix) {
         //0=moduleName
         //1=moduleOption
@@ -183,6 +177,19 @@ module.exports = {
                                 message.reply(`${message.author} Please add params! ${prefix}modules commands use <true|false>`);
                                 break;
                         }
+                        break;
+                    case "edit":
+                        if (!args[2] || !args[3]) {
+                            return message.channel.send(`${message.author} Please add params! ${prefix}modules commands edit <commandName> <newMessage>`);
+                        }
+                        const command = mbot.cCommands.find(command => command.name === args[2].toLowerCase() && command.id === message.guild.id);
+                        if (!command) {
+                            return message.channel.send(`${message.author} Could not find that command!`);
+                        }
+                        const msg = args.slice(3, args.length).join(' ');
+                        mbot.event.emit('editCommand', command, msg);
+                        db.run('UPDATE commands SET message = ? WHERE id = ? AND name = ?', msg, message.guild.id, command.name);
+                        message.channel.send(`${message.author} Updated command ${command.name}'s message to ${msg}`);
                         break;
                 }
                 break;

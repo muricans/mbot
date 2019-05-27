@@ -33,7 +33,7 @@ module.exports = {
                 if (reason) return console.log(reason);
             });
         } else {
-            const kickReason = args.slice(0, args.length).join(' ');
+            const kickReason = args.slice(1, args.length).join(' ');
             return message.guild.member(mention).kick(`Kicked by: ${message.author.username} Reason: ${kickReason}`).then((member) => {
                 message.channel.send(`${message.author} Kicked user ${member.user}\nReason: ${kickReason}`);
             }).catch((reason) => {

@@ -245,6 +245,11 @@ event.on('deleteCommand', (id, name) => {
   Logger.debug(`Command ${name} was deleted from server ${id}.`);
 });
 
+event.on('editCommand', (command, msg) => {
+  command.message = msg;
+  Logger.debug(`Command ${command.name}'s message was updated to ${msg}`);
+});
+
 commands.registerCommands(client, this);
 
 app.get('/suggestions', (req, res) => {
