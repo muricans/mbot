@@ -18,6 +18,7 @@ function pageOne(edit, message, prefix) {
     .addField(prefix + 'delete <commandName>', 'Deletes a command [added by !create] from the bot [admin only]')
     .addField(prefix + 'echo <message>', 'Returns your message from the bot [admin only]')
     .addField(prefix + 'give <@user> <points>', 'Gives a user [x] amount of points')
+    .addField(prefix + 'help', 'Returns a list of commands for this bot')
     .setFooter('Page (1/' + max + ')');
   if (edit) {
     return message.edit(embed);
@@ -55,9 +56,11 @@ module.exports = {
             case 2:
               const embed2 = new Discord.RichEmbed()
                 .setTitle('Commands')
-                .addField(prefix + 'help', 'Returns a list of commands for this bot')
                 .addField(prefix + 'imgur', 'Returns a random image from imgur')
+                .addField(prefix + 'kick <user> [reason]', 'Kicks specified user')
                 .addField(prefix + 'meme', 'Returns a random meme')
+                .addField(prefix + 'modules <moduleName> <moduleOption> [setTo]', 'Use modules for your server. [Documentation](https://muricans.github.io/mbot/)')
+                .addField(prefix + `mute <user> <time?'min','hour'>`, `Keeps a player from chatting for specified time.`)
                 .addField(prefix + 'ping', 'Returns pong')
                 .addField(prefix + 'prefix <newPrefix>', 'Changes the bots prefix [admin only]')
                 .addField(prefix + 'points <@user>', "Returns the designated user's points")
@@ -74,7 +77,8 @@ module.exports = {
                 .addField(prefix + 'roll <number>', 'Returns a random number between 1 and the chosen number')
                 .addField(prefix + 'suggest <suggestion>', 'Suggest a command or feature for the bot')
                 .addField(prefix + 'suggestions [clear]', 'Check the suggestions, (include <clear> [admin only] to clear the suggestions)')
-                .addField(prefix + 'userinfo [@user]', "Returns the designated user's info")
+                .addField(prefix + 'unmute <user>', 'Unmute a muted user')
+                .addField(prefix + 'userinfo [user]', "Returns the designated user's info")
                 .addField(prefix + 'set <@user> <points>', 'Sets the users points [admin only]')
                 .addField(prefix + 'version', 'Returns the bot version and information')
                 .addField('NSFW Commands on Page 4+5', '🔞')
