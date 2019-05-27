@@ -49,6 +49,7 @@ db.serialize(function () {
   db.run('CREATE TABLE if not exists serverInfo(id TEXT, use INTEGER, UNIQUE(id))');
   db.run('CREATE TABLE if not exists commands(id TEXT, name TEXT, message TEXT)');
   db.run('CREATE TABLE if not exists commandOptions(id TEXT, everyone INTEGER, use INTEGER, UNIQUE(id))');
+  db.run('CREATE TABLE if not exists roles(id TEXT, def TEXT, use INTEGER, UNIQUE(id))');
 });
 
 function initDb(guild) {
@@ -72,6 +73,10 @@ function initDb(guild) {
     db.run('INSERT OR IGNORE INTO commandOptions(id, everyone, use) VALUES(?,?,?)',
       guild.id.toString(),
       1,
+      1);
+    db.run('INSERT OR IGNORE INTO roles(id, def, use) VALUES(?,?,?)',
+      guild.id.toString(),
+      '_none',
       1);
   });
 }
@@ -99,7 +104,7 @@ client.on('guildCreate', (guild) => {
 });
 
 client.on('guildMemberAdd', (guildMember) => {
-  new tools.Tools().getNLMessage('welcomeMessage', guildMember.guild.id.toString(), (use, msg, chl) => {
+  /*new tools.Tools().getNLMessage('welcomeMessage', guildMember.guild.id.toString(), (use, msg, chl) => {
     if (use === 1) {
       const channel = guildMember.guild.channels.find((channel => channel.name === chl));
       if (!channel) {
@@ -108,7 +113,17 @@ client.on('guildMemberAdd', (guildMember) => {
         channel.send(msg.replace('$user', guildMember.user.username));
       }
     }
-  });
+  });*/
+  new tools.Tools().getDefaultRole(guildMember.guild.id, (defaultRole, use) => {
+    if (use === 1) {
+      const role = guildMember.guild.roles.find((role => role.name === defaultRole));
+      if (!role) {
+
+      } else {
+        guildMember.addRole(role);
+      }
+    }
+  })
   db.serialize(function () {
     db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', guildMember.user.id.toString(), 100);
     if (settings.debug) {
@@ -118,7 +133,7 @@ client.on('guildMemberAdd', (guildMember) => {
 });
 
 client.on('guildMemberRemove', (guildMember) => {
-  new tools.Tools().getNLMessage('leaveMessage', guildMember.guild.id.toString(), (use, msg, chl) => {
+  /*new tools.Tools().getNLMessage('leaveMessage', guildMember.guild.id.toString(), (use, msg, chl) => {
     if (use === 1) {
       const channel = guildMember.guild.channels.find((channel => channel.name === chl));
       if (!channel) {
@@ -127,7 +142,7 @@ client.on('guildMemberRemove', (guildMember) => {
         channel.send(msg.replace('$user', guildMember.user.username));
       }
     }
-  });
+  });*/
 });
 
 // actions
@@ -143,7 +158,7 @@ client.on('ready', async () => {
   Logger.info('mbot v' + pkg.version + " has been enabled.");
   if (settings.debug) {
     try {
-      let link = await client.generateInvite(["ADMINISTRATOR"]);
+      let link = await client.generateInvite(268823670);
       Logger.debug(link);
     } catch (err) {
       console.log(err);
