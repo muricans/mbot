@@ -3,8 +3,8 @@ const tools = new tls.Tools();
 
 module.exports = {
     name: 'imgur',
-    usage: 'No usage data.',
-    description: 'Returns a random image from imgur',
+    usage: '[imageHash]',
+    description: 'Returns a random image from imgur, or an image with the provided hash',
     cooldown: 3,
     execute(message, args) {
         if (!args.length) {

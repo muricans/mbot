@@ -13,12 +13,12 @@ function pageOne(edit, message, prefix) {
     .setTitle('Commands')
     .addField(prefix + '8ball <question>', 'Ask the bot a question')
     .addField(prefix + 'create <commandName> <message>', 'Adds a command to the bot')
-    .addField(prefix + 'clean <@user> <messageAmount>', 'Deletes a specified amount of messages for a user [admin only]')
-    .addField(prefix + 'danbooru', 'Returns a danbooru image [NSFW Available]')
+    .addField(prefix + 'clean <user> [messageAmount]', 'Deletes a specified amount of messages for a user [admin only]')
+    .addField(prefix + 'danbooru [tag]', 'Returns a danbooru image [NSFW Available]')
     .addField(prefix + 'delete <commandName>', 'Deletes a command [added by !create] from the bot [admin only]')
     .addField(prefix + 'echo <message>', 'Returns your message from the bot [admin only]')
-    .addField(prefix + 'give <@user> <points>', 'Gives a user [x] amount of points')
-    .addField(prefix + 'help', 'Returns a list of commands for this bot')
+    .addField(prefix + 'give <user> <points>', 'Gives a user [x] amount of points')
+    .addField(prefix + 'help [command]', 'Returns a list of commands for this bot')
     .setFooter('Page (1/' + max + ')');
   if (edit) {
     return message.edit(embed);
@@ -49,53 +49,54 @@ module.exports = {
             }
 
             let pageData = 'Page (' + page + '/' + max + ')';
+            let embed;
 
             switch (page) {
               case 1:
                 pageOne(true, sent, prefix);
                 break;
               case 2:
-                const embed2 = new Discord.RichEmbed()
+                embed = new Discord.RichEmbed()
                   .setTitle('Commands')
-                  .addField(prefix + 'imgur', 'Returns a random image from imgur')
+                  .addField(prefix + 'imgur [hash]', 'Returns a random image from imgur, or an image with the provided hash')
                   .addField(prefix + 'kick <user> [reason]', 'Kicks specified user')
                   .addField(prefix + 'meme', 'Returns a random meme')
-                  .addField(prefix + 'modules <moduleName> <moduleOption> [setTo]', 'Use modules for your server. [Documentation](https://muricans.github.io/mbot/)')
+                  .addField(prefix + 'modules <moduleName> <moduleOption> [setTo, ?name] [?setTo]', 'Use modules for your server. [Documentation](https://muricans.github.io/mbot/)')
                   .addField(prefix + `mute <user> <time?'min','hour'>`, `Keeps a player from chatting for specified time.`)
                   .addField(prefix + 'ping', 'Returns pong')
                   .addField(prefix + 'prefix <newPrefix>', 'Changes the bots prefix [admin only]')
-                  .addField(prefix + 'points <@user>', "Returns the designated user's points")
+                  .addField(prefix + 'points [user]', "Returns the designated user's (or your own) points")
                   .setFooter(pageData);
                 //console.log(page);
-                sent.edit(embed2);
+                sent.edit(embed);
                 break;
               case 3:
-                const embed3 = new Discord.RichEmbed()
+                embed = new Discord.RichEmbed()
                   .setTitle('Commands')
                   .addField(prefix + 'qr <information>', 'Returns a QR code with the designated information')
-                  .addField(prefix + 'random <subreddit> [time] [search]', 'Returns a random thread from a subreddit')
-                  .addField(prefix + 'roulette <bet amount>', 'Returns win/loss and new total points')
-                  .addField(prefix + 'roll <number>', 'Returns a random number between 1 and the chosen number')
+                  .addField(prefix + 'random <subreddit> [time|search] [search]', 'Returns a random thread from a subreddit')
+                  .addField(prefix + 'roulette <amount>', 'Returns win/loss and new total points')
+                  .addField(prefix + 'roll [number]', 'Returns a random number between 1 and the chosen number')
                   .addField(prefix + 'suggest <suggestion>', 'Suggest a command or feature for the bot')
                   .addField(prefix + 'suggestions [clear]', 'Check the suggestions, (include <clear> [admin only] to clear the suggestions)')
                   .addField(prefix + 'unmute <user>', 'Unmute a muted user')
                   .addField(prefix + 'userinfo [user]', "Returns the designated user's info")
                   .setFooter(pageData);
                 //console.log(page);
-                sent.edit(embed3);
+                sent.edit(embed);
                 break;
               case 4:
-                const embed4 = new Discord.RichEmbed()
+                embed = new Discord.RichEmbed()
                   .setTitle('Commands')
-                  .addField(prefix + 'set <@user> <points>', 'Sets the users points [admin only]')
+                  .addField(prefix + 'set <user> <points>', 'Sets the users points [admin only]')
                   .addField(prefix + 'serverinfo [serverID]', 'Get server info on the server you are currently on, or another the bot is currently on by giving that servers ID.')
                   .addField(prefix + 'version', 'Returns the bot version and information')
                   .addField('NSFW Commands on Page 5+6', '🔞')
                   .setFooter(pageData);
-                sent.edit(embed4);
+                sent.edit(embed);
                 break;
               case 5:
-                const embed5 = new Discord.RichEmbed()
+                embed = new Discord.RichEmbed()
                   .setTitle('NSFW Commands')
                   .addField(prefix + 'anal', 'Returns an anal image')
                   .addField(prefix + 'ass', 'Returns an image of an ass')
@@ -106,10 +107,10 @@ module.exports = {
                   .addField(prefix + 'nsfw', 'Returns an nsfw image (Straight)')
                   .setFooter(pageData);
                 //console.log(page);
-                sent.edit(embed5);
+                sent.edit(embed);
                 break;
               case 6:
-                const embed6 = new Discord.RichEmbed()
+                embed = new Discord.RichEmbed()
                   .setTitle('NSFW Commands')
                   .addField(prefix + 'pegging', 'Returns a pegging image')
                   .addField(prefix + 'r34xxx [tags]', 'Returns an image from rule34')
@@ -120,7 +121,7 @@ module.exports = {
                   .addField(prefix + 'gay', 'Returns a gay porn image')
                   .setFooter(pageData);
                 //console.log(page);
-                sent.edit(embed6);
+                sent.edit(embed);
                 break;
             }
 
