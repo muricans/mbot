@@ -7,9 +7,6 @@ module.exports = {
     description: 'Check the suggestions, (include <clear> [admin only] to clear the suggestions)',
     owner: true,
     execute(message, args, client, prefix) {
-        if (message.author.id != "399121700429627393") {
-            return message.channel.send(`${message.author} You do not have permission to use this command!`);
-        }
         if (args.length === 0) {
             const current = suggestions.read();
             for (var i in current) {

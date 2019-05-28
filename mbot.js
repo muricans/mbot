@@ -6,17 +6,12 @@ const tools = require('./tools.js');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const sqlite = require('sqlite3').verbose();
-const express = require('express');
-const fs = require('fs');
-const app = express();
 const Logger = require('./logger');
 
 if (settings.token === "YOURTOKEN" || !settings.token.length) {
   Logger.error('Please add your token to the bot!');
   return process.exit(1);
 }
-
-app.use(express.json());
 
 /**
  * This bots EventEmitter
@@ -245,16 +240,13 @@ event.on('deleteCommand', (id, name) => {
   Logger.debug(`Command ${name} was deleted from server ${id}.`);
 });
 
-commands.registerCommands(client, this);
-
-app.get('/suggestions', (req, res) => {
-  fs.createReadStream('./suggestions.json', 'utf8').on('data', (chunk) => {
-    let suggestions = JSON.parse(chunk);
-    res.send(suggestions);
-  });
+event.on('editCommand', (command, msg) => {
+  command.message = msg;
+  Logger.debug(`Command ${command.name}'s message was updated to ${msg}`);
 });
 
-//app.listen(80);
+commands.registerCommands(client, this);
+
 //login to the client
 client.login(settings.token).catch(err => {
   if (err) {
