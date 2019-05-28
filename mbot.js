@@ -261,7 +261,7 @@ client.login(settings.token).catch(err => {
     if (settings.debug) {
       return console.log(err);
     } else {
-      return console.log('There was an error starting the bot. Maybe check credentials?\nTo check the actual error, enable debug in your settings file.');
+      console.log('There was an error starting the bot. Maybe check credentials?\nTo check the actual error, enable debug in your settings file.\nTo check actual error enable debug in settings.');
     }
   }
 });
