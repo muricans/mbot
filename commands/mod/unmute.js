@@ -26,6 +26,9 @@ module.exports = {
             return message.channel.send(`${message.author} That user is not currently muted!`);
         }
         muted.delete(mention.id);
+        mute.mutes.delete(mention.id);
+        clearTimeout(mute.timeouts.get(mention.id));
+        mute.timeouts.delete(mention.id);
         return message.channel.send(`${message.author} Unmuted ${mention} successfully!`);
     },
 }

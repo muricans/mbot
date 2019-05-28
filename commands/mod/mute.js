@@ -3,6 +3,7 @@ const Discord = require('discord.js');
 module.exports = {
     guilds: new Discord.Collection(),
     mutes: new Discord.Collection(),
+    timeouts: new Discord.Collection(),
     name: 'mute',
     usage: `<user> <time?'min','hour'>`,
     description: 'Keeps a player from chatting for specified time.',
@@ -47,31 +48,24 @@ module.exports = {
         if (mRole.comparePositionTo(role) > 0 || mRole.position === role.position) {
             return message.channel.send(`${message.author} That user has a higher role than you!`);
         }
-        let sec;
-        let mil;
-        let minutes;
-        let out;
-        if (hasMin(args[1])) {
-            minutes = parseInt(args[1]);
-            sec = (parseInt(args[1]) * 60);
-            mil = (sec * 1000);
-            let hours;
+        let out = "Error occured";
+        const mil = parseTime(args[1]);
+        if (hasMin(args[1]) && !hasHour(args[1])) {
+            const minutes = parseInt(args[1]);
             if (minutes >= 60) {
-                hours = Math.floor(minutes / 60);
+                out = `${Math.floor(minutes / 60)} hour(s)`;
+            } else {
+                out = `${minutes} minute(s)`;
             }
-            out = minutes >= 60 ? `${hours} hour(s)` : `${minutes} minute(s)`;
-        } else if (hasHour(args[1])) {
-            const hours = (parseInt(args[1]));
-            sec = (hours * 3600);
-            mil = (sec * 1000);
-            out = `${hours} hour(s)`;
+        } else if (hasHour(args[1]) && !hasMin(args[1])) {
+            out = `${parseInt(args[1])} hour(s)`;
         } else {
-            sec = (parseInt(args[1]));
-            mil = (sec * 1000);
+            const sec = parseInt(args[1]);
             if (sec >= 60) {
-                minutes = Math.floor(sec / 60);
+                out = `${Math.floor(sec / 60)} minute(s)`;
+            } else {
+                out = `${sec} seconds`;
             }
-            out = sec >= 60 ? `${minutes} minute(s)` : `${sec} second(s)`;
         }
         muteMember(muted, mention.id, mil);
         return message.channel.send(`${message.author} muted ${mention} for ${out}!`);
@@ -81,7 +75,13 @@ module.exports = {
 function muteMember(muted, id, mil) {
     module.exports.mutes.set(id, Date.now());
     muted.set(id, mil);
-    setTimeout(() => muted.delete(id), mil);
+    const timeout = setTimeout(() => {
+        muted.delete(id);
+        module.exports.mutes.delete(id);
+        module.exports.timeouts.delete(id);
+    }, mil);
+    module.exports.timeouts.set(id, timeout);
+    timeout;
 }
 
 const minAlias = ['min', 'minute', 'm', 'minutes', 'mins'];
@@ -101,4 +101,33 @@ function hasHour(string) {
         if (string.includes(hourAlias[i])) contains = true;
     }
     return contains;
+}
+
+function parseTime(object) {
+    let isHour = false;
+    let isMinute = false;
+    for (let i in hourAlias) {
+        if (object.includes(hourAlias[i])) {
+            isHour = true;
+        } else {
+            for (let i2 in minAlias) {
+                if (object.includes(minAlias[i2]) && !object.includes(hourAlias[i])) isMinute = true;
+            }
+        }
+    }
+    if (isMinute) {
+        const minutes = parseInt(object);
+        const sec = (minutes * 60);
+        const mil = (sec * 1000);
+        return mil;
+    } else if (isHour) {
+        const hours = parseInt(object);
+        const sec = (hours * 3600);
+        const mil = (sec * 1000);
+        return mil;
+    } else {
+        const sec = parseInt(object);
+        const mil = (sec * 1000);
+        return mil;
+    }
 }

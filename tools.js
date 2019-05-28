@@ -117,6 +117,7 @@ class Tools {
    */
 
   /**
+   * Gets a servers welcomeMessage or leaveMessage options.
    * 
    * @param {string} name Takes either welcomeMessage or leaveMessage
    * @param {string} id The server id to get information from.
@@ -142,6 +143,7 @@ class Tools {
    */
 
   /**
+   * Gets a servers prefix.
    * 
    * @param {string} id The server id to get information from.
    * @param {prefix} callback 
@@ -164,6 +166,7 @@ class Tools {
    */
 
   /**
+   * Whether or not a server is using the serverinfo command.
    * 
    * @param {string} id The server id to get information from.
    * @param {serverInfo} callback 
@@ -179,6 +182,23 @@ class Tools {
     });
   }
 
+  /**
+   * @callback commandOptions
+   * @param {number} everyone Whether the server's custom commands able to be created by everyone or not. Returns 1 or 0.
+   * @param {number} use Whether the server is using custom commands or not. Returns 1 or 0.
+   * @returns {void}
+   */
+
+  /**
+   * Gets a servers options for custom commands.
+   * 
+   * @param {string} id The server id to get information from.
+   * @param {commandOptions} callback 
+   * @example
+   * tools.getCommandOptions("someserverid", (everyone, use) => {
+   *  // stuff here
+   * });
+   */
   getCommandOptions(id, callback) {
     db.get(`SELECT everyone everyone, use use FROM commandOptions WHERE id = ${id}`, (err, row) => {
       if (err) return console.log(err);
@@ -186,6 +206,22 @@ class Tools {
     });
   }
 
+  /**
+   * @callback defaultRole
+   * @param {string} def The servers default role.
+   * @param {number} use Whether the server is using default roles or not. Returns 1 or 0.
+   * @returns {void}
+   */
+  /**
+   * Gets a servers default role.
+   * 
+   * @param {string} id The server id to get information from.
+   * @param {defaultRole} callback 
+   * @example
+   * tools.getDefaultRole("someserverid", (def, use) => {
+   *  // stuff here
+   * });
+   */
   getDefaultRole(id, callback) {
     db.get(`SELECT def def, use use FROM roles WHERE id = ${id}`, (err, row) => {
       if (err) return console.log(err);
@@ -203,6 +239,10 @@ class Tools {
    * Get gallery information
    * 
    * @param {gallery} callback
+   * @example
+   * tools.gallery((body) => {
+   *  // stuff here
+   * });
    */
   gallery(callback) {
     const options = {
@@ -239,14 +279,19 @@ class Tools {
 
   /**
    * @callback imgur
-   * @param err Error if any.
+   * @param {string} err Error if any.
    * @param {Object} body The body of the image.
    */
 
   /**
    * 
    * @param {string} hash The hash of the image to find.
-   * @param {imgur} callback 
+   * @param {imgur} callback
+   * @example
+   * tools.imgur('Kc5jp2o', (err, body) => {
+   *  if(err) return console.log(err);
+   *  // stuff here
+   * });
    */
   imgur(hash, callback) {
     const options = {
@@ -348,6 +393,8 @@ class Tools {
 
   /**
    * @deprecated Most of the imgur links it sends are dead links, it's very unreliable.
+   * @see #imgur
+   * @see #gallery
    * 
    * @description Get a random imgur image
    * @param {Discord.Message} message The message to respond to.
