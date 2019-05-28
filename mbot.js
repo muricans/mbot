@@ -11,7 +11,7 @@ const fs = require('fs');
 const app = express();
 const Logger = require('./logger');
 
-if (settings.token === "YOURTOKEN") {
+if (settings.token === "YOURTOKEN" || !settings.token.length) {
   Logger.error('Please add your token to the bot!');
   return process.exit(1);
 }
@@ -256,4 +256,12 @@ app.get('/suggestions', (req, res) => {
 
 //app.listen(80);
 //login to the client
-client.login(settings.token);
+client.login(settings.token).catch(err => {
+  if (err) {
+    if (settings.debug) {
+      return console.log(err);
+    } else {
+      return console.log('There was an error starting the bot. Maybe check credentials?\nTo check the actual error, enable debug in your settings file.');
+    }
+  }
+});
