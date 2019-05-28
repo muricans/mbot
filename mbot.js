@@ -99,21 +99,21 @@ client.on('guildCreate', (guild) => {
 });
 
 client.on('guildMemberAdd', (guildMember) => {
-  /*new tools.Tools().getNLMessage('welcomeMessage', guildMember.guild.id.toString(), (use, msg, chl) => {
+  new tools.Tools().getNLMessage('welcomeMessage', guildMember.guild.id, (use, msg, channel) => {
     if (use === 1) {
-      const channel = guildMember.guild.channels.find((channel => channel.name === chl));
-      if (!channel) {
-
+      const chnl = guildMember.guild.channels.find(chnl => chnl.name === channel);
+      if (!chnl) {
+        return;
       } else {
-        channel.send(msg.replace('$user', guildMember.user.username));
+        chnl.send(msg.replace('$user', guildMember.user.username));
       }
     }
-  });*/
+  });
   new tools.Tools().getDefaultRole(guildMember.guild.id, (defaultRole, use) => {
     if (use === 1) {
       const role = guildMember.guild.roles.find((role => role.name === defaultRole));
       if (!role) {
-
+        return;
       } else {
         guildMember.addRole(role);
       }
@@ -128,16 +128,16 @@ client.on('guildMemberAdd', (guildMember) => {
 });
 
 client.on('guildMemberRemove', (guildMember) => {
-  /*new tools.Tools().getNLMessage('leaveMessage', guildMember.guild.id.toString(), (use, msg, chl) => {
+  new tools.Tools().getNLMessage('leaveMessage', guildMember.guild.id.toString(), (use, msg, channel) => {
     if (use === 1) {
-      const channel = guildMember.guild.channels.find((channel => channel.name === chl));
-      if (!channel) {
-
+      const chnl = guildMember.guild.channels.find(chnl => chnl.name === channel);
+      if (!chnl) {
+        return;
       } else {
-        channel.send(msg.replace('$user', guildMember.user.username));
+        chnl.send(msg.replace('$user', guildMember.user.username));
       }
     }
-  });*/
+  });
 });
 
 // actions
