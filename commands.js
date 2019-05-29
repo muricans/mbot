@@ -249,7 +249,8 @@ module.exports.registerCommands = async function (client, mbot) {
     if (muted.has(message.author.id)) {
       message.delete();
       const now = Date.now();
-      const exp = mute.mutes.get(message.author.id) + muted.get(message.author.id);
+      const mutes = mute.mutesGuilds.get(message.guild.id);
+      const exp = mutes.get(message.author.id) + muted.get(message.author.id);
       if (now < exp) {
         const left = (exp - now) / 1000;
         let out;
