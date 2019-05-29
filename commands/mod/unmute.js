@@ -24,4 +24,4 @@ module.exports = {
         tools.unmuteMember(message.guild.id, mention.id);
         return message.channel.send(`${message.author} Unmuted ${mention} successfully!`);
     },
-}
+};

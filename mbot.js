@@ -25,7 +25,7 @@ const event = module.exports.event;
  */
 module.exports.cCommands = [];
 
-let db = new sqlite.Database('./mbot.db', (err) => {
+const db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
     console.error(err.message);
   }
@@ -36,7 +36,7 @@ let seconds = 0;
 let minutes = 0;
 let hours = 0;
 
-db.serialize(function () {
+db.serialize(() => {
   db.run('CREATE TABLE if not exists users(id TEXT, points INTEGER, UNIQUE(id))');
   db.run('CREATE TABLE if not exists welcomeMessage(id TEXT, use INTEGER, message TEXT, channel TEXT, UNIQUE(id))');
   db.run('CREATE TABLE if not exists leaveMessage(id TEXT, use INTEGER, message TEXT, channel TEXT, UNIQUE(id))');
@@ -77,7 +77,7 @@ function initDb(guild) {
 }
 
 event.on('ready', () => {
-  for (let i in client.guilds.array()) {
+  for (const i in client.guilds.array()) {
     const guild = client.guilds.array()[i];
     initDb(guild);
   }
@@ -89,7 +89,7 @@ event.on('ready', () => {
     module.exports.cCommands.push({
       "id": row.id,
       "name": row.name,
-      "message": row.message
+      "message": row.message,
     });
   });
 });
@@ -119,7 +119,7 @@ client.on('guildMemberAdd', (guildMember) => {
       }
     }
   })
-  db.serialize(function () {
+  db.serialize(() => {
     db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', guildMember.user.id.toString(), 100);
     if (settings.debug) {
       Logger.debug('New user found, registering them to the bot database with ID of ' + guildMember.user.id.toString());
@@ -143,8 +143,8 @@ client.on('guildMemberRemove', (guildMember) => {
 // actions
 client.on('ready', async () => {
   event.emit('ready');
-  db.serialize(function () {
-    var u, user;
+  db.serialize(() => {
+    let u, user;
     for (u in client.users.array()) {
       user = client.users.array()[u];
       db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', user.id.toString(), 100);
@@ -153,19 +153,19 @@ client.on('ready', async () => {
   Logger.info('mbot v' + pkg.version + " has been enabled.");
   if (settings.debug) {
     try {
-      let link = await client.generateInvite(268823670);
+      const link = await client.generateInvite(268823670);
       Logger.debug(link);
     } catch (err) {
       console.log(err);
     }
   }
-  setInterval(function () {
-    db.serialize(function () {
-      db.each("SELECT points points, id id FROM users", function (err, row) {
+  setInterval(() => {
+    db.serialize(() => {
+      db.each("SELECT points points, id id FROM users", (err, row) => {
         if (err) {
           console.log(err);
         }
-        var u, user;
+        let u, user;
         for (u in client.users.array()) {
           user = client.users.array()[u];
           if (row.id === user.id.toString()) {
@@ -193,7 +193,7 @@ client.on('ready', async () => {
  * Get the bots uptime in hh:mm:ss format.
  * @returns {string}
  */
-module.exports.getUptime = function () {
+module.exports.getUptime = () => {
   const h = hours < 10 ? "0" + hours : hours;
   const m = minutes < 10 ? "0" + minutes : minutes;
   const s = seconds < 10 ? "0" + seconds : seconds;
@@ -202,23 +202,23 @@ module.exports.getUptime = function () {
 
 //game | only allows for default emojis
 const games = ['Minecraft', 'Murdering Martine the BOT', 'nymnBridge PewDiePie', 'Acrozze a mega gay',
-  'This bot was made by me 😃', 'help me'
+  'This bot was made by me 😃', 'help me',
 ];
 event.on('uptimeMinute', () => {
   const randomStatus = games[Math.floor(Math.random() * games.length)];
   client.user.setPresence({
     satus: 'online',
     game: {
-      name: randomStatus
-    }
+      name: randomStatus,
+    },
   });
 });
 
-event.on('filesLoaded', function () {
+event.on('filesLoaded', () => {
   Logger.file('Command files loaded!');
 });
 
-event.on('pointsUpdated', function (amnt, id) {
+event.on('pointsUpdated', (amnt, id) => {
   if (settings.debug) {
     Logger.debug(`Set ${id}'s points to ${amnt}!`);
   }
@@ -228,7 +228,7 @@ event.on('newCommand', (id, name, message) => {
   module.exports.cCommands.push({
     "id": id,
     "name": name,
-    "message": message
+    "message": message,
   });
   Logger.debug(`Command ${name} was created in server ${id}.`);
 });

@@ -2,7 +2,7 @@ const sqlite = require('sqlite3').verbose();
 const tls = require('../../tools');
 const tools = new tls.Tools();
 
-let db = new sqlite.Database('./mbot.db', (err) => {
+const db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
     console.error(err.message);
   }
@@ -23,8 +23,8 @@ module.exports = {
     if (!message.mentions.users.first()) {
       return message.reply('That user does not exist!');
     }
-    db.serialize(function () {
-      db.get("SELECT points points FROM users WHERE id = " + message.mentions.users.first().id.toString(), function (err, row) {
+    db.serialize(() => {
+      db.get("SELECT points points FROM users WHERE id = " + message.mentions.users.first().id.toString(), () => {
         const amnt = parseInt(args[1]);
         if (isNaN(amnt)) {
           return message.reply('Please use numbers!');

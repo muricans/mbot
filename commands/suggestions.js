@@ -9,7 +9,7 @@ module.exports = {
     execute(message, args, client, prefix) {
         if (args.length === 0) {
             const current = suggestions.read();
-            for (var i in current) {
+            for (const i in current) {
                 message.channel.send(current[i].suggestion + '\n' + current[i].by);
             }
             return;

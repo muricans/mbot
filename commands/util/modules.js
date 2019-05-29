@@ -3,7 +3,7 @@ const tls = require('../../tools');
 const tools = new tls.Tools();
 const mbot = require('../../mbot');
 
-let db = new sqlite.Database('./mbot.db', (err) => {
+const db = new sqlite.Database('./mbot.db', (err) => {
     if (err) {
         console.error(err.message);
     }
@@ -70,7 +70,6 @@ module.exports = {
                             tools.addCooldown(module.exports.name, 10, message);
                             return message.channel.send(`${message.author} Set the welcomemessage channel to ${args[2]}!`);
                         }
-                        break;
                 }
                 break;
             case "leavemessage":

@@ -80,7 +80,7 @@ function writeLog(message, type) {
 }
 
 function time() {
-    let date = new Date();
+    const date = new Date();
 
     let hour = date.getHours();
     hour = (hour < 10 ? "0" : "") + hour;

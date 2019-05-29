@@ -75,11 +75,11 @@ module.exports = {
         tools.muteMember(message.guild.id, mention.id, mil);
         return message.channel.send(`${message.author} muted ${mention} for ${out}!`);
     },
-}
+};
 
 function hasMin(string) {
     let contains = false;
-    for (let i in minAlias) {
+    for (const i in minAlias) {
         if (string.includes(minAlias[i])) contains = true;
     }
     return contains;
@@ -87,7 +87,7 @@ function hasMin(string) {
 
 function hasHour(string) {
     let contains = false;
-    for (let i in hourAlias) {
+    for (const i in hourAlias) {
         if (string.includes(hourAlias[i])) contains = true;
     }
     return contains;

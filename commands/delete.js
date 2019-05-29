@@ -2,7 +2,7 @@ const sqlite = require('sqlite3').verbose();
 const mbot = require('../mbot');
 const cCommands = mbot.cCommands;
 
-let db = new sqlite.Database('./mbot.db', (err) => {
+const db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
     console.error(err.message);
   }
@@ -15,9 +15,9 @@ module.exports = {
   cooldown: 5,
   args: true,
   minArgs: 1,
-  execute(message, args, client, prefix) {
+  execute(message, args, client) {
     const weirdChamp = client.emojis.get("572690273247821824");
-    let hasAdmin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");
+    const hasAdmin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");
     if (!hasAdmin) {
       return message.channel.send(message.author + " You don't have permission to use this command! " + weirdChamp);
     }

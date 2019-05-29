@@ -10,7 +10,7 @@ module.exports = {
         if (args.length === 0) {
             return tools.danbooru(message, false);
         } else {
-            let searchArgs = args.join('+');
+            const searchArgs = args.join('+');
             return tools.danbooru(message, true, searchArgs);
         }
     },

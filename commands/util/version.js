@@ -6,7 +6,7 @@ module.exports = {
     usage: 'No usage data',
     description: 'Gets the current version of the bot',
     cooldown: 3,
-    execute(message, args) {
+    execute(message) {
         const embed = new Discord.RichEmbed()
             .setTitle('mbot info')
             .setThumbnail('https://hotemoji.com/images/dl/v/robot-face-emoji-by-twitter.png')

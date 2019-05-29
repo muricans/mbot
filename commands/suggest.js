@@ -1,4 +1,3 @@
-const fs = require('fs');
 const tls = require('../tools');
 const suggestions = new tls.File('suggestions', './', 'json');
 
@@ -14,7 +13,7 @@ module.exports = {
             "suggestion": args.join(' '),
             "by": message.author.username,
             "id": message.author.id,
-            "guild": message.guild.id
+            "guild": message.guild.id,
         }, () => {
             return message.channel.send(`Added ${args.join(' ')} to suggestion list.`);
         });
