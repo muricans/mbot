@@ -1,19 +1,19 @@
+const tls = require('../../tools');
+const tools = new tls.Tools();
 const Discord = require('discord.js');
+
+const minAlias = ['min', 'minute', 'm', 'minutes', 'mins'];
+const hourAlias = ['hour', 'hours', 'h', 'hr', 'hrs'];
 
 module.exports = {
     guilds: new Discord.Collection(),
-    mutes: new Discord.Collection(),
+    mutesGuilds: new Discord.Collection(),
+    timeoutsGuilds: new Discord.Collection(),
     name: 'mute',
     usage: `<user> <time?'min','hour'>`,
     description: 'Keeps a player from chatting for specified time.',
     args: true,
     minArgs: 2,
-    /**
-     * 
-     * @param {Discord.Message} message 
-     * @param {*} args 
-     * @param {*} client 
-     */
     execute(message, args, client) {
         const canKick = message.channel.permissionsFor(message.member).has("KICK_MEMBERS");
         if (!canKick) {
@@ -21,6 +21,10 @@ module.exports = {
         }
         if (!this.guilds.has(message.guild.id)) {
             this.guilds.set(message.guild.id, new Discord.Collection());
+        }
+        if (!this.mutesGuilds.has(message.guild.id)) {
+            this.mutesGuilds.set(message.guild.id, new Discord.Collection());
+            this.timeoutsGuilds.set(message.guild.id, new Discord.Collection());
         }
         const mention = message.mentions.users.first();
         if (!mention) {
@@ -31,7 +35,9 @@ module.exports = {
             return message.channel.send(`${message.author} Please use numbers!`);
         }
         const muted = this.guilds.get(message.guild.id);
-        if (muted.has(mention.id)) {
+        const mutes = this.mutesGuilds.get(message.guild.id);
+        const timeouts = this.timeoutsGuilds.get(message.guild.id);
+        if (muted.has(mention.id) || mutes.has(mention.id) || timeouts.has(mention.id)) {
             return message.channel.send(`${message.author} That user is already muted!`);
         }
         if (mention.id === client.user.id) {
@@ -47,45 +53,29 @@ module.exports = {
         if (mRole.comparePositionTo(role) > 0 || mRole.position === role.position) {
             return message.channel.send(`${message.author} That user has a higher role than you!`);
         }
-        let sec;
-        let mil;
-        let minutes;
-        let out;
-        if (hasMin(args[1])) {
-            minutes = parseInt(args[1]);
-            sec = (parseInt(args[1]) * 60);
-            mil = (sec * 1000);
-            let hours;
+        let out = "Error occured";
+        const mil = tools.parseTime(args[1]);
+        if (hasMin(args[1]) && !hasHour(args[1])) {
+            const minutes = parseInt(args[1]);
             if (minutes >= 60) {
-                hours = Math.floor(minutes / 60);
+                out = `${Math.floor(minutes / 60)} hour(s)`;
+            } else {
+                out = `${minutes} minute(s)`;
             }
-            out = minutes >= 60 ? `${hours} hour(s)` : `${minutes} minute(s)`;
-        } else if (hasHour(args[1])) {
-            const hours = (parseInt(args[1]));
-            sec = (hours * 3600);
-            mil = (sec * 1000);
-            out = `${hours} hour(s)`;
+        } else if (hasHour(args[1]) && !hasMin(args[1])) {
+            out = `${parseInt(args[1])} hour(s)`;
         } else {
-            sec = (parseInt(args[1]));
-            mil = (sec * 1000);
+            const sec = parseInt(args[1]);
             if (sec >= 60) {
-                minutes = Math.floor(sec / 60);
+                out = `${Math.floor(sec / 60)} minute(s)`;
+            } else {
+                out = `${sec} seconds`;
             }
-            out = sec >= 60 ? `${minutes} minute(s)` : `${sec} second(s)`;
         }
-        muteMember(muted, mention.id, mil);
+        tools.muteMember(message.guild.id, mention.id, mil);
         return message.channel.send(`${message.author} muted ${mention} for ${out}!`);
     },
 }
-
-function muteMember(muted, id, mil) {
-    module.exports.mutes.set(id, Date.now());
-    muted.set(id, mil);
-    setTimeout(() => muted.delete(id), mil);
-}
-
-const minAlias = ['min', 'minute', 'm', 'minutes', 'mins'];
-const hourAlias = ['hour', 'hours', 'h', 'hr', 'hrs'];
 
 function hasMin(string) {
     let contains = false;

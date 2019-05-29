@@ -14,6 +14,8 @@ let db = new sqlite.Database('./mbot.db', (err) => {
   }
 });
 
+const minAlias = ['min', 'minute', 'm', 'minutes', 'mins'];
+const hourAlias = ['hour', 'hours', 'h', 'hr', 'hrs'];
 const nsfw = "Please move to an nsfw channel :flushed:";
 const bannedLinks = ['pornhub.com', 'xvideos.com', 'erome.com', 'xnxx.com', 'xhamster.com', 'redtube.com', 'xmov.fun', 'porness.net',
   'youtube.com', 'youtu.be', 'nhentai.net', 'efukt.com', 'hdpornhere.com', 'fm4.ru', 'xvieoxx.com', 'xtube.com', 'youporn.com'
@@ -117,6 +119,7 @@ class Tools {
    */
 
   /**
+   * Gets a servers welcomeMessage or leaveMessage options.
    * 
    * @param {string} name Takes either welcomeMessage or leaveMessage
    * @param {string} id The server id to get information from.
@@ -142,6 +145,7 @@ class Tools {
    */
 
   /**
+   * Gets a servers prefix.
    * 
    * @param {string} id The server id to get information from.
    * @param {prefix} callback 
@@ -164,6 +168,7 @@ class Tools {
    */
 
   /**
+   * Whether or not a server is using the serverinfo command.
    * 
    * @param {string} id The server id to get information from.
    * @param {serverInfo} callback 
@@ -179,6 +184,23 @@ class Tools {
     });
   }
 
+  /**
+   * @callback commandOptions
+   * @param {number} everyone Whether the server's custom commands able to be created by everyone or not. Returns 1 or 0.
+   * @param {number} use Whether the server is using custom commands or not. Returns 1 or 0.
+   * @returns {void}
+   */
+
+  /**
+   * Gets a servers options for custom commands.
+   * 
+   * @param {string} id The server id to get information from.
+   * @param {commandOptions} callback 
+   * @example
+   * tools.getCommandOptions("someserverid", (everyone, use) => {
+   *  // stuff here
+   * });
+   */
   getCommandOptions(id, callback) {
     db.get(`SELECT everyone everyone, use use FROM commandOptions WHERE id = ${id}`, (err, row) => {
       if (err) return console.log(err);
@@ -186,6 +208,22 @@ class Tools {
     });
   }
 
+  /**
+   * @callback defaultRole
+   * @param {string} def The servers default role.
+   * @param {number} use Whether the server is using default roles or not. Returns 1 or 0.
+   * @returns {void}
+   */
+  /**
+   * Gets a servers default role.
+   * 
+   * @param {string} id The server id to get information from.
+   * @param {defaultRole} callback 
+   * @example
+   * tools.getDefaultRole("someserverid", (def, use) => {
+   *  // stuff here
+   * });
+   */
   getDefaultRole(id, callback) {
     db.get(`SELECT def def, use use FROM roles WHERE id = ${id}`, (err, row) => {
       if (err) return console.log(err);
@@ -203,6 +241,10 @@ class Tools {
    * Get gallery information
    * 
    * @param {gallery} callback
+   * @example
+   * tools.gallery((body) => {
+   *  // stuff here
+   * });
    */
   gallery(callback) {
     const options = {
@@ -239,14 +281,19 @@ class Tools {
 
   /**
    * @callback imgur
-   * @param err Error if any.
+   * @param {string} err Error if any.
    * @param {Object} body The body of the image.
    */
 
   /**
    * 
    * @param {string} hash The hash of the image to find.
-   * @param {imgur} callback 
+   * @param {imgur} callback
+   * @example
+   * tools.imgur('Kc5jp2o', (err, body) => {
+   *  if(err) return console.log(err);
+   *  // stuff here
+   * });
    */
   imgur(hash, callback) {
     const options = {
@@ -348,6 +395,8 @@ class Tools {
 
   /**
    * @deprecated Most of the imgur links it sends are dead links, it's very unreliable.
+   * @see #imgur
+   * @see #gallery
    * 
    * @description Get a random imgur image
    * @param {Discord.Message} message The message to respond to.
@@ -663,6 +712,87 @@ class Tools {
    */
   users(client) {
     return client.users.array();
+  }
+
+  /**
+   * Mutes a member for the time provided.
+   * 
+   * @param {string} guildId The id of the guild you want to mute on.
+   * @param {string} id The id of the user you want to mute.
+   * @param {number} mil The time in milliseconds.
+   */
+  muteMember(guildId, id, mil) {
+    const mute = require('./commands/mod/mute');
+    const muted = mute.guilds.get(guildId);
+    const timeouts = mute.timeoutsGuilds.get(guildId);
+    const mutes = mute.mutesGuilds.get(guildId);
+    mutes.set(id, Date.now());
+    muted.set(id, mil);
+    const timeout = setTimeout(() => {
+      muted.delete(id);
+      mutes.delete(id);
+      timeouts.delete(id);
+    }, mil);
+    timeouts.set(id, timeout);
+    timeout;
+  }
+
+  /**
+   * Unmutes a member.
+   * 
+   * @param {string} guildId The id of the guild you want to unmute.
+   * @param {string} id The id of the user you want to unmute.
+   */
+  unmuteMember(guildId, id) {
+    const mute = require('./commands/mod/mute');
+    const muted = mute.guilds.get(guildId);
+    const timeouts = mute.timeoutsGuilds.get(guildId);
+    const mutes = mute.mutesGuilds.get(guildId);
+    muted.delete(id);
+    mutes.delete(id);
+    clearTimeout(timeouts.get(id));
+    timeouts.delete(id);
+  }
+
+  /**
+   * Get milliseconds out of a string.
+   * To turn the string into hours, the string must include one of these: hour, hours, h, hr, hrs.
+   * To turn the string into minutes, the string must include one of these: min, minute, m, minutes, mins.
+   * All others will be turned into seconds.
+   * 
+   * @param {string} object The string that you want to parse time out of.
+   * @returns {number} The time parsed from the given string in milliseconds. 
+   */
+  parseTime(object) {
+    if (!parseInt(object)) {
+      return new Error(`Provided string either didn't have a number or wasn't a string at all.`);
+    }
+    let isHour = false;
+    let isMinute = false;
+    for (let i in hourAlias) {
+      if (object.includes(hourAlias[i])) {
+        isHour = true;
+      } else {
+        for (let i2 in minAlias) {
+          if (object.includes(minAlias[i2]) && !object.includes(hourAlias[i])) isMinute = true;
+        }
+      }
+    }
+    if (isMinute) {
+      const minutes = parseInt(object);
+      const sec = (minutes * 60);
+      const mil = (sec * 1000);
+      return mil;
+    } else if (isHour) {
+      const hours = parseInt(object);
+      const sec = (hours * 3600);
+      const mil = (sec * 1000);
+      return mil;
+    } else {
+      const sec = parseInt(object);
+      const mil = (sec * 1000);
+      return mil;
+    }
   }
 }
 module.exports.Tools = Tools;

@@ -7,3 +7,4 @@ mbot.db
 .DS_Store
 logs/mbot.log
 version.txt
+start.bat

@@ -65,7 +65,7 @@ module.exports.registerCommands = async function (client, mbot) {
   const othercmds = [
     'ping', 'test', 'meme', 'trap', 'thighs', 'rule34', 'pegging',
     'nsfw', 'hentai', 'hardcore', 'gay', 'dick', 'boobs', 'blowjob',
-    'ass', 'anal', 'uptime'
+    'ass', 'anal', 'uptime', 'join', 'leave'
   ];
 
   function handleOther(command, message, args) {
@@ -92,6 +92,12 @@ module.exports.registerCommands = async function (client, mbot) {
 
 
     switch (command) {
+      case "join":
+        client.emit('guildMemberAdd', message.member);
+        break;
+      case "leave":
+        client.emit('guildMemberRemove', message.member);
+        break;
       case "uptime":
         message.channel.send(`${message.author} mbot has been up for: ${mbot.getUptime()}`);
         break;
@@ -243,7 +249,8 @@ module.exports.registerCommands = async function (client, mbot) {
     if (muted.has(message.author.id)) {
       message.delete();
       const now = Date.now();
-      const exp = mute.mutes.get(message.author.id) + muted.get(message.author.id);
+      const mutes = mute.mutesGuilds.get(message.guild.id);
+      const exp = mutes.get(message.author.id) + muted.get(message.author.id);
       if (now < exp) {
         const left = (exp - now) / 1000;
         let out;
