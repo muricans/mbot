@@ -59,7 +59,7 @@ module.exports.registerCommands = async (client, mbot) => {
   const othercmds = [
     'ping', 'test', 'meme', 'trap', 'thighs', 'rule34', 'pegging',
     'nsfw', 'hentai', 'hardcore', 'gay', 'dick', 'boobs', 'blowjob',
-    'ass', 'anal', 'uptime', 'join', 'leave',
+    'ass', 'anal', 'uptime',
   ];
 
   function handleOther(command, message, args) {
@@ -86,12 +86,6 @@ module.exports.registerCommands = async (client, mbot) => {
 
 
     switch (command) {
-      case "join":
-        client.emit('guildMemberAdd', message.member);
-        break;
-      case "leave":
-        client.emit('guildMemberRemove', message.member);
-        break;
       case "uptime":
         message.channel.send(`${message.author} mbot has been up for: ${mbot.getUptime()}`);
         break;
@@ -278,23 +272,21 @@ module.exports.registerCommands = async (client, mbot) => {
               return;
             }
             if (jsonMsg.startsWith('{module}')) {
-              return tools.parseCommandModule(message, jsonMsg);
+              let mention = message.mentions.users.first();
+              if (!mention) {
+                mention = message.author;
+              }
+              const params = {
+                mention: mention,
+                author: message.author,
+                prefix: prefix,
+              };
+              return message.channel.send(tools.parseCommandModule(jsonMsg, params));
             }
             return message.channel.send(jsonMsg);
           });
         }
       });
-
-      /*for (let i in mbot.cCommands) {
-        const jsonCmd = mbot.cCommands[i].name;
-        const jsonMsg = mbot.cCommands[i].message;
-        if (command === jsonCmd && mbot.cCommands[i].id === message.guild.id) {
-          if (jsonMsg.startsWith('{module}')) {
-            return tools.parseCommandModule(message, jsonMsg);
-          }
-          return message.channel.send(jsonMsg);
-        }
-      }*/
 
       othercmds.map((value, i, other) => {
         const othercmd = other[i];
@@ -302,13 +294,6 @@ module.exports.registerCommands = async (client, mbot) => {
           return handleOther(command, message, args);
         }
       });
-
-      /*for (let i in othercmds) {
-        const othercmd = othercmds[i];
-        if (command === othercmd) {
-          return handleOther(command, message, args);
-        }
-      }*/
 
       const comm = client.commands.get(command);
       if (!comm) {

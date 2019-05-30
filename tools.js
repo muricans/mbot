@@ -19,6 +19,7 @@ const hourAlias = ['hour', 'hours', 'h', 'hr', 'hrs'];
 const nsfw = "Please move to an nsfw channel :flushed:";
 const bannedLinks = ['pornhub.com', 'xvideos.com', 'erome.com', 'xnxx.com', 'xhamster.com', 'redtube.com', 'xmov.fun', 'porness.net',
   'youtube.com', 'youtu.be', 'nhentai.net', 'efukt.com', 'hdpornhere.com', 'fm4.ru', 'xvieoxx.com', 'xtube.com', 'youporn.com',
+  'spankbang.com',
 ];
 // allowed embed endings
 const endings = ['.png', '.jpg', '.gif'];
@@ -683,21 +684,20 @@ class Tools {
     }
   }
 
-  parseCommandModule(message, jsonMsg) {
-    let mention = message.mentions.users.first();
+  parseCommandModule(msg, params) {
     const date = new Date();
     const options = {
       hour: '2-digit',
       minute: '2-digit',
     };
-    if (!mention) {
-      mention = message.author;
-    }
-    const formattedMsg = jsonMsg
-      .replace('{mention}', mention)
-      .replace('{id}', mention.id.toString())
-      .replace('{time}', date.toLocaleString('en-us', options));
-    return message.channel.send(formattedMsg.slice(9));
+
+    return msg
+      .replace('{mention}', params.mention)
+      .replace('{id}', params.mention.id.toString())
+      .replace('{author}', params.author)
+      .replace('{time}', date.toLocaleString('en-us', options))
+      .replace('{prefix}', params.prefix)
+      .slice(9);
   }
 
   /**

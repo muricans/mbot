@@ -73,6 +73,10 @@ function initDb(guild) {
       guild.id.toString(),
       '_none',
       1);
+    for (let i = 0; i < guild.members.array().length; i++) {
+      const guildMember = guild.members.array()[i];
+      db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', guildMember.user.id.toString(), 100);
+    }
   });
 }
 
@@ -101,7 +105,7 @@ client.on('guildCreate', (guild) => {
 client.on('guildMemberAdd', (guildMember) => {
   new tools.Tools().getNLMessage('welcomeMessage', guildMember.guild.id, (use, msg, channel) => {
     if (use === 1) {
-      const chnl = guildMember.guild.channels.find(chnl => chnl.name === channel);
+      const chnl = guildMember.guild.channels.find(c => c.name === channel);
       if (!chnl) {
         return;
       } else {
@@ -111,14 +115,14 @@ client.on('guildMemberAdd', (guildMember) => {
   });
   new tools.Tools().getDefaultRole(guildMember.guild.id, (defaultRole, use) => {
     if (use === 1) {
-      const role = guildMember.guild.roles.find((role => role.name === defaultRole));
+      const role = guildMember.guild.roles.find((r => r.name === defaultRole));
       if (!role) {
         return;
       } else {
         guildMember.addRole(role);
       }
     }
-  })
+  });
   db.serialize(() => {
     db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', guildMember.user.id.toString(), 100);
     if (settings.debug) {
@@ -130,7 +134,7 @@ client.on('guildMemberAdd', (guildMember) => {
 client.on('guildMemberRemove', (guildMember) => {
   new tools.Tools().getNLMessage('leaveMessage', guildMember.guild.id.toString(), (use, msg, channel) => {
     if (use === 1) {
-      const chnl = guildMember.guild.channels.find(chnl => chnl.name === channel);
+      const chnl = guildMember.guild.channels.find(c => c.name === channel);
       if (!chnl) {
         return;
       } else {
@@ -198,7 +202,7 @@ module.exports.getUptime = () => {
   const m = minutes < 10 ? "0" + minutes : minutes;
   const s = seconds < 10 ? "0" + seconds : seconds;
   return `${h}:${m}:${s}`;
-}
+};
 
 //game | only allows for default emojis
 const games = ['Minecraft', 'Murdering Martine the BOT', 'nymnBridge PewDiePie', 'Acrozze a mega gay',
