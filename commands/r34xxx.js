@@ -11,9 +11,9 @@ module.exports = {
       return message.channel.send("Please move to an nsfw channel :flushed:");
     }
     if (args.length === 0) {
-      return tools.rule34(message, false);
+      return tools.rule34(message);
     }
     const searchArgs = args.join('+');
-    return tools.rule34(message, true, searchArgs);
+    return tools.rule34(message, searchArgs);
   },
 };

@@ -7,6 +7,7 @@ const mbot = require('./mbot');
 const fs = require('fs');
 const Logger = require('./logger');
 const https = require('https');
+const xmlParser = require('xml2json');
 
 const db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
@@ -417,18 +418,17 @@ class Tools {
   /**
    * Search rule34.xxx for images
    * @param {Discord.Message} message The message to respond to.
-   * @param {boolean} hasTags Whether or not the search contains tags.
    * @param {string} tags The tags to apply to the search.
    * @example
-   * tools.rule34(message, true, 'my_tag+my_other_tag');
+   * tools.rule34(message, 'my_tag+my_other_tag');
    */
-  async rule34(message, hasTags, tags) {
+  async rule34(message, tags) {
     let link, footer;
-    if (hasTags) {
-      link = "https://r34-json-api.herokuapp.com/posts?query=100&tags=" + tags;
+    if (tags != null) {
+      link = "https://rule34.xxx/index.php?page=dapi&s=post&q=index&tags=" + tags;
       footer = 'Requested by: ' + message.author.username + ' With tags: ' + tags;
     } else {
-      link = "https://r34-json-api.herokuapp.com/posts?query=100";
+      link = "https://rule34.xxx/index.php?page=dapi&s=post&q=index";
       footer = 'Requested by: ' + message.author.username;
     }
     try {
@@ -436,15 +436,32 @@ class Tools {
         body,
       } = await snekfetch
         .get(link);
-      const rn = Math.floor(Math.random() * body.length);
-      const imageData = body[rn].file_url;
+      const parsed = JSON.parse(xmlParser.toJson(body));
+      if (!parsed.posts.post || !parsed) {
+        return message.channel.send('Could not find any posts with provided tags!');
+      }
+      const count = parseInt(parsed.posts.count);
+      let imageData;
+      if (count === 1) {
+        imageData = parsed.posts.post.file_url;
+      } else {
+        const rn = Math.floor(Math.random() * parsed.posts.post.length);
+        if (!parsed.posts.post[rn]) {
+          return message.channel.send('Error occured!');
+        }
+        imageData = parsed.posts.post[rn].file_url;
+      }
+      Logger.debug(imageData);
       const embed = new Discord.RichEmbed()
         .setTitle('Random rule34.xxx image')
         .setImage(imageData)
         .setFooter(footer);
+      if (imageData.endsWith('.webm')) {
+        return message.channel.send(`Random rule34.xxx image \n${imageData}\n${footer}`);
+      }
       message.channel.send(embed);
     } catch (err) {
-      message.channel.send('Could not find any images with those tags!');
+      console.log(err);
     }
   }
 
