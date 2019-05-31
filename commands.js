@@ -1,27 +1,20 @@
 const tls = require('./tools.js');
 const tools = new tls.Tools();
 const fs = require('fs');
-const sqlite = require('sqlite3').verbose();
 const Discord = require('discord.js');
 const mute = require('./commands/mod/mute');
 
-let db = new sqlite.Database('./mbot.db', (err) => {
-  if (err) {
-    console.error(err.message);
-  }
-});
-
 const cooldowns = new Discord.Collection();
-module.exports.getCooldowns = function (key) {
+module.exports.getCooldowns = (key) => {
   return cooldowns.get(key);
-}
+};
 
 /**
  * Register commands for the bot.
  * @param {Discord.Client} client The bots client.
  * @param mbot mbot main script.
  */
-module.exports.registerCommands = async function (client, mbot) {
+module.exports.registerCommands = async (client, mbot) => {
   client.commands = new Discord.Collection();
   const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
   for (const file of commandFiles) {
@@ -57,7 +50,8 @@ module.exports.registerCommands = async function (client, mbot) {
   const hardcore = ['nsfwhardcore', 'shelikesitrough'];
   const hentai = ['ecchi', 'hentai', 'hentai_gif', 'sportshentai', 'thighdeology', 'westernhentai'];
   const nsfw = ['asianhotties', 'asiannsfw', 'asiansgonewild', 'nsfw', 'nsfw_gif', 'porninfifteenseconds'];
-  const pegging = ['pegging']; // any other subredits?
+  // any other subredits?
+  const pegging = ['pegging'];
   const rule34 = ['2booty', 'dbdgonewild', 'rule34', 'rule34lol', 'rule34rainbowsix'];
   const thighs = ['datgap', 'thighhighs'];
   const traps = ['delicioustraps', 'futanari', 'traphentai', 'traps'];
@@ -65,7 +59,7 @@ module.exports.registerCommands = async function (client, mbot) {
   const othercmds = [
     'ping', 'test', 'meme', 'trap', 'thighs', 'rule34', 'pegging',
     'nsfw', 'hentai', 'hardcore', 'gay', 'dick', 'boobs', 'blowjob',
-    'ass', 'anal', 'uptime', 'join', 'leave'
+    'ass', 'anal', 'uptime',
   ];
 
   function handleOther(command, message, args) {
@@ -78,7 +72,7 @@ module.exports.registerCommands = async function (client, mbot) {
             sent.channel.send("Emoji recieved");
           }
         }, {
-          time: 20000
+          time: 20000,
         });
       });
     }
@@ -92,12 +86,6 @@ module.exports.registerCommands = async function (client, mbot) {
 
 
     switch (command) {
-      case "join":
-        client.emit('guildMemberAdd', message.member);
-        break;
-      case "leave":
-        client.emit('guildMemberRemove', message.member);
-        break;
       case "uptime":
         message.channel.send(`${message.author} mbot has been up for: ${mbot.getUptime()}`);
         break;
@@ -284,23 +272,21 @@ module.exports.registerCommands = async function (client, mbot) {
               return;
             }
             if (jsonMsg.startsWith('{module}')) {
-              return tools.parseCommandModule(message, jsonMsg);
+              let mention = message.mentions.users.first();
+              if (!mention) {
+                mention = message.author;
+              }
+              const params = {
+                mention: mention,
+                author: message.author,
+                prefix: prefix,
+              };
+              return message.channel.send(tools.parseCommandModule(jsonMsg, params));
             }
             return message.channel.send(jsonMsg);
           });
         }
       });
-
-      /*for (let i in mbot.cCommands) {
-        const jsonCmd = mbot.cCommands[i].name;
-        const jsonMsg = mbot.cCommands[i].message;
-        if (command === jsonCmd && mbot.cCommands[i].id === message.guild.id) {
-          if (jsonMsg.startsWith('{module}')) {
-            return tools.parseCommandModule(message, jsonMsg);
-          }
-          return message.channel.send(jsonMsg);
-        }
-      }*/
 
       othercmds.map((value, i, other) => {
         const othercmd = other[i];
@@ -308,13 +294,6 @@ module.exports.registerCommands = async function (client, mbot) {
           return handleOther(command, message, args);
         }
       });
-
-      /*for (let i in othercmds) {
-        const othercmd = othercmds[i];
-        if (command === othercmd) {
-          return handleOther(command, message, args);
-        }
-      }*/
 
       const comm = client.commands.get(command);
       if (!comm) {
@@ -325,7 +304,7 @@ module.exports.registerCommands = async function (client, mbot) {
         return fs.readFile('./settings.json', 'utf8', (err, data) => {
           if (err) return console.log(err);
           const settings = JSON.parse(data);
-          for (let i in settings.bot_owners_id) {
+          for (const i in settings.bot_owners_id) {
             const owner = settings.bot_owners_id[i];
             if (message.author.id != owner) {
               return message.channel.send(`${message.author} You don't have permission to use this command!`);
@@ -339,4 +318,4 @@ module.exports.registerCommands = async function (client, mbot) {
       }
     });
   });
-}
+};

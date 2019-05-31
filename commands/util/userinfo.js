@@ -10,7 +10,7 @@ module.exports = {
   description: `Returns the designated user's info`,
   execute(message, args, client) {
     if (args.length === 0) {
-      let embed = new Discord.RichEmbed()
+      const embed = new Discord.RichEmbed()
         .setAuthor(message.author.username)
         .setDescription('User info is being displayed.')
         .addField('Full Username', `${message.author.username}#${message.author.discriminator}`)
@@ -47,7 +47,7 @@ module.exports = {
           .setThumbnail(mention.avatarURL);
         tools.addCooldown(module.exports.name, 5, message);
         return message.channel.send(embed);
-      }).catch((err) => {
+      }).catch(() => {
         return message.channel.send(`${message.author} Could not find that user!`);
       });
     }

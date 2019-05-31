@@ -7,8 +7,9 @@ const mbot = require('./mbot');
 const fs = require('fs');
 const Logger = require('./logger');
 const https = require('https');
+const xmlParser = require('xml2json');
 
-let db = new sqlite.Database('./mbot.db', (err) => {
+const db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
     console.error(err.message);
   }
@@ -18,7 +19,8 @@ const minAlias = ['min', 'minute', 'm', 'minutes', 'mins'];
 const hourAlias = ['hour', 'hours', 'h', 'hr', 'hrs'];
 const nsfw = "Please move to an nsfw channel :flushed:";
 const bannedLinks = ['pornhub.com', 'xvideos.com', 'erome.com', 'xnxx.com', 'xhamster.com', 'redtube.com', 'xmov.fun', 'porness.net',
-  'youtube.com', 'youtu.be', 'nhentai.net', 'efukt.com', 'hdpornhere.com', 'fm4.ru', 'xvieoxx.com', 'xtube.com', 'youporn.com'
+  'youtube.com', 'youtu.be', 'nhentai.net', 'efukt.com', 'hdpornhere.com', 'fm4.ru', 'xvieoxx.com', 'xtube.com', 'youporn.com',
+  'spankbang.com',
 ];
 // allowed embed endings
 const endings = ['.png', '.jpg', '.gif'];
@@ -70,7 +72,7 @@ class Tools {
    */
   end(string) {
     let contains = false;
-    var e, ending;
+    let e, ending;
     for (e in endings) {
       ending = endings[e];
       if (string.includes(ending)) {
@@ -87,7 +89,7 @@ class Tools {
    */
   banned(string) {
     let contains = false;
-    var b, banned;
+    let b, banned;
     for (b in bannedLinks) {
       banned = bannedLinks[b];
       if (string.includes(banned)) {
@@ -252,23 +254,23 @@ class Tools {
       'hostname': 'api.imgur.com',
       'path': '/3/gallery/hot/viral/day/?showViral=true&mature=false&album_previews=false',
       'headers': {
-        'Authorization': 'Client-ID d7cfb4c79f57468'
-      }
+        'Authorization': 'Client-ID d7cfb4c79f57468',
+      },
     };
 
-    const req = https.request(options, function (res) {
-      var chunks = [];
+    const req = https.request(options, (res) => {
+      const chunks = [];
 
-      res.on("data", function (chunk) {
+      res.on("data", (chunk) => {
         chunks.push(chunk);
       });
 
-      res.on("end", function (chunk) {
+      res.on("end", () => {
         const body = Buffer.concat(chunks);
         callback(JSON.parse(body));
       });
 
-      res.on("error", function (error) {
+      res.on("error", (error) => {
         console.error(error);
       });
     });
@@ -301,23 +303,23 @@ class Tools {
       'hostname': 'api.imgur.com',
       'path': '/3/image/' + hash,
       'headers': {
-        'Authorization': 'Client-ID d7cfb4c79f57468'
-      }
+        'Authorization': 'Client-ID d7cfb4c79f57468',
+      },
     };
 
-    const req = https.request(options, function (res) {
+    const req = https.request(options, (res) => {
       const chunks = [];
 
-      res.on("data", function (chunk) {
+      res.on("data", (chunk) => {
         chunks.push(chunk);
       });
 
-      res.on("end", function (chunk) {
+      res.on("end", () => {
         const body = Buffer.concat(chunks);
         callback(JSON.parse(body).data.error, JSON.parse(body));
       });
 
-      res.on("error", function (error) {
+      res.on("error", (error) => {
         console.log(error);
       });
     });
@@ -339,21 +341,16 @@ class Tools {
   roulette(amnt, current, message, client, all) {
     const smile = client.emojis.get("566861749324873738");
     const wtf = client.emojis.get("567905581868777492");
-    const chance = Math.floor(Math.random() * 100);
-    let wonall;
-    let won;
+    const chance = Math.floor(Math.random() * 1000) + 1;
     let lost;
-    if (chance > 56) { // chance of winning
+    // chance of winning
+    if (chance > 560) {
       if (all) {
-        wonall = current * 2;
+        const won = current * 2;
+        this.setPoints(won, message.author.id.toString());
+        return message.reply(smile + " You won " + (won - current) + " points! Now you have " + won + " points.");
       } else {
-        won = current + amnt;
-      }
-      //const win = won
-      if (all) {
-        this.setPoints(wonall, message.author.id.toString());
-        return message.reply(smile + " You won " + (wonall - current) + " points! Now you have " + wonall + " points.");
-      } else {
+        const won = current + amnt;
         this.setPoints(won, message.author.id.toString());
         return message.reply(smile + " You won " + (won - current) + " points! Now you have " + won + " points.");
       }
@@ -377,7 +374,7 @@ class Tools {
    */
   webSearch(url, message) {
     if (url.includes('.gifv')) {
-      message.channel.send("Random Web Search")
+      message.channel.send("Random Web Search");
       message.channel.send(url);
       message.channel.send("Requested by: " + message.author.username);
     } else if (this.end(url)) {
@@ -404,11 +401,11 @@ class Tools {
   async getImage(message) {
     try {
       const {
-        body
+        body,
       } = await snekfetch
         .get('https://imgur.com/gallery/random.json')
         .query({
-          limit: 4000
+          limit: 4000,
         });
       const rn = Math.floor(Math.random() * body.data.length);
       const imageData = body.data[rn].hash;
@@ -421,49 +418,64 @@ class Tools {
   /**
    * Search rule34.xxx for images
    * @param {Discord.Message} message The message to respond to.
-   * @param {boolean} hasTags Whether or not the search contains tags.
    * @param {string} tags The tags to apply to the search.
    * @example
-   * tools.rule34(message, true, 'my_tag+my_other_tag');
+   * tools.rule34(message, 'my_tag+my_other_tag');
    */
-  async rule34(message, hasTags, tags) {
+  async rule34(message, tags) {
     let link, footer;
-    if (hasTags) {
-      link = "https://r34-json-api.herokuapp.com/posts?query=100&tags=" + tags;
+    if (tags != null) {
+      link = "https://rule34.xxx/index.php?page=dapi&s=post&q=index&tags=" + tags;
       footer = 'Requested by: ' + message.author.username + ' With tags: ' + tags;
     } else {
-      link = "https://r34-json-api.herokuapp.com/posts?query=100";
+      link = "https://rule34.xxx/index.php?page=dapi&s=post&q=index";
       footer = 'Requested by: ' + message.author.username;
     }
     try {
       const {
-        body
+        body,
       } = await snekfetch
         .get(link);
-      const rn = Math.floor(Math.random() * body.length);
-      const imageData = body[rn].file_url;
+      const parsed = JSON.parse(xmlParser.toJson(body));
+      if (!parsed.posts.post || !parsed) {
+        return message.channel.send('Could not find any posts with provided tags!');
+      }
+      const count = parseInt(parsed.posts.count);
+      let imageData;
+      if (count === 1) {
+        imageData = parsed.posts.post.file_url;
+      } else {
+        const rn = Math.floor(Math.random() * parsed.posts.post.length);
+        if (!parsed.posts.post[rn]) {
+          return message.channel.send('Error occured!');
+        }
+        imageData = parsed.posts.post[rn].file_url;
+      }
+      Logger.debug(imageData);
       const embed = new Discord.RichEmbed()
         .setTitle('Random rule34.xxx image')
         .setImage(imageData)
         .setFooter(footer);
+      if (imageData.endsWith('.webm')) {
+        return message.channel.send(`Random rule34.xxx image \n${imageData}\n${footer}`);
+      }
       message.channel.send(embed);
     } catch (err) {
-      message.channel.send('Could not find any images with those tags!');
+      console.log(err);
     }
   }
 
   /**
    * Search danbooru for images.
+   * 
    * @param {Discord.Message} message The message to respond to.
-   * @param {boolean} hasTags Whether or not the search contains tags.
    * @param {string} tags The tags to apply to the search.
-   * @param {boolean} isRedo Whether or not the current search is a second one.
    * @example
-   * tools.danbooru(message, true, 'my_tag+my_other_tag');
+   * tools.danbooru(message, 'my_tag+my_other_tag');
    */
-  async danbooru(message, hasTags, tags, isRedo) {
+  async danbooru(message, tags) {
     let link, footer;
-    if (hasTags) {
+    if (tags != null) {
       link = "https://danbooru.donmai.us/posts.json?tags=" + tags;
       footer = 'Requested by: ' + message.author.username + ' With tags: ' + tags;
     } else {
@@ -472,58 +484,34 @@ class Tools {
     }
     try {
       const {
-        body
-      } = await snekfetch
-        .get(link);
-      const rn = Math.floor(Math.random() * body.length);
-      const data = body[rn];
+        body,
+      } = await snekfetch.get(link);
+      const b = message.channel.nsfw ? body : body.filter(image => image.rating === "s");
+      if (!b) {
+        return message.channel.send("Error reading data.");
+      }
+      const data = b[Math.floor(Math.random() * b.length)];
+      if (!data) {
+        return message.channel.send('Could not find any images.');
+      }
       const imageData = data.file_url;
-      const rating = data.rating;
-      if (rating === "q" || rating === "e") {
-        if (message.channel.nsfw) {
-          if (imageData.includes('.gifv')) {
-            message.channel.send("Random danbooru image")
-            message.channel.send(imageData);
-            message.channel.send(footer);
-          } else if (this.end(imageData)) {
-            const embed = new Discord.RichEmbed()
-              .setTitle("Random danbooru image")
-              .setImage(imageData)
-              .setFooter(footer);
-            message.channel.send(embed);
-          } else {
-
-            message.channel.send("Random danbooru image");
-            message.channel.send(imageData);
-            message.channel.send(footer);
-          }
-        } else if (!message.channel.nsfw) {
-          if (isRedo) {
-            return message.channel.send(nsfw);
-          } else {
-            return this.danbooru(message, hasTags, tags, true);
-          }
-        }
-      } else if (rating === "s") {
-        if (imageData.includes('.gifv')) {
-          message.channel.send("Random danbooru image")
-          message.channel.send(imageData);
-          message.channel.send(footer);
-        } else if (this.end(imageData)) {
-          const embed = new Discord.RichEmbed()
-            .setTitle("Random danbooru image")
-            .setImage(imageData)
-            .setFooter(footer);
-          message.channel.send(embed);
-        } else {
-
-          message.channel.send("Random danbooru image");
-          message.channel.send(imageData);
-          message.channel.send(footer);
-        }
+      if (imageData.includes('.gifv')) {
+        message.channel.send("Random danbooru image");
+        message.channel.send(imageData);
+        message.channel.send(footer);
+      } else if (this.end(imageData)) {
+        const embed = new Discord.RichEmbed()
+          .setTitle("Random danbooru image")
+          .setImage(imageData)
+          .setFooter(footer);
+        message.channel.send(embed);
+      } else {
+        message.channel.send("Random danbooru image");
+        message.channel.send(imageData);
+        message.channel.send(footer);
       }
     } catch (err) {
-      message.channel.send("Could not find any images with those tags!");
+      return message.channel.send('Please use 2 tags or less!');
     }
   }
 
@@ -543,11 +531,11 @@ class Tools {
     const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
     try {
       const {
-        body
+        body,
       } = await snekfetch
         .get('https://www.reddit.com/r/' + sub + '.json?sort=top&t=' + time)
         .query({
-          limit: 4000
+          limit: 4000,
         });
       const allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
       if (!allowed.length) return message.channel.send(nsfw);
@@ -561,7 +549,7 @@ class Tools {
         return this.search(sub, time, message, filterBanned);
       }
       if (image.includes('.gifv')) {
-        message.channel.send(title)
+        message.channel.send(title);
         message.channel.send(image);
         message.channel.send("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
       } else if (this.end(image)) {
@@ -594,11 +582,11 @@ class Tools {
     const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
     try {
       const {
-        body
+        body,
       } = await snekfetch
         .get('https://www.reddit.com/r/' + sub + '/top.json?sort=top&t=' + time)
         .query({
-          limit: 4000
+          limit: 4000,
         });
       const allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
       if (!allowed.length) return message.channel.send(nsfw);
@@ -612,7 +600,7 @@ class Tools {
         return this.rSearch(sub, time, message, filterBanned);
       }
       if (image.includes('.gifv')) {
-        message.channel.send(title)
+        message.channel.send(title);
         message.channel.send(image);
         message.channel.send("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
       } else if (this.end(image)) {
@@ -643,15 +631,15 @@ class Tools {
    * tools.find('aww', 'cute dogs', 'day', message, true);
    */
   async find(sub, searchTerm, time, message, filterBanned) {
-    var randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+    const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
     try {
       const {
-        body
+        body,
       } = await snekfetch
         .get('https://www.reddit.com/r/' + sub + '/search.json?q=' + searchTerm +
           '&restrict_sr=on&include_over_18=on&sort=relevance&t=' + time)
         .query({
-          limit: 4000
+          limit: 4000,
         });
       const allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
       const found = body.data.dist;
@@ -669,7 +657,7 @@ class Tools {
         return this.find(sub, searchTerm, time, message, filterBanned);
       }
       if (image.includes('.gifv')) {
-        message.channel.send(title)
+        message.channel.send(title);
         message.channel.send(image);
         message.channel.send("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
       } else if (this.end(image)) {
@@ -688,21 +676,20 @@ class Tools {
     }
   }
 
-  parseCommandModule(message, jsonMsg) {
-    let mention = message.mentions.users.first();
+  parseCommandModule(msg, params) {
     const date = new Date();
-    let options = {
+    const options = {
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     };
-    if (!mention) {
-      mention = message.author;
-    }
-    const formattedMsg = jsonMsg
-      .replace('{mention}', mention)
-      .replace('{id}', mention.id.toString())
-      .replace('{time}', date.toLocaleString('en-us', options));
-    return message.channel.send(formattedMsg.slice(9));
+
+    return msg
+      .replace('{mention}', params.mention)
+      .replace('{id}', params.mention.id.toString())
+      .replace('{author}', params.author)
+      .replace('{time}', date.toLocaleString('en-us', options))
+      .replace('{prefix}', params.prefix)
+      .slice(9);
   }
 
   /**
@@ -769,11 +756,11 @@ class Tools {
     }
     let isHour = false;
     let isMinute = false;
-    for (let i in hourAlias) {
+    for (const i in hourAlias) {
       if (object.includes(hourAlias[i])) {
         isHour = true;
       } else {
-        for (let i2 in minAlias) {
+        for (const i2 in minAlias) {
           if (object.includes(minAlias[i2]) && !object.includes(hourAlias[i])) isMinute = true;
         }
       }
@@ -829,10 +816,11 @@ class File {
       case "json":
         this.type = ".json";
         break;
-      default:
-        let err = new InvalidFileError(`${name} has an unsupported file extension! please use json.`);
+      default: {
+        const err = new InvalidFileError(`${name} has an unsupported file extension! please use json.`);
         this.exist = false;
         return Logger.error(err.stack);
+      }
     }
     this.file = `${this.location}${this.name}${this.type}`;
     this.make(JSON.stringify([]));

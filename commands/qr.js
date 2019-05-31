@@ -7,7 +7,7 @@ module.exports = {
     cooldown: 10,
     args: true,
     minArgs: 1,
-    execute(message, args, client, prefix) {
+    execute(message, args) {
         const newArgs = args.join(' ');
         const encoded = encodeURI(newArgs);
         message.delete();

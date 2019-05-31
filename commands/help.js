@@ -1,7 +1,4 @@
 const Discord = require('discord.js');
-const fs = require('fs');
-const tls = require('../tools');
-const tools = new tls.Tools();
 
 // 17 commands + [5 admin only commands] + 14 nsfw commands
 // seperate admin only commands at a later time
@@ -48,7 +45,7 @@ module.exports = {
               page++;
             }
 
-            let pageData = 'Page (' + page + '/' + max + ')';
+            const pageData = 'Page (' + page + '/' + max + ')';
             let embed;
 
             switch (page) {
@@ -135,7 +132,7 @@ module.exports = {
             }
           }
         }, {
-          time: 35000
+          time: 35000,
         });
       });
       return;
@@ -147,7 +144,7 @@ module.exports = {
     const {
       usage,
       description,
-      name
+      name,
     } = cmd;
     const desc = description || "No description defined.";
     if (usage) {

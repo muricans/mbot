@@ -2,7 +2,7 @@ const sqlite = require('sqlite3').verbose();
 const tls = require('../../tools.js');
 const tools = new tls.Tools();
 
-let db = new sqlite.Database('./mbot.db', (err) => {
+const db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
     console.error(err.message);
   }
@@ -16,8 +16,8 @@ module.exports = {
   args: true,
   minArgs: 1,
   execute(message, args, client) {
-    db.serialize(function () {
-      db.get("SELECT points points FROM users WHERE id = " + message.author.id.toString(), function (err, row) {
+    db.serialize(() => {
+      db.get("SELECT points points FROM users WHERE id = " + message.author.id.toString(), (err, row) => {
         if (err) {
           return console.log(err);
         }

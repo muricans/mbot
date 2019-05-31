@@ -3,7 +3,7 @@ const mbot = require('../mbot');
 const sqlite = require('sqlite3').verbose();
 const cCommands = mbot.cCommands;
 
-let db = new sqlite.Database('./mbot.db', (err) => {
+const db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
     console.error(err.message);
   }
@@ -26,7 +26,7 @@ module.exports = {
       }
       const newArgs = args.slice(1, args.length);
       const msg = newArgs.join(' ');
-      for (let i in tools.adminCommands) {
+      for (const i in tools.adminCommands) {
         if (msg.includes(prefix + tools.adminCommands[i])) {
           return message.channel.send(message.author + ' Cannot run admin commands!');
         }

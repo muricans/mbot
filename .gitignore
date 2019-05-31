@@ -8,3 +8,4 @@ mbot.db
 logs/mbot.log
 version.txt
 start.bat
+.eslintrc.json

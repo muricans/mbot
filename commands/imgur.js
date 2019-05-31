@@ -8,13 +8,13 @@ module.exports = {
     cooldown: 3,
     execute(message, args) {
         if (!args.length) {
+            message.channel.startTyping();
             tools.gallery((body) => {
-                message.channel.startTyping();
                 const bodyData = body.data.filter(data => data.nsfw === false);
                 const data = bodyData[Math.floor(Math.random() * body.data.length)];
                 message.channel.send(data.link);
-                message.channel.stopTyping(true);
             });
+            message.channel.stopTyping(true);
         } else {
             tools.imgur(args[0], (err, body) => {
                 if (err) {

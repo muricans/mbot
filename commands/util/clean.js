@@ -5,7 +5,7 @@ module.exports = {
   cooldown: 1,
   execute(message, args, client) {
     const weirdChamp = client.emojis.get("572690273247821824");
-    var hasTwoArgs;
+    let hasTwoArgs;
 
     if (args.length === 1) {
       hasTwoArgs = false;
@@ -15,13 +15,13 @@ module.exports = {
       hasTwoArgs = true;
     }
 
-    let canDelOth = message.channel.permissionsFor(message.member).has("MANAGE_MESSAGES");
-    let hasAdmin = message.channel.permissionsFor(message.author).has("ADMINISTRATOR");
+    const canDelOth = message.channel.permissionsFor(message.member).has("MANAGE_MESSAGES");
+    const hasAdmin = message.channel.permissionsFor(message.author).has("ADMINISTRATOR");
     if (!canDelOth) {
       return message.channel.send(message.author + " You don't have permission to use this command! " + weirdChamp);
     }
 
-    var amnt;
+    let amnt;
     if (hasTwoArgs) {
       amnt = parseInt(args[1]);
       if (isNaN(amnt)) {
@@ -53,7 +53,7 @@ module.exports = {
       message.delete();
       try {
         return message.channel.fetchMessages({
-          limit: amnt
+          limit: amnt,
         }).then(messages => {
           if (amnt > messages.array().size) return message.channel.send(message.author + ' Could not find that many messages!');
           message.channel.bulkDelete(messages).then((deleted) => {
@@ -72,7 +72,7 @@ module.exports = {
     } else {
       message.delete();
       return message.channel.fetchMessages({
-        limit: amnt
+        limit: amnt,
       }).then(messages => {
         if (amnt > messages.array().size) return message.channel.send(message.author + ' Could not find that many messages!');
         const mentionMessages = messages.filter(msg => {

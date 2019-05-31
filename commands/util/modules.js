@@ -3,7 +3,7 @@ const tls = require('../../tools');
 const tools = new tls.Tools();
 const mbot = require('../../mbot');
 
-let db = new sqlite.Database('./mbot.db', (err) => {
+const db = new sqlite.Database('./mbot.db', (err) => {
     if (err) {
         console.error(err.message);
     }
@@ -40,7 +40,6 @@ module.exports = {
                         db.run('UPDATE welcomeMessage SET message = ? WHERE id = ?', msg, message.guild.id.toString());
                         tools.addCooldown(module.exports.name, 10, message);
                         return message.channel.send(`${message.author} Set welcome message to ${msg}!`);
-                        break;
                     case "use":
                         switch (args[2]) {
                             case "true":
@@ -62,7 +61,7 @@ module.exports = {
                         if (!args[2]) {
                             return message.reply(`${message.author} Please add params! ${prefix}modules welcomemessage channel <channel>`);
                         }
-                        const channel = message.guild.channels.find((channel => channel.name === args[2]));
+                        const channel = message.guild.channels.find((c => c.name === args[2]));
                         if (!channel) {
                             return message.channel.send(`${message.author} That channel does not seem to exist on this server!`);
                         } else {
@@ -70,7 +69,6 @@ module.exports = {
                             tools.addCooldown(module.exports.name, 10, message);
                             return message.channel.send(`${message.author} Set the welcomemessage channel to ${args[2]}!`);
                         }
-                        break;
                 }
                 break;
             case "leavemessage":
@@ -88,7 +86,6 @@ module.exports = {
                         db.run('UPDATE leaveMessage SET message = ? WHERE id = ?', msg, message.guild.id.toString());
                         tools.addCooldown(module.exports.name, 10, message);
                         return message.channel.send(`${message.author} Set leave message to ${msg}!`);
-                        break;
                     case "use":
                         switch (args[2]) {
                             case "true":
@@ -110,7 +107,7 @@ module.exports = {
                         if (!args[2]) {
                             return message.reply(`${message.author} Please add params! ${prefix}modules leavemessage channel <channel>`);
                         }
-                        const channel = message.guild.channels.find((channel => channel.name === args[2]));
+                        const channel = message.guild.channels.find((c => c.name === args[2]));
                         if (!channel) {
                             return message.channel.send(`${message.author} That channel does not seem to exist on this server!`);
                         } else {
@@ -118,7 +115,6 @@ module.exports = {
                             tools.addCooldown(module.exports.name, 10, message);
                             return message.channel.send(`${message.author} Set the leavemessage channel to ${args[2]}!`);
                         }
-                        break;
                 }
                 break;
             case "serverinfo":
@@ -182,7 +178,7 @@ module.exports = {
                         if (!args[2] || !args[3]) {
                             return message.channel.send(`${message.author} Please add params! ${prefix}modules commands edit <commandName> <newMessage>`);
                         }
-                        const command = mbot.cCommands.find(command => command.name === args[2].toLowerCase() && command.id === message.guild.id);
+                        const command = mbot.cCommands.find(c => c.name === args[2].toLowerCase() && c.id === message.guild.id);
                         if (!command) {
                             return message.channel.send(`${message.author} Could not find that command!`);
                         }
@@ -200,7 +196,7 @@ module.exports = {
                             return message.channel.send(`${message.author} Please add params! ${prefix}modules roles default <roleName>`);
                         }
                         const findRole = args.slice(2, args.length).join(' ');
-                        const role = message.guild.roles.find((role => role.name === findRole));
+                        const role = message.guild.roles.find((r => r.name === findRole));
                         if (!role) {
                             return message.channel.send(`${message.author} Could not find that role!`);
                         }

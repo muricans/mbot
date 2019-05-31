@@ -2,7 +2,7 @@ const sqlite = require('sqlite3').verbose();
 const tls = require('../../tools');
 const tools = new tls.Tools();
 
-let db = new sqlite.Database('./mbot.db', (err) => {
+const db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
     console.error(err.message);
   }
@@ -15,9 +15,9 @@ module.exports = {
   usage: '[user]',
   description: `Returns the designated user's points`,
   execute(message, args) {
-    db.serialize(function () {
+    db.serialize(() => {
       if (args.length === 0) {
-        db.get('SELECT points points FROM users WHERE id = ' + message.author.id.toString(), function (err, row) {
+        db.get('SELECT points points FROM users WHERE id = ' + message.author.id.toString(), (err, row) => {
           if (err) {
             return console.log(err);
           }
@@ -26,7 +26,7 @@ module.exports = {
       }
       if (args.length > 0) {
         tools.addCooldown(module.exports.name, 3, message);
-        db.get('SELECT points points FROM users WHERE id = ' + message.mentions.users.first().id.toString(), function (err, row) {
+        db.get('SELECT points points FROM users WHERE id = ' + message.mentions.users.first().id.toString(), (err, row) => {
           if (err) {
             return message.reply('No such user exists!');
           }

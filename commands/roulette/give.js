@@ -2,7 +2,7 @@ const sqlite = require('sqlite3').verbose();
 const tls = require('../../tools');
 const tools = new tls.Tools();
 
-let db = new sqlite.Database('./mbot.db', (err) => {
+const db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
     console.error(err.message);
   }
@@ -20,19 +20,19 @@ module.exports = {
       return message.reply('You cannot give points to yourself!');
     }
     if (!message.mentions.users.first()) {
-      return message.reply('That user does not exist!')
+      return message.reply('That user does not exist!');
     }
-    db.serialize(function () {
-      db.get("SELECT points points FROM users WHERE id = " + message.author.id.toString(), function (err, row) {
+    db.serialize(() => {
+      db.get("SELECT points points FROM users WHERE id = " + message.author.id.toString(), (err, row) => {
         if (err) {
           return message.reply('That user does not exist!');
         }
         const give = parseInt(args[1]);
         if (args[1] === "all") {
-          let all = parseInt(row.points.toString());
+          const all = parseInt(row.points.toString());
           //db.run('UPDATE users SET points = ? WHERE id = ?', 0, message.author.id.toString());
           tools.setPoints(0, message.author.id.toString());
-          db.get("SELECT points points FROM users where id = " + message.mentions.users.first().id.toString(), function (err, row2) {
+          db.get("SELECT points points FROM users where id = " + message.mentions.users.first().id.toString(), (err, row2) => {
             if (err) {
               return console.log(err);
             }
@@ -54,7 +54,7 @@ module.exports = {
         const newCurrent = current - give;
         //db.run('UPDATE users SET points = ? WHERE id = ?', newCurrent, message.author.id.toString());
         tools.setPoints(newCurrent, message.author.id.toString());
-        db.get("SELECT points points FROM users where id = " + message.mentions.users.first().id.toString(), function (err, row2) {
+        db.get("SELECT points points FROM users where id = " + message.mentions.users.first().id.toString(), (err, row2) => {
           if (err) {
             return console.log(err);
           }

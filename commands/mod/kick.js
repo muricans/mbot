@@ -40,5 +40,5 @@ module.exports = {
                 if (reason) return console.log(reason);
             });
         }
-    }
-}
+    },
+};
