@@ -450,16 +450,15 @@ class Tools {
 
   /**
    * Search danbooru for images.
+   * 
    * @param {Discord.Message} message The message to respond to.
-   * @param {boolean} hasTags Whether or not the search contains tags.
    * @param {string} tags The tags to apply to the search.
-   * @param {boolean} isRedo Whether or not the current search is a second one.
    * @example
-   * tools.danbooru(message, true, 'my_tag+my_other_tag');
+   * tools.danbooru(message, 'my_tag+my_other_tag');
    */
-  async danbooru(message, hasTags, tags, isRedo) {
+  async danbooru(message, tags) {
     let link, footer;
-    if (hasTags) {
+    if (tags != null) {
       link = "https://danbooru.donmai.us/posts.json?tags=" + tags;
       footer = 'Requested by: ' + message.author.username + ' With tags: ' + tags;
     } else {
@@ -469,57 +468,33 @@ class Tools {
     try {
       const {
         body,
-      } = await snekfetch
-        .get(link);
-      const rn = Math.floor(Math.random() * body.length);
-      const data = body[rn];
+      } = await snekfetch.get(link);
+      const b = message.channel.nsfw ? body : body.filter(image => image.rating === "s");
+      if (!b) {
+        return message.channel.send("Error reading data.");
+      }
+      const data = b[Math.floor(Math.random() * b.length)];
+      if (!data) {
+        return message.channel.send('Could not find any images.');
+      }
       const imageData = data.file_url;
-      const rating = data.rating;
-      if (rating === "q" || rating === "e") {
-        if (message.channel.nsfw) {
-          if (imageData.includes('.gifv')) {
-            message.channel.send("Random danbooru image");
-            message.channel.send(imageData);
-            message.channel.send(footer);
-          } else if (this.end(imageData)) {
-            const embed = new Discord.RichEmbed()
-              .setTitle("Random danbooru image")
-              .setImage(imageData)
-              .setFooter(footer);
-            message.channel.send(embed);
-          } else {
-
-            message.channel.send("Random danbooru image");
-            message.channel.send(imageData);
-            message.channel.send(footer);
-          }
-        } else if (!message.channel.nsfw) {
-          if (isRedo) {
-            return message.channel.send(nsfw);
-          } else {
-            return this.danbooru(message, hasTags, tags, true);
-          }
-        }
-      } else if (rating === "s") {
-        if (imageData.includes('.gifv')) {
-          message.channel.send("Random danbooru image");
-          message.channel.send(imageData);
-          message.channel.send(footer);
-        } else if (this.end(imageData)) {
-          const embed = new Discord.RichEmbed()
-            .setTitle("Random danbooru image")
-            .setImage(imageData)
-            .setFooter(footer);
-          message.channel.send(embed);
-        } else {
-
-          message.channel.send("Random danbooru image");
-          message.channel.send(imageData);
-          message.channel.send(footer);
-        }
+      if (imageData.includes('.gifv')) {
+        message.channel.send("Random danbooru image");
+        message.channel.send(imageData);
+        message.channel.send(footer);
+      } else if (this.end(imageData)) {
+        const embed = new Discord.RichEmbed()
+          .setTitle("Random danbooru image")
+          .setImage(imageData)
+          .setFooter(footer);
+        message.channel.send(embed);
+      } else {
+        message.channel.send("Random danbooru image");
+        message.channel.send(imageData);
+        message.channel.send(footer);
       }
     } catch (err) {
-      message.channel.send("Could not find any images with those tags!");
+      return message.channel.send('Please use 2 tags or less!');
     }
   }
 

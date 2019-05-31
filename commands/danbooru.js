@@ -8,10 +8,10 @@ module.exports = {
     execute(message, args) {
         message.delete(1000);
         if (args.length === 0) {
-            return tools.danbooru(message, false);
+            return tools.danbooru(message);
         } else {
             const searchArgs = args.join('+');
-            return tools.danbooru(message, true, searchArgs);
+            return tools.danbooru(message, searchArgs);
         }
     },
 };
