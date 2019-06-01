@@ -1,7 +1,7 @@
 npm install discord.js
 npm install snekfetch
 npm install sqlite3
-npm install xml2json
+npm install newsapi
 
 chmod +x update.sh
 chmod +x start.sh

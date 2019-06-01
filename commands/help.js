@@ -9,13 +9,13 @@ function pageOne(edit, message, prefix) {
   const embed = new Discord.RichEmbed()
     .setTitle('Commands')
     .addField(prefix + '8ball <question>', 'Ask the bot a question')
+    .addField(prefix + 'article [category]', 'Returns a random article with specified category if one is provided.')
+    .addField(prefix + 'ban <user> [reason]', 'Bans specified user.')
     .addField(prefix + 'create <commandName> <message>', 'Adds a command to the bot')
     .addField(prefix + 'clean <user> [messageAmount]', 'Deletes a specified amount of messages for a user [admin only]')
     .addField(prefix + 'danbooru [tag]', 'Returns a danbooru image [NSFW Available]')
     .addField(prefix + 'delete <commandName>', 'Deletes a command [added by !create] from the bot [admin only]')
     .addField(prefix + 'echo <message>', 'Returns your message from the bot [admin only]')
-    .addField(prefix + 'give <user> <points>', 'Gives a user [x] amount of points')
-    .addField(prefix + 'help [command]', 'Returns a list of commands for this bot')
     .setFooter('Page (1/' + max + ')');
   if (edit) {
     return message.edit(embed);
@@ -55,14 +55,14 @@ module.exports = {
               case 2:
                 embed = new Discord.RichEmbed()
                   .setTitle('Commands')
+                  .addField(prefix + 'give <user> <points>', 'Gives a user [x] amount of points')
+                  .addField(prefix + 'help [command]', 'Returns a list of commands for this bot')
                   .addField(prefix + 'imgur [hash]', 'Returns a random image from imgur, or an image with the provided hash')
                   .addField(prefix + 'kick <user> [reason]', 'Kicks specified user')
                   .addField(prefix + 'meme', 'Returns a random meme')
                   .addField(prefix + 'modules <moduleName> <moduleOption> [setTo, ?name] [?setTo]', 'Use modules for your server. [Documentation](https://muricans.github.io/mbot/)')
                   .addField(prefix + `mute <user> <time?'min','hour'>`, `Keeps a player from chatting for specified time.`)
                   .addField(prefix + 'ping', 'Returns pong')
-                  .addField(prefix + 'prefix <newPrefix>', 'Changes the bots prefix [admin only]')
-                  .addField(prefix + 'points [user]', "Returns the designated user's (or your own) points")
                   .setFooter(pageData);
                 //console.log(page);
                 sent.edit(embed);
@@ -70,14 +70,14 @@ module.exports = {
               case 3:
                 embed = new Discord.RichEmbed()
                   .setTitle('Commands')
+                  .addField(prefix + 'prefix <newPrefix>', 'Changes the bots prefix [admin only]')
+                  .addField(prefix + 'points [user]', "Returns the designated user's (or your own) points")
                   .addField(prefix + 'qr <information>', 'Returns a QR code with the designated information')
                   .addField(prefix + 'random <subreddit> [time|search] [search]', 'Returns a random thread from a subreddit')
                   .addField(prefix + 'roulette <amount>', 'Returns win/loss and new total points')
                   .addField(prefix + 'roll [number]', 'Returns a random number between 1 and the chosen number')
                   .addField(prefix + 'suggest <suggestion>', 'Suggest a command or feature for the bot')
                   .addField(prefix + 'suggestions [clear]', 'Check the suggestions, (include <clear> [admin only] to clear the suggestions)')
-                  .addField(prefix + 'unmute <user>', 'Unmute a muted user')
-                  .addField(prefix + 'userinfo [user]', "Returns the designated user's info")
                   .setFooter(pageData);
                 //console.log(page);
                 sent.edit(embed);
@@ -85,6 +85,8 @@ module.exports = {
               case 4:
                 embed = new Discord.RichEmbed()
                   .setTitle('Commands')
+                  .addField(prefix + 'unmute <user>', 'Unmute a muted user')
+                  .addField(prefix + 'userinfo [user]', "Returns the designated user's info")
                   .addField(prefix + 'set <user> <points>', 'Sets the users points [admin only]')
                   .addField(prefix + 'serverinfo [serverID]', 'Get server info on the server you are currently on, or another the bot is currently on by giving that servers ID.')
                   .addField(prefix + 'version', 'Returns the bot version and information')

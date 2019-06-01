@@ -7,7 +7,6 @@ const mbot = require('./mbot');
 const fs = require('fs');
 const Logger = require('./logger');
 const https = require('https');
-const xmlParser = require('xml2json');
 
 const db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
@@ -94,9 +93,6 @@ class Tools {
       banned = bannedLinks[b];
       if (string.includes(banned)) {
         contains = true;
-        if (settings.debug) {
-          Logger.debug('Banned link found!');
-        }
       }
     }
     return contains;
@@ -425,10 +421,10 @@ class Tools {
   async rule34(message, tags) {
     let link, footer;
     if (tags != null) {
-      link = "https://rule34.xxx/index.php?page=dapi&s=post&q=index&tags=" + tags;
+      link = "https://rule34xxx-json.herokuapp.com/random?tags=" + tags;
       footer = 'Requested by: ' + message.author.username + ' With tags: ' + tags;
     } else {
-      link = "https://rule34.xxx/index.php?page=dapi&s=post&q=index";
+      link = "https://rule34xxx-json.herokuapp.com/random";
       footer = 'Requested by: ' + message.author.username;
     }
     try {
@@ -436,22 +432,10 @@ class Tools {
         body,
       } = await snekfetch
         .get(link);
-      const parsed = JSON.parse(xmlParser.toJson(body));
-      if (!parsed.posts.post || !parsed) {
+      if (!body.file_url) {
         return message.channel.send('Could not find any posts with provided tags!');
       }
-      const count = parseInt(parsed.posts.count);
-      let imageData;
-      if (count === 1) {
-        imageData = parsed.posts.post.file_url;
-      } else {
-        const rn = Math.floor(Math.random() * parsed.posts.post.length);
-        if (!parsed.posts.post[rn]) {
-          return message.channel.send('Error occured!');
-        }
-        imageData = parsed.posts.post[rn].file_url;
-      }
-      Logger.debug(imageData);
+      const imageData = body.file_url;
       const embed = new Discord.RichEmbed()
         .setTitle('Random rule34.xxx image')
         .setImage(imageData)
@@ -537,7 +521,8 @@ class Tools {
         .query({
           limit: 4000,
         });
-      const allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
+      let allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
+      allowed = filterBanned === true ? allowed.filter(post => !this.banned(post.data.url)) : allowed;
       if (!allowed.length) return message.channel.send(nsfw);
       const rn = Math.floor(Math.random() * allowed.length);
       const postData = allowed[rn].data;
@@ -545,9 +530,6 @@ class Tools {
       const title = postData.title;
       const up = postData.ups;
       const subreddit = postData.subreddit_name_prefixed;
-      if (this.banned(image) && filterBanned) {
-        return this.search(sub, time, message, filterBanned);
-      }
       if (image.includes('.gifv')) {
         message.channel.send(title);
         message.channel.send(image);
@@ -559,7 +541,6 @@ class Tools {
           .setFooter("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
         message.channel.send(embed);
       } else {
-
         message.channel.send(title);
         message.channel.send(image);
         message.channel.send("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
@@ -588,7 +569,8 @@ class Tools {
         .query({
           limit: 4000,
         });
-      const allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
+      let allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
+      allowed = filterBanned ? allowed.filter(post => !this.banned(post.data.url)) : allowed;
       if (!allowed.length) return message.channel.send(nsfw);
       const rn = Math.floor(Math.random() * allowed.length);
       const postData = allowed[rn].data;
@@ -610,7 +592,6 @@ class Tools {
           .setFooter("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
         message.channel.send(embed);
       } else {
-
         message.channel.send(title);
         message.channel.send(image);
         message.channel.send("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
@@ -641,7 +622,8 @@ class Tools {
         .query({
           limit: 4000,
         });
-      const allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
+      let allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
+      allowed = filterBanned ? allowed.filter(post => !this.banned(post.data.url)) : allowed;
       const found = body.data.dist;
       const rn = Math.floor(Math.random() * allowed.length);
       if (found < 1) {
@@ -653,9 +635,6 @@ class Tools {
       const title = postData.title;
       const up = postData.ups;
       const subreddit = postData.subreddit_name_prefixed;
-      if (this.banned(image) && filterBanned) {
-        return this.find(sub, searchTerm, time, message, filterBanned);
-      }
       if (image.includes('.gifv')) {
         message.channel.send(title);
         message.channel.send(image);
