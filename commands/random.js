@@ -66,7 +66,9 @@ module.exports = {
           tools.rSearch(args[0], 'all', message, false);
           break;
         default:
-          tools.rSearch(args[0], 'day', message, false);
+          const noTime = args.slice(1, args.length);
+          const noTimeEncoded = encodeURI(noTime.join(' '));
+          tools.find(args[0], noTimeEncoded, 'day', message, false);
           break;
       }
     }

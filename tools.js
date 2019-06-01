@@ -421,10 +421,10 @@ class Tools {
   async rule34(message, tags) {
     let link, footer;
     if (tags != null) {
-      link = "https://rule34xxx-json.herokuapp.com/?tags=" + tags;
+      link = "https://rule34xxx-json.herokuapp.com/random?tags=" + tags;
       footer = 'Requested by: ' + message.author.username + ' With tags: ' + tags;
     } else {
-      link = "https://rule34xxx-json.herokuapp.com";
+      link = "https://rule34xxx-json.herokuapp.com/random";
       footer = 'Requested by: ' + message.author.username;
     }
     try {
@@ -432,14 +432,10 @@ class Tools {
         body,
       } = await snekfetch
         .get(link);
-      if (!body.posts || !body) {
+      if (!body.file_url) {
         return message.channel.send('Could not find any posts with provided tags!');
       }
-      const rn = Math.floor(Math.random() * body.posts.length);
-      if (!body.posts[rn]) {
-        return message.channel.send('Error occured!');
-      }
-      const imageData = body.posts[rn].file_url;
+      const imageData = body.file_url;
       const embed = new Discord.RichEmbed()
         .setTitle('Random rule34.xxx image')
         .setImage(imageData)
