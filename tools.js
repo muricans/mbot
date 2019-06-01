@@ -445,7 +445,7 @@ class Tools {
       }
       message.channel.send(embed);
     } catch (err) {
-      console.log(err);
+      return message.channel.send('No posts were found. Maybe check tags');
     }
   }
 
