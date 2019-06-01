@@ -93,9 +93,6 @@ class Tools {
       banned = bannedLinks[b];
       if (string.includes(banned)) {
         contains = true;
-        if (settings.debug) {
-          Logger.debug('Banned link found!');
-        }
       }
     }
     return contains;
@@ -528,7 +525,8 @@ class Tools {
         .query({
           limit: 4000,
         });
-      const allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
+      let allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
+      allowed = filterBanned === true ? allowed.filter(post => !this.banned(post.data.url)) : allowed;
       if (!allowed.length) return message.channel.send(nsfw);
       const rn = Math.floor(Math.random() * allowed.length);
       const postData = allowed[rn].data;
@@ -536,9 +534,6 @@ class Tools {
       const title = postData.title;
       const up = postData.ups;
       const subreddit = postData.subreddit_name_prefixed;
-      if (this.banned(image) && filterBanned) {
-        return this.search(sub, time, message, filterBanned);
-      }
       if (image.includes('.gifv')) {
         message.channel.send(title);
         message.channel.send(image);
@@ -550,7 +545,6 @@ class Tools {
           .setFooter("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
         message.channel.send(embed);
       } else {
-
         message.channel.send(title);
         message.channel.send(image);
         message.channel.send("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
@@ -579,7 +573,8 @@ class Tools {
         .query({
           limit: 4000,
         });
-      const allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
+      let allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
+      allowed = filterBanned ? allowed.filter(post => !this.banned(post.data.url)) : allowed;
       if (!allowed.length) return message.channel.send(nsfw);
       const rn = Math.floor(Math.random() * allowed.length);
       const postData = allowed[rn].data;
@@ -601,7 +596,6 @@ class Tools {
           .setFooter("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
         message.channel.send(embed);
       } else {
-
         message.channel.send(title);
         message.channel.send(image);
         message.channel.send("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
@@ -632,7 +626,8 @@ class Tools {
         .query({
           limit: 4000,
         });
-      const allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
+      let allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
+      allowed = filterBanned ? allowed.filter(post => !this.banned(post.data.url)) : allowed;
       const found = body.data.dist;
       const rn = Math.floor(Math.random() * allowed.length);
       if (found < 1) {
@@ -644,9 +639,6 @@ class Tools {
       const title = postData.title;
       const up = postData.ups;
       const subreddit = postData.subreddit_name_prefixed;
-      if (this.banned(image) && filterBanned) {
-        return this.find(sub, searchTerm, time, message, filterBanned);
-      }
       if (image.includes('.gifv')) {
         message.channel.send(title);
         message.channel.send(image);
