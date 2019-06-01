@@ -443,7 +443,6 @@ class Tools {
         return message.channel.send('Error occured!');
       }
       const imageData = body.posts[rn].file_url;
-      Logger.debug(imageData);
       const embed = new Discord.RichEmbed()
         .setTitle('Random rule34.xxx image')
         .setImage(imageData)
