@@ -7,7 +7,6 @@ const mbot = require('./mbot');
 const fs = require('fs');
 const Logger = require('./logger');
 const https = require('https');
-const xmlParser = require('xml2json');
 
 const db = new sqlite.Database('./mbot.db', (err) => {
   if (err) {
@@ -425,10 +424,10 @@ class Tools {
   async rule34(message, tags) {
     let link, footer;
     if (tags != null) {
-      link = "https://rule34.xxx/index.php?page=dapi&s=post&q=index&tags=" + tags;
+      link = "https://rule34xxx-json.herokuapp.com/?tags=" + tags;
       footer = 'Requested by: ' + message.author.username + ' With tags: ' + tags;
     } else {
-      link = "https://rule34.xxx/index.php?page=dapi&s=post&q=index";
+      link = "https://rule34xxx-json.herokuapp.com";
       footer = 'Requested by: ' + message.author.username;
     }
     try {
@@ -436,21 +435,14 @@ class Tools {
         body,
       } = await snekfetch
         .get(link);
-      const parsed = JSON.parse(xmlParser.toJson(body));
-      if (!parsed.posts.post || !parsed) {
+      if (!body.posts || !body) {
         return message.channel.send('Could not find any posts with provided tags!');
       }
-      const count = parseInt(parsed.posts.count);
-      let imageData;
-      if (count === 1) {
-        imageData = parsed.posts.post.file_url;
-      } else {
-        const rn = Math.floor(Math.random() * parsed.posts.post.length);
-        if (!parsed.posts.post[rn]) {
-          return message.channel.send('Error occured!');
-        }
-        imageData = parsed.posts.post[rn].file_url;
+      const rn = Math.floor(Math.random() * body.posts.length);
+      if (!body.posts[rn]) {
+        return message.channel.send('Error occured!');
       }
+      const imageData = body.posts[rn].file_url;
       Logger.debug(imageData);
       const embed = new Discord.RichEmbed()
         .setTitle('Random rule34.xxx image')
