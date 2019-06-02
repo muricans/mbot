@@ -267,7 +267,7 @@ module.exports.registerCommands = async (client, mbot) => {
         const jsonCmd = cCommands[i].name;
         const jsonMsg = cCommands[i].message;
         if (command === jsonCmd && cCommands[i].id === message.guild.id) {
-          return tools.getCommandOptions(message.guild.id, (everyone, use) => {
+          return tools.getCommandOptions(message.guild.id, async (everyone, use) => {
             if (use != 1) {
               return;
             }
@@ -281,7 +281,8 @@ module.exports.registerCommands = async (client, mbot) => {
                 author: message.author,
                 prefix: prefix,
               };
-              return message.channel.send(tools.parseCommandModule(jsonMsg, params));
+              const parseCommandModule = await tools.parseCommandModule(jsonMsg, params);
+              return message.channel.send(parseCommandModule);
             }
             return message.channel.send(jsonMsg);
           });

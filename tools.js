@@ -108,6 +108,15 @@ class Tools {
     mbot.event.emit('pointsUpdated', amnt, id);
   }
 
+  async getPoints(id) {
+    return new Promise((resolve) => {
+      db.get('SELECT points points FROM users WHERE id = ' + id, (err, row) => {
+        if (err) return console.log(err);
+        resolve(row);
+      });
+    });
+  }
+
   /**
    * @callback nlMessage
    * @param {number} use Whether the module is being used. Gives a 1 or 0.
@@ -655,12 +664,14 @@ class Tools {
     }
   }
 
-  parseCommandModule(msg, params) {
+  async parseCommandModule(msg, params) {
     const date = new Date();
     const options = {
       hour: '2-digit',
       minute: '2-digit',
     };
+    const row = await this.getPoints(params.mention.id);
+    const points = row.points;
 
     return msg
       .replace('{mention}', params.mention)
@@ -668,6 +679,7 @@ class Tools {
       .replace('{author}', params.author)
       .replace('{time}', date.toLocaleString('en-us', options))
       .replace('{prefix}', params.prefix)
+      .replace('{points}', points)
       .slice(9);
   }
 
