@@ -795,6 +795,7 @@ class Tools {
     const user = timer.users.get(userId);
     user.get('dates').delete(timerId);
     user.get('timers').delete(timerId);
+    clearTimeout(user.get('timeouts').get(timerId));
     user.get('timeouts').delete(timerId);
   }
 }

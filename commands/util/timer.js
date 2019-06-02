@@ -52,11 +52,11 @@ module.exports = {
         }
         console.log(wordNumbers);
         const timerId = crypto.createHash('md5').update(wordNumbers).digest('hex');
-        timerName = name === '' ? 'No name provided' : name;
+        const timerName = name === '' ? 'No name provided' : name;
         tools.createTimer(message.author.id, mil, timerId, timerName);
         return message.channel.send(`${message.author} Successfully created timer that will go off in ${out}\nName: ${timerName}`);
-    }
-}
+    },
+};
 
 function hasMin(string) {
     let contains = false;
