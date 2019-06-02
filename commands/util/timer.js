@@ -24,7 +24,7 @@ module.exports = {
                 return message.channel.send(`${message.author} Please provide your timers name!`);
             }
             const timerName = args.slice(1, args.length).join(' ');
-            const timerId = user.get('names').get(timerName);
+            const timerId = user.get('names').get(timerName.toLowerCase());
             if (!timerId) {
                 return message.channel.send('Could not find a timer by that name!');
             }
@@ -42,11 +42,13 @@ module.exports = {
                 if (timeLeft >= 3600) {
                     const mins = Math.floor((left / 60) % 60);
                     timeLeft = Math.floor(timeLeft / 3600);
-                    timeLeft += ` hours and ${mins} minutes`;
+                    timeLeft += ` hour(s) and ${mins} minute(s)`;
                 } else if (timeLeft >= 60) {
                     const secs = Math.floor(left % 60);
                     timeLeft = Math.floor(timeLeft / 60);
-                    timeLeft += ` minutes and ${secs} seconds`;
+                    timeLeft += ` minute(s) and ${secs} second(s)`;
+                } else {
+                    timeLeft += ` second(s)`;
                 }
                 send.push(`${ids.get(names[i])} - ${timeLeft}`);
             }
@@ -61,11 +63,11 @@ module.exports = {
             this.users.set(message.author.id, new Discord.Collection());
         }
         const time = parseInt(args[0]);
-        if (!time) {
+        if (!time && !args[0].startsWith('t:')) {
             return message.channel.send(`${message.author} Please use numbers!`);
         }
         let out = "Error occured";
-        const mil = tools.parseTime(args[0]);
+        let mil = tools.parseTime(args[0]);
         if (hasMin(args[0]) && !hasHour(args[0])) {
             const minutes = parseInt(args[0]);
             if (minutes >= 60) {
@@ -79,9 +81,22 @@ module.exports = {
             const sec = parseInt(args[0]);
             if (sec >= 60) {
                 out = `${Math.floor(sec / 60)} minute(s)`;
+            } else if (sec >= 3600) {
+                out = `${Math.floor(sec / 3600)} hour(s)`;
             } else {
                 out = `${sec} second(s)`;
             }
+        }
+        if (args[0].startsWith('t:')) {
+            const timeArray = args[0].split(':').slice(1);
+            if (timeArray.length < 3 || timeArray.length > 3) {
+                return message.channel.send(`${message.author} Please follow the time format! hh:mm:ss`);
+            }
+            const hours = tools.parseTime(timeArray[0] + 'hour');
+            const minutes = tools.parseTime(timeArray[1] + 'min');
+            const seconds = tools.parseTime(timeArray[2]);
+            mil = hours + minutes + seconds;
+            out = `${timeArray[0]}:${timeArray[1]}:${timeArray[2]}`;
         }
         let wordNumbers = 'timer:';
         wordNumbers += Math.floor(Math.random() * 15231).toString();
@@ -98,7 +113,7 @@ module.exports = {
             return message.channel.send('A timer with that name already exists!');
         }
         require('../../logger').debug(wordNumbers);
-        tools.createTimer(message.author.id, mil, timerId, timerName);
+        tools.createTimer(message.author.id, mil, timerId, timerName.toLowerCase());
         return message.channel.send(`${message.author} Successfully created timer that will go off in ${out}\nName: ${timerName}`);
     },
 };

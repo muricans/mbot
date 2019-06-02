@@ -742,7 +742,7 @@ class Tools {
    * @returns {number} The time parsed from the given string in milliseconds. 
    */
   parseTime(object) {
-    if (!parseInt(object)) {
+    if (isNaN(parseInt(object))) {
       return new Error(`Provided string either didn't have a number or wasn't a string at all.`);
     }
     let isHour = false;
