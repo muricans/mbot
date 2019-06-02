@@ -3,6 +3,8 @@ npm install snekfetch
 npm install sqlite3
 npm install newsapi
 npm install crypto
+npm install chalk
+npm install figlet
 
 chmod +x update.sh
 chmod +x start.sh

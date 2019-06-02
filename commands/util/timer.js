@@ -10,7 +10,7 @@ const hourAlias = ['hour', 'hours', 'h', 'hr', 'hrs'];
 module.exports = {
     users: new Discord.Collection(),
     name: 'timer',
-    usage: `<time?'min','hour'|list> [name]`,
+    usage: `<time?'min','hour'|cancel> [name]`,
     description: 'Set a timer for the bot to remind you on when it completes.',
     args: true,
     minArgs: 1,

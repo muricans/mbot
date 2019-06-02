@@ -1,5 +1,6 @@
 const fs = require('fs');
 const settings = require('./settings.json');
+const chalk = require('chalk');
 
 const mbotLogStream = fs.createWriteStream('logs/mbot.log');
 const isFileLogging = settings.fileLogging;
@@ -69,7 +70,10 @@ class Logger {
 }
 
 function rawLog(message, type) {
-    console.log(`[${time()} LEVEL-${type}]: ${message}`);
+    const open = chalk.yellow('[');
+    const close = chalk.yellow(']');
+    type = chalk.blue('LEVEL-' + type);
+    console.log(`${open}${chalk.green(time())} ${type}${close}: ${message}`);
     if (isFileLogging) {
         mbotLogStream.write(writeLog(message, type));
     }
