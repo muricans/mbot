@@ -1,5 +1,6 @@
+const settings = require('../settings.json');
 const NewsAPI = require('newsapi');
-const newsapi = new NewsAPI('8f9cfea328634483b5510b7853223c71');
+const newsapi = new NewsAPI(settings.newsAPIKey);
 const Discord = require('discord.js');
 
 module.exports = {
