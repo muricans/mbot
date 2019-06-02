@@ -432,8 +432,8 @@ class Tools {
         body,
       } = await snekfetch
         .get(link);
-      if (!body.file_url) {
-        return message.channel.send('Could not find any posts with provided tags!');
+      if (body.error) {
+        return message.channel.send(body.error);
       }
       const imageData = body.file_url;
       const embed = new Discord.RichEmbed()
@@ -445,7 +445,7 @@ class Tools {
       }
       message.channel.send(embed);
     } catch (err) {
-      console.log(err);
+      return message.channel.send('No posts were found. Maybe check tags');
     }
   }
 
