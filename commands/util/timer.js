@@ -10,11 +10,27 @@ const hourAlias = ['hour', 'hours', 'h', 'hr', 'hrs'];
 module.exports = {
     users: new Discord.Collection(),
     name: 'timer',
-    usage: `<time?'min','hour'> [name]`,
+    usage: `<time?'min','hour'|list> [name]`,
     description: 'Set a timer for the bot to remind you on when it completes.',
     args: true,
     minArgs: 1,
     execute(message, args) {
+        if (args[0].toLowerCase() === "cancel") {
+            const user = this.users.get(message.author.id);
+            if (!user) {
+                return message.channel.send(`You don't have any timers set up right now!`);
+            }
+            if (!args[1]) {
+                return message.channel.send(`${message.author} Please provide your timers name!`);
+            }
+            const timerName = args.slice(1, args.length).join(' ');
+            const timerId = user.get('names').get(timerName);
+            if (!timerId) {
+                return message.channel.send('Could not find a timer by that name!');
+            }
+            tools.deleteTimer(message.author.id, timerId, timerName);
+            return message.channel.send(`${message.author} Timer ${timerName} deleted successfully!`);
+        }
         if (!this.users.has(message.author.id)) {
             this.users.set(message.author.id, new Discord.Collection());
         }
@@ -50,9 +66,12 @@ module.exports = {
         if (args[1] !== null) {
             wordNumbers += name.split(' ').join('_');
         }
-        console.log(wordNumbers);
         const timerId = crypto.createHash('md5').update(wordNumbers).digest('hex');
         const timerName = name === '' ? 'No name provided' : name;
+        if (this.users.get(message.author.id).get('names').has(timerName)) {
+            return message.channel.send('A timer with that name already exists!');
+        }
+        require('../../logger').debug(wordNumbers);
         tools.createTimer(message.author.id, mil, timerId, timerName);
         return message.channel.send(`${message.author} Successfully created timer that will go off in ${out}\nName: ${timerName}`);
     },

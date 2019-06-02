@@ -3,6 +3,7 @@ const tools = new tls.Tools();
 const fs = require('fs');
 const Discord = require('discord.js');
 const mute = require('./commands/mod/mute');
+const timer = require('./commands/util/timer');
 
 const cooldowns = new Discord.Collection();
 module.exports.getCooldowns = (key) => {
@@ -232,6 +233,14 @@ module.exports.registerCommands = async (client, mbot) => {
     if (message.channel.type === 'dm') return;
     if (!mute.guilds.has(message.guild.id)) {
       mute.guilds.set(message.guild.id, new Discord.Collection());
+    }
+    if (!timer.users.has(message.author.id)) {
+      timer.users.set(message.author.id, new Discord.Collection());
+      const user = timer.users.get(message.author.id);
+      user.set('timers', new Discord.Collection());
+      user.set('dates', new Discord.Collection());
+      user.set('timeouts', new Discord.Collection());
+      user.set('names', new Discord.Collection());
     }
     const muted = mute.guilds.get(message.guild.id);
     if (muted.has(message.author.id)) {

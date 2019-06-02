@@ -774,29 +774,30 @@ class Tools {
   }
 
   createTimer(userId, time, timerId, timerName) {
-    const timer = require('./commands/util/timer');
-    const user = timer.users.get(userId);
-    user.set('timeouts', new Discord.Collection());
-    user.set('timers', new Discord.Collection());
-    user.set('dates', new Discord.Collection());
-
+    const users = require('./commands/util/timer').users;
+    if (!users.has(userId)) {
+      users.set(userId, new Discord.Collection());
+    }
+    const user = users.get(userId);
     user.get('dates').set(timerId, Date.now());
     user.get('timers').set(timerId, time);
+    user.get('names').set(timerName, timerId);
     const timeout = setTimeout(() => {
-      this.deleteTimer(userId, timerId);
+      this.deleteTimer(userId, timerId, timerName);
       mbot.event.emit('timerFinished', userId, timerId, timerName);
     }, time);
     user.get('timeouts').set(timerId, timeout);
     timeout;
   }
 
-  deleteTimer(userId, timerId) {
+  deleteTimer(userId, timerId, timerName) {
     const timer = require('./commands/util/timer');
     const user = timer.users.get(userId);
     user.get('dates').delete(timerId);
     user.get('timers').delete(timerId);
     clearTimeout(user.get('timeouts').get(timerId));
     user.get('timeouts').delete(timerId);
+    user.get('names').delete(timerName);
   }
 }
 module.exports.Tools = Tools;
