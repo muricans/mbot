@@ -108,6 +108,15 @@ class Tools {
     mbot.event.emit('pointsUpdated', amnt, id);
   }
 
+  async getPoints(id) {
+    return new Promise((resolve) => {
+      db.get('SELECT points points FROM users WHERE id = ' + id, (err, row) => {
+        if (err) return console.log(err);
+        resolve(row);
+      });
+    });
+  }
+
   /**
    * @callback nlMessage
    * @param {number} use Whether the module is being used. Gives a 1 or 0.
@@ -655,12 +664,14 @@ class Tools {
     }
   }
 
-  parseCommandModule(msg, params) {
+  async parseCommandModule(msg, params) {
     const date = new Date();
     const options = {
       hour: '2-digit',
       minute: '2-digit',
     };
+    const row = await this.getPoints(params.mention.id);
+    const points = row.points;
 
     return msg
       .replace('{mention}', params.mention)
@@ -668,6 +679,7 @@ class Tools {
       .replace('{author}', params.author)
       .replace('{time}', date.toLocaleString('en-us', options))
       .replace('{prefix}', params.prefix)
+      .replace('{points}', points)
       .slice(9);
   }
 
@@ -759,6 +771,32 @@ class Tools {
       const mil = (sec * 1000);
       return mil;
     }
+  }
+
+  createTimer(userId, time, timerId, timerName) {
+    const timer = require('./commands/util/timer');
+    const user = timer.users.get(userId);
+    user.set('timeouts', new Discord.Collection());
+    user.set('timers', new Discord.Collection());
+    user.set('dates', new Discord.Collection());
+
+    user.get('dates').set(timerId, Date.now());
+    user.get('timers').set(timerId, time);
+    const timeout = setTimeout(() => {
+      this.deleteTimer(userId, timerId);
+      mbot.event.emit('timerFinished', userId, timerId, timerName);
+    }, time);
+    user.get('timeouts').set(timerId, timeout);
+    timeout;
+  }
+
+  deleteTimer(userId, timerId) {
+    const timer = require('./commands/util/timer');
+    const user = timer.users.get(userId);
+    user.get('dates').delete(timerId);
+    user.get('timers').delete(timerId);
+    clearTimeout(user.get('timeouts').get(timerId));
+    user.get('timeouts').delete(timerId);
   }
 }
 module.exports.Tools = Tools;

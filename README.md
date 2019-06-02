@@ -24,7 +24,7 @@ $ chmod +x install.sh
 $ ./install.sh
 ```
 
-When you are finished running the install script, edit the settings.json file to add your token.
+When you are finished running the install script, edit the settings.json file to add your token & NewsAPI key if you want to use the article command.
 
 ```json
 {
@@ -32,7 +32,8 @@ When you are finished running the install script, edit the settings.json file to
     "token": "YOURTOKEN",
     "debug": false,
     "fileLogging": true,
-    "memory": 50
+    "memory": 50,
+    "newsAPIKey": "https://newsapi.org/ to get your API key."
 }
 ```
 

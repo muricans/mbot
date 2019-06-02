@@ -69,7 +69,7 @@ module.exports = {
             if (sec >= 60) {
                 out = `${Math.floor(sec / 60)} minute(s)`;
             } else {
-                out = `${sec} seconds`;
+                out = `${sec} second(s)`;
             }
         }
         tools.muteMember(message.guild.id, mention.id, mil);
