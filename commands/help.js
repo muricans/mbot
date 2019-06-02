@@ -13,7 +13,7 @@ function pageOne(edit, message, prefix) {
     .addField(prefix + 'ban <user> [reason]', 'Bans specified user.')
     .addField(prefix + 'create <commandName> <message>', 'Adds a command to the bot')
     .addField(prefix + 'clean <user> [messageAmount]', 'Deletes a specified amount of messages for a user [admin only]')
-    .addField(prefix + 'danbooru [tag]', 'Returns a danbooru image [NSFW Available]')
+    .addField(prefix + 'danbooru [tags]', 'Returns a danbooru image [NSFW Available]')
     .addField(prefix + 'delete <commandName>', 'Deletes a command [added by !create] from the bot [admin only]')
     .addField(prefix + 'echo <message>', 'Returns your message from the bot [admin only]')
     .setFooter('Page (1/' + max + ')');
@@ -64,7 +64,6 @@ module.exports = {
                   .addField(prefix + `mute <user> <time?'min','hour'>`, `Keeps a player from chatting for specified time.`)
                   .addField(prefix + 'ping', 'Returns pong')
                   .setFooter(pageData);
-                //console.log(page);
                 sent.edit(embed);
                 break;
               case 3:
@@ -79,12 +78,12 @@ module.exports = {
                   .addField(prefix + 'suggest <suggestion>', 'Suggest a command or feature for the bot')
                   .addField(prefix + 'suggestions [clear]', 'Check the suggestions, (include <clear> [admin only] to clear the suggestions)')
                   .setFooter(pageData);
-                //console.log(page);
                 sent.edit(embed);
                 break;
               case 4:
                 embed = new Discord.RichEmbed()
                   .setTitle('Commands')
+                  .addField(prefix + `timer <time?'min','hour'> [name]`, 'Set a timer for the bot to remind you on when it completes.')
                   .addField(prefix + 'unmute <user>', 'Unmute a muted user')
                   .addField(prefix + 'userinfo [user]', "Returns the designated user's info")
                   .addField(prefix + 'set <user> <points>', 'Sets the users points [admin only]')
@@ -105,7 +104,6 @@ module.exports = {
                   .addField(prefix + 'hentai', 'Returns a hentai image')
                   .addField(prefix + 'nsfw', 'Returns an nsfw image (Straight)')
                   .setFooter(pageData);
-                //console.log(page);
                 sent.edit(embed);
                 break;
               case 6:
@@ -119,11 +117,9 @@ module.exports = {
                   .addField(prefix + 'dick', 'Returns an image of a dick')
                   .addField(prefix + 'gay', 'Returns a gay porn image')
                   .setFooter(pageData);
-                //console.log(page);
                 sent.edit(embed);
                 break;
             }
-
 
             if (page > max) {
               page = max;
@@ -149,15 +145,11 @@ module.exports = {
       name,
     } = cmd;
     const desc = description || "No description defined.";
-    if (usage) {
-      const embed = new Discord.RichEmbed()
-        .setTitle(prefix + name)
-        .addField('Usage ', usage)
-        .addField('Description', desc);
-      return message.channel.send(embed);
-    } else {
-      return message.channel.send(`${message.author} No usage data found for that command!`);
-    }
-
+    const usg = usage || "No usage data found.";
+    const embed = new Discord.RichEmbed()
+      .setTitle(prefix + name)
+      .addField('Usage ', usg)
+      .addField('Description', desc);
+    return message.channel.send(embed);
   },
 };
