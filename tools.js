@@ -760,6 +760,31 @@ class Tools {
       return mil;
     }
   }
+
+  createTimer(userId, time, timerId, timerName) {
+    const timer = require('./commands/util/timer');
+    const user = timer.users.get(userId);
+    user.set('timeouts', new Discord.Collection());
+    user.set('timers', new Discord.Collection());
+    user.set('dates', new Discord.Collection());
+
+    user.get('dates').set(timerId, Date.now());
+    user.get('timers').set(timerId, time);
+    const timeout = setTimeout(() => {
+      this.deleteTimer(userId, timerId);
+      mbot.event.emit('timerFinished', userId, timerId, timerName);
+    }, time);
+    user.get('timeouts').set(timerId, timeout);
+    timeout;
+  }
+
+  deleteTimer(userId, timerId) {
+    const timer = require('./commands/util/timer');
+    const user = timer.users.get(userId);
+    user.get('dates').delete(timerId);
+    user.get('timers').delete(timerId);
+    user.get('timeouts').delete(timerId);
+  }
 }
 module.exports.Tools = Tools;
 

@@ -96,6 +96,12 @@ event.on('ready', () => {
       "message": row.message,
     });
   });
+  event.on('timerFinished', (userId, timerId, timerName) => {
+    Logger.debug(`Timer ${timerId} has finished.`);
+    client.fetchUser(userId).then(user => {
+      user.send(`Your timer ${timerName} has finsihed!`);
+    }).catch();
+  });
 });
 
 client.on('guildCreate', (guild) => {
