@@ -10,7 +10,7 @@ const hourAlias = ['hour', 'hours', 'h', 'hr', 'hrs'];
 module.exports = {
     users: new Discord.Collection(),
     name: 'timer',
-    usage: `<time?'min','hour'|cancel> [name]`,
+    usage: `<time?'min','hour'|cancel|list> [name]`,
     description: 'Set a timer for the bot to remind you on when it completes.',
     args: true,
     minArgs: 1,
@@ -30,6 +30,32 @@ module.exports = {
             }
             tools.deleteTimer(message.author.id, timerId, timerName);
             return message.channel.send(`${message.author} Timer ${timerName} deleted successfully!`);
+        } else if (args[0].toLowerCase() === "list") {
+            const user = this.users.get(message.author.id);
+            const names = user.get('names').array();
+            const ids = user.get('ids');
+            let send = [];
+            for (let i = 0; i < names.length; i++) {
+                const exp = user.get('dates').get(names[i]) + user.get('timers').get(names[i]);
+                const left = (exp - Date.now()) / 1000;
+                let timeLeft = Math.floor(left);
+                if (timeLeft >= 3600) {
+                    const mins = Math.floor((left / 60) % 60);
+                    timeLeft = Math.floor(timeLeft / 3600);
+                    timeLeft += ` hours and ${mins} minutes`;
+                } else if (timeLeft >= 60) {
+                    const secs = Math.floor(left % 60);
+                    timeLeft = Math.floor(timeLeft / 60);
+                    timeLeft += ` minutes and ${secs} seconds`;
+                }
+                send.push(`${ids.get(names[i])} - ${timeLeft}`);
+            }
+            send = send.join('\n');
+            if (send !== '') {
+                return message.channel.send(send).catch();
+            } else {
+                return message.channel.send(`${message.author} Could not find any timers!`);
+            }
         }
         if (!this.users.has(message.author.id)) {
             this.users.set(message.author.id, new Discord.Collection());

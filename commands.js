@@ -241,6 +241,7 @@ module.exports.registerCommands = async (client, mbot) => {
       user.set('dates', new Discord.Collection());
       user.set('timeouts', new Discord.Collection());
       user.set('names', new Discord.Collection());
+      user.set('ids', new Discord.Collection());
     }
     const muted = mute.guilds.get(message.guild.id);
     if (muted.has(message.author.id)) {

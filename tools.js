@@ -782,6 +782,7 @@ class Tools {
     user.get('dates').set(timerId, Date.now());
     user.get('timers').set(timerId, time);
     user.get('names').set(timerName, timerId);
+    user.get('ids').set(timerId, timerName);
     const timeout = setTimeout(() => {
       this.deleteTimer(userId, timerId, timerName);
       mbot.event.emit('timerFinished', userId, timerId, timerName);
@@ -798,6 +799,7 @@ class Tools {
     clearTimeout(user.get('timeouts').get(timerId));
     user.get('timeouts').delete(timerId);
     user.get('names').delete(timerName);
+    user.get('ids').delete(timerId);
   }
 }
 module.exports.Tools = Tools;
