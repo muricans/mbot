@@ -7,6 +7,8 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const sqlite = require('sqlite3').verbose();
 const Logger = require('./logger');
+const figlet = require('figlet');
+const chalk = require('chalk');
 
 if (settings.token === "YOURTOKEN" || !settings.token.length) {
   Logger.error('Please add your token to the bot!');
@@ -99,7 +101,7 @@ event.on('ready', () => {
   event.on('timerFinished', (userId, timerId, timerName) => {
     Logger.debug(`Timer ${timerId} has finished.`);
     client.fetchUser(userId).then(user => {
-      user.send(`Your timer ${timerName} has finsihed!`);
+      user.send(`Your timer '${timerName}' has finished!`);
     }).catch();
   });
 });
@@ -255,7 +257,30 @@ event.on('editCommand', (command, msg) => {
   Logger.debug(`Command ${command.name}'s message was updated to ${msg}`);
 });
 
+console.log(chalk.magenta(figlet.textSync('mbot', {
+  font: "Doom",
+  horizontalLayout: "full",
+})));
+
 commands.registerCommands(client, this);
+
+process.openStdin().on('data', (val) => {
+  const command = val.toString().trim();
+  switch (command.toLowerCase()) {
+    case "stop":
+      Logger.info('Stopping mbot...');
+      process.exit(0);
+      break;
+    case "version":
+      require('fs').readFile('./version.txt', 'utf8', (err, data) => {
+        if (err) return Logger.error(err.stack);
+        Logger.info(
+          `Application: mbot\n  Version: ${pkg.version}\n  Author: Muricans\n  Git repo: https://github.com/muricans/mbot\n  Git commit: ${data}\n  Website: https://muricans.github.io/mbot`
+        );
+      });
+      break;
+  }
+});
 
 //login to the client
 client.login(settings.token).catch(err => {

@@ -1,6 +1,4 @@
 # mbot
-<!--- [![Build Status](https://travis-ci.org/muricans/mbot.svg?branch=master)](https://travis-ci.org/muricans/mbot) -->
-<!--- commented out for now -->
 
 [mbot](https://github.com/muricans/mbot) is a discord bot created by [muricans](https://www.twitch.tv/muricanslol)
 and edited by [felanbird](https://www.twitch.tv/felanbird)
@@ -48,3 +46,10 @@ Should you want to update the bot, simply run the update script.
 ```sh
 $ ./update.sh
 ```
+
+## Console Commands
+
+| Command | Descriotion                     |
+| ------- | ------------------------------- |
+| stop    | Stops the bot.                  |
+| version | Gets version data from the bot. |

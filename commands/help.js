@@ -83,7 +83,7 @@ module.exports = {
               case 4:
                 embed = new Discord.RichEmbed()
                   .setTitle('Commands')
-                  .addField(prefix + `timer <time?'min','hour'> [name]`, 'Set a timer for the bot to remind you on when it completes.')
+                  .addField(prefix + `timer <time?'min','hour'|cancel|list> [name]`, 'Set a timer for the bot to remind you on when it completes.')
                   .addField(prefix + 'unmute <user>', 'Unmute a muted user')
                   .addField(prefix + 'userinfo [user]', "Returns the designated user's info")
                   .addField(prefix + 'set <user> <points>', 'Sets the users points [admin only]')
