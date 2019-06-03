@@ -73,32 +73,33 @@ module.exports = {
             this.users.set(message.author.id, new Discord.Collection());
         }
         const time = parseInt(args[0]);
-        if (!time && !args[0].startsWith('t:')) {
+        if (isNaN(time)) {
             return message.channel.send(`${message.author} Please use numbers!`);
         }
+        const timeArray = args[0].split(':');
         let out = "Error occured";
         let mil = tools.parseTime(args[0]);
-        if (hasMin(args[0]) && !hasHour(args[0])) {
-            const minutes = parseInt(args[0]);
-            if (minutes >= 60) {
-                out = `${Math.floor(minutes / 60)} hour(s)`;
+        if (timeArray.length <= 1) {
+            if (hasMin(args[0]) && !hasHour(args[0])) {
+                const minutes = parseInt(args[0]);
+                if (minutes >= 60) {
+                    out = `${Math.floor(minutes / 60)} hour(s)`;
+                } else {
+                    out = `${minutes} minute(s)`;
+                }
+            } else if (hasHour(args[0]) && !hasMin(args[0])) {
+                out = `${parseInt(args[0])} hour(s)`;
             } else {
-                out = `${minutes} minute(s)`;
+                const sec = parseInt(args[0]);
+                if (sec >= 60) {
+                    out = `${Math.floor(sec / 60)} minute(s)`;
+                } else if (sec >= 3600) {
+                    out = `${Math.floor(sec / 3600)} hour(s)`;
+                } else {
+                    out = `${sec} second(s)`;
+                }
             }
-        } else if (hasHour(args[0]) && !hasMin(args[0])) {
-            out = `${parseInt(args[0])} hour(s)`;
         } else {
-            const sec = parseInt(args[0]);
-            if (sec >= 60) {
-                out = `${Math.floor(sec / 60)} minute(s)`;
-            } else if (sec >= 3600) {
-                out = `${Math.floor(sec / 3600)} hour(s)`;
-            } else {
-                out = `${sec} second(s)`;
-            }
-        }
-        if (args[0].startsWith('t:')) {
-            const timeArray = args[0].split(':').slice(1);
             if (timeArray.length < 3 || timeArray.length > 3) {
                 return message.channel.send(`${message.author} Please follow the time format! hh:mm:ss`);
             }
