@@ -17,25 +17,34 @@ module.exports = {
     execute(message, args) {
         if (args[0].toLowerCase() === "cancel") {
             const user = this.users.get(message.author.id);
-            if (!user) {
-                return message.channel.send(`You don't have any timers set up right now!`);
-            }
             if (!args[1]) {
                 return message.channel.send(`${message.author} Please provide your timers name!`);
             }
             const timerName = args.slice(1, args.length).join(' ');
             const timerId = user.get('names').get(timerName.toLowerCase());
             if (!timerId) {
-                return message.channel.send('Could not find a timer by that name!');
+                const ids = user.get('names').array();
+                if (!ids.length) {
+                    return message.channel.send(`You don't have any timers set up right now!`);
+                }
+                for (let i = 0; i < ids.length; i++) {
+                    if (ids[i].substr(0, 6) === timerName) {
+                        const name = user.get('ids').get(ids[i]);
+                        tools.deleteTimer(message.author.id, ids[i], name);
+                        return message.channel.send(`${message.author} Timer ${name} (${timerName}) canceled successfully!`);
+                    } else {
+                        return message.channel.send('No timers were found with that name or id!');
+                    }
+                }
             }
             tools.deleteTimer(message.author.id, timerId, timerName);
-            return message.channel.send(`${message.author} Timer ${timerName} deleted successfully!`);
+            return message.channel.send(`${message.author} Timer ${timerName} cancled successfully!`);
         } else if (args[0].toLowerCase() === "list") {
             const user = this.users.get(message.author.id);
             const names = user.get('names').array();
-            const ids = user.get('ids');
             let send = [];
             for (let i = 0; i < names.length; i++) {
+                const id = user.get('ids').get(names[i]);
                 const exp = user.get('dates').get(names[i]) + user.get('timers').get(names[i]);
                 const left = (exp - Date.now()) / 1000;
                 let timeLeft = Math.floor(left);
@@ -50,7 +59,8 @@ module.exports = {
                 } else {
                     timeLeft += ` second(s)`;
                 }
-                send.push(`${ids.get(names[i])} - ${timeLeft}`);
+                const shortId = user.get('shortIds').get(id);
+                send.push(`${id} (${shortId}) - ${timeLeft}`);
             }
             send = send.join('\n');
             if (send !== '') {
@@ -108,13 +118,13 @@ module.exports = {
             wordNumbers += name.split(' ').join('_');
         }
         const timerId = crypto.createHash('md5').update(wordNumbers).digest('hex');
-        const timerName = name === '' ? 'No name provided' : name;
+        const timerName = name === '' ? 'no name provided' : name;
         if (this.users.get(message.author.id).get('names').has(timerName)) {
             return message.channel.send('A timer with that name already exists!');
         }
         require('../../logger').debug(wordNumbers);
         tools.createTimer(message.author.id, mil, timerId, timerName.toLowerCase());
-        return message.channel.send(`${message.author} Successfully created timer that will go off in ${out}\nName: ${timerName}`);
+        return message.channel.send(`${message.author} Successfully created timer that will go off in ${out}\nName: ${timerName} (${timerId.substr(0, 6)})`);
     },
 };
 

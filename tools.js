@@ -783,6 +783,7 @@ class Tools {
     user.get('timers').set(timerId, time);
     user.get('names').set(timerName, timerId);
     user.get('ids').set(timerId, timerName);
+    user.get('shortIds').set(timerName, timerId.substr(0, 6));
     const timeout = setTimeout(() => {
       this.deleteTimer(userId, timerId, timerName);
       mbot.event.emit('timerFinished', userId, timerId, timerName);
@@ -800,6 +801,7 @@ class Tools {
     user.get('timeouts').delete(timerId);
     user.get('names').delete(timerName);
     user.get('ids').delete(timerId);
+    user.get('shortIds').delete(timerName);
   }
 }
 module.exports.Tools = Tools;
