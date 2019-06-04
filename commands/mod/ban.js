@@ -4,6 +4,7 @@ module.exports = {
     description: 'Bans specified user',
     args: true,
     minArgs: 1,
+    mod: true,
     execute(message, args) {
         const canBan = message.channel.permissionsFor(message.member).has('BAN_MEMBERS');
         if (!canBan) {

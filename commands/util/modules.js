@@ -16,6 +16,7 @@ module.exports = {
     description: "Use modules for your server. [Documentation](https://muricans.github.io/mbot/)",
     args: true,
     minArgs: 2,
+    mod: true,
     execute(message, args, client, prefix) {
         //0=moduleName
         //1=moduleOption

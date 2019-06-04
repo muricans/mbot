@@ -14,6 +14,7 @@ module.exports = {
     description: 'Keeps a player from chatting for specified time.',
     args: true,
     minArgs: 2,
+    mod: true,
     execute(message, args, client) {
         const canKick = message.channel.permissionsFor(message.member).has("KICK_MEMBERS");
         if (!canKick) {

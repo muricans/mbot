@@ -4,6 +4,7 @@ module.exports = {
     description: 'Kicks specified user',
     args: true,
     minArgs: 1,
+    mod: true,
     execute(message, args) {
         const canKick = message.channel.permissionsFor(message.member).has('KICK_MEMBERS');
         if (!canKick) {

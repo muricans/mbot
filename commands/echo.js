@@ -5,6 +5,7 @@ module.exports = {
   cooldown: 5,
   args: true,
   minArgs: 1,
+  mod: true,
   async execute(message, args, client) {
     const weirdChamp = client.emojis.get("572690273247821824");
     const hasAdmin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");

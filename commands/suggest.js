@@ -8,6 +8,7 @@ module.exports = {
     cooldown: 86400,
     args: true,
     minArgs: 1,
+    mod: true,
     execute(message, args) {
         suggestions.add({
             "suggestion": args.join(' '),

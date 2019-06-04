@@ -8,6 +8,7 @@ module.exports = {
     description: 'Unmute a muted user.',
     args: true,
     minArgs: 1,
+    mod: true,
     execute(message) {
         const canKick = message.channel.permissionsFor(message.member).has("KICK_MEMBERS");
         if (!canKick) {

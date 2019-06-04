@@ -63,7 +63,7 @@ module.exports = {
                     timeLeft += ` second(s)`;
                 }
                 const shortId = user.get('shortIds').get(id);
-                send.push(`${id} (${shortId}) - ${timeLeft}`);
+                send.push(`Timers:\n${id} (${shortId}) - ${timeLeft}`);
             }
             send = send.join('\n');
             if (send !== '') {

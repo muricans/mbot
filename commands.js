@@ -338,6 +338,9 @@ module.exports.registerCommands = async (client, mbot) => {
             }
           }
         });
+      } else if (comm.mod) {
+        if (message.author.id === client.user.id) return;
+        return doCommand(comm, message, prefix, args);
       } else {
         return doCommand(comm, message, prefix, args);
       }
