@@ -63,11 +63,11 @@ module.exports = {
                     timeLeft += ` second(s)`;
                 }
                 const shortId = user.get('shortIds').get(id);
-                send.push(`Timers:\n${id} (${shortId}) - ${timeLeft}`);
+                send.push(`${id} (${shortId}) - ${timeLeft}`);
             }
             send = send.join('\n');
             if (send !== '') {
-                return message.channel.send(send).catch();
+                return message.channel.send('Timers:\n' + send).catch();
             } else {
                 return message.channel.send(`${message.author} Could not find any timers!`);
             }
