@@ -3,6 +3,9 @@ const tls = require('../../tools');
 const tools = new tls.Tools();
 const crypto = require('crypto');
 const words = require('../../words.json');
+const {
+    bot_owners_id,
+} = require('../../settings.json');
 
 const minAlias = ['min', 'minute', 'm', 'minutes', 'mins'];
 const hourAlias = ['hour', 'hours', 'h', 'hr', 'hrs'];
@@ -71,6 +74,11 @@ module.exports = {
         }
         if (!this.users.has(message.author.id)) {
             this.users.set(message.author.id, new Discord.Collection());
+        }
+        for (let i = 0; i < bot_owners_id.length; i++) {
+            if (this.users.get(message.author.id).get('timers').array().length === 3 && message.author.id !== bot_owners_id[i]) {
+                return message.channel.send(`${message.author} You have reached the maximum number of timers that can be created!`);
+            }
         }
         const time = parseInt(args[0]);
         if (isNaN(time)) {
