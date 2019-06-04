@@ -230,10 +230,6 @@ module.exports.registerCommands = async (client, mbot) => {
 
   client.on('message', async message => {
     //if (message.author.bot) return;
-    if (message.channel.type === 'dm') return;
-    if (!mute.guilds.has(message.guild.id)) {
-      mute.guilds.set(message.guild.id, new Discord.Collection());
-    }
     if (!timer.users.has(message.author.id)) {
       timer.users.set(message.author.id, new Discord.Collection());
       const user = timer.users.get(message.author.id);
@@ -242,6 +238,25 @@ module.exports.registerCommands = async (client, mbot) => {
       user.set('timeouts', new Discord.Collection());
       user.set('names', new Discord.Collection());
       user.set('ids', new Discord.Collection());
+      user.set('shortIds', new Discord.Collection());
+    }
+    if (message.channel.type === 'dm') {
+      const args = message.content.split(' ');
+      const command = args.shift().toLowerCase();
+      console.log(command, args);
+      if (message.author.bot) return;
+      switch (command) {
+        case "timer":
+          if (args.length < timer.minArgs) {
+            return message.channel.send(`Please add params! ${timer.name} ${timer.usage}`);
+          }
+          client.commands.get('timer').execute(message, args);
+          break;
+      }
+      return;
+    }
+    if (!mute.guilds.has(message.guild.id)) {
+      mute.guilds.set(message.guild.id, new Discord.Collection());
     }
     const muted = mute.guilds.get(message.guild.id);
     if (muted.has(message.author.id)) {
@@ -251,19 +266,19 @@ module.exports.registerCommands = async (client, mbot) => {
       const exp = mutes.get(message.author.id) + muted.get(message.author.id);
       if (now < exp) {
         const left = (exp - now) / 1000;
-        let out;
-        if (left.toFixed(1) >= 3600) {
-          let result = left.toFixed() / 3600;
-          result = Math.round(result);
-          out = `${result} hour(s)`;
-        } else if ((left.toFixed(1)) >= 60) {
-          let result = left.toFixed() / 60;
-          result = Math.round(result);
-          out = `${result} minute(s)`;
+        let timeLeft = Math.floor(left);
+        if (timeLeft >= 3600) {
+          const mins = Math.floor((left / 60) % 60);
+          timeLeft = Math.floor(timeLeft / 3600);
+          timeLeft += ` hour(s) and ${mins} minute(s)`;
+        } else if (timeLeft >= 60) {
+          const secs = Math.floor(left % 60);
+          timeLeft = Math.floor(timeLeft / 60);
+          timeLeft += ` minute(s) and ${secs} second(s)`;
         } else {
-          out = `${left.toFixed(1)} second(s)`;
+          timeLeft += ` second(s)`;
         }
-        return message.author.send(`You are currently muted on ${message.guild.name}. Please wait around ${out} before typing again!`).catch((err) => {
+        return message.author.send(`You are currently muted on ${message.guild.name}. Please wait ${timeLeft} before typing again!`).catch((err) => {
           if (err) return;
         });
       }

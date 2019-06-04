@@ -31,7 +31,7 @@ module.exports = {
             return message.channel.send(`${message.author} Could not find that user!`);
         }
         const time = parseInt(args[1]);
-        if (!time) {
+        if (isNaN(time)) {
             return message.channel.send(`${message.author} Please use numbers!`);
         }
         const muted = this.guilds.get(message.guild.id);
@@ -53,24 +53,36 @@ module.exports = {
         if (mRole.comparePositionTo(role) > 0 || mRole.position === role.position) {
             return message.channel.send(`${message.author} That user has a higher role than you!`);
         }
+        const timeArray = args[1].split(':');
         let out = "Error occured";
-        const mil = tools.parseTime(args[1]);
-        if (hasMin(args[1]) && !hasHour(args[1])) {
-            const minutes = parseInt(args[1]);
-            if (minutes >= 60) {
-                out = `${Math.floor(minutes / 60)} hour(s)`;
+        let mil = tools.parseTime(args[1]);
+        if (timeArray.length <= 1) {
+            if (hasMin(args[1]) && !hasHour(args[1])) {
+                const minutes = parseInt(args[1]);
+                if (minutes >= 60) {
+                    out = `${Math.floor(minutes / 60)} hour(s)`;
+                } else {
+                    out = `${minutes} minute(s)`;
+                }
+            } else if (hasHour(args[1]) && !hasMin(args[1])) {
+                out = `${parseInt(args[1])} hour(s)`;
             } else {
-                out = `${minutes} minute(s)`;
+                const sec = parseInt(args[1]);
+                if (sec >= 60) {
+                    out = `${Math.floor(sec / 60)} minute(s)`;
+                } else {
+                    out = `${sec} second(s)`;
+                }
             }
-        } else if (hasHour(args[1]) && !hasMin(args[1])) {
-            out = `${parseInt(args[1])} hour(s)`;
         } else {
-            const sec = parseInt(args[1]);
-            if (sec >= 60) {
-                out = `${Math.floor(sec / 60)} minute(s)`;
-            } else {
-                out = `${sec} second(s)`;
+            if (timeArray.length < 3 || timeArray.length > 3) {
+                return message.channel.send(`${message.author} Please follow the time format! hh:mm:ss`);
             }
+            const hours = tools.parseTime(timeArray[0] + 'hour');
+            const minutes = tools.parseTime(timeArray[1] + 'min');
+            const seconds = tools.parseTime(timeArray[2]);
+            mil = hours + minutes + seconds;
+            out = `${timeArray[0]}:${timeArray[1]}:${timeArray[2]}`;
         }
         tools.muteMember(message.guild.id, mention.id, mil);
         return message.channel.send(`${message.author} muted ${mention} for ${out}!`);
