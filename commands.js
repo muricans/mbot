@@ -243,7 +243,6 @@ module.exports.registerCommands = async (client, mbot) => {
     if (message.channel.type === 'dm') {
       const args = message.content.split(' ');
       const command = args.shift().toLowerCase();
-      console.log(command, args);
       if (message.author.bot) return;
       switch (command) {
         case "timer":
