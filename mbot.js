@@ -1,3 +1,10 @@
+/**
+ * @typedef cmds 
+ * @property {string} id The guild servers id.
+ * @property {string} name The commands name.
+ * @property {string} message The message the command outputs.
+ * 
+ */
 // init discord lib
 const settings = require('./settings.json');
 const pkg = require('./package.json');
@@ -24,6 +31,7 @@ const event = module.exports.event;
 
 /**
  * The custom commands in the server.
+ * @type {Array<cmds>}
  */
 module.exports.cCommands = [];
 
