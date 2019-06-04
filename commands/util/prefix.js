@@ -13,6 +13,7 @@ module.exports = {
   cooldown: 60,
   args: true,
   minArgs: 1,
+  mod: true,
   execute(message, args, client) {
     const weirdChamp = client.emojis.get("572690273247821824");
 

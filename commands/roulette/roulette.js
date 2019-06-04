@@ -15,6 +15,7 @@ module.exports = {
   cooldown: 5,
   args: true,
   minArgs: 1,
+  mod: true,
   execute(message, args, client) {
     db.serialize(() => {
       db.get("SELECT points points FROM users WHERE id = " + message.author.id.toString(), (err, row) => {

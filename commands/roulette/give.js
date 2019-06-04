@@ -15,6 +15,7 @@ module.exports = {
   cooldown: 3,
   args: true,
   minArgs: 2,
+  mod: true,
   execute(message, args) {
     if (message.mentions.users.first() === message.author) {
       return message.reply('You cannot give points to yourself!');
