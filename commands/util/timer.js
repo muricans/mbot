@@ -66,6 +66,7 @@ module.exports = {
                 send.push(`${id} (${shortId}) - ${timeLeft}`);
             }
             send = send.join('\n');
+            tools.addCooldown(this.name, 3, message);
             if (send !== '') {
                 return message.channel.send('Timers:\n' + send).catch();
             } else {
@@ -133,6 +134,7 @@ module.exports = {
         }
         require('../../logger').debug(wordNumbers);
         tools.createTimer(message.author.id, mil, timerId, timerName.toLowerCase());
+        tools.addCooldown(this.name, 5, message);
         return message.channel.send(`${message.author} Successfully created timer that will go off in ${out}\nName: ${timerName} (${timerId.substr(0, 6)})`);
     },
 };
