@@ -20,7 +20,7 @@ function leaderboard(message, client) {
             if (err) return console.log(err);
             const embed = new Discord.RichEmbed().setTitle('Points Leaderboard');
             if (!rows.length) return message.channel.send('No users found!');
-            rows.forEach(async (val, i, arr) => {
+            rows.map(async (val, i, arr) => {
                 if (i < 20) {
                     const user = await client.fetchUser(arr[i].id);
                     embed.addField(`${i + 1}. ${user.username}`, arr[i].points, true);
