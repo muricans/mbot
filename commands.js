@@ -4,6 +4,9 @@ const fs = require('fs');
 const Discord = require('discord.js');
 const mute = require('./commands/mod/mute');
 const timer = require('./commands/util/timer');
+const {
+  bot_owners_id,
+} = require('./settings.json');
 
 const cooldowns = new Discord.Collection();
 module.exports.getCooldowns = (key) => {
@@ -193,7 +196,8 @@ module.exports.registerCommands = async (client, mbot) => {
         return message.channel.send(`${message.author} Please add params! ${prefix}${comm.name} ${comm.usage}`);
       }
     }
-    if (message.author.id === "399121700429627393") {
+    const isOwner = bot_owners_id.find(id => id === message.author.id);
+    if (isOwner) {
       try {
         return comm.execute(message, args, client, prefix);
       } catch (err) {

@@ -108,11 +108,16 @@ class Tools {
     mbot.event.emit('pointsUpdated', amnt, id);
   }
 
-  async getPoints(id) {
+  /**
+   * 
+   * @param {string} id Id of the user to get points from.
+   * @returns {Promise<number>} A promise containing the points of the user.
+   */
+  getPoints(id) {
     return new Promise((resolve) => {
       db.get('SELECT points points FROM users WHERE id = ' + id, (err, row) => {
         if (err) return console.log(err);
-        resolve(row);
+        resolve(row.points);
       });
     });
   }
@@ -630,7 +635,7 @@ class Tools {
       minute: '2-digit',
     };
     const row = await this.getPoints(params.mention.id);
-    const points = row.points;
+    const points = row;
 
     return msg
       .replace('{mention}', params.mention)
