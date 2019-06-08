@@ -37,8 +37,6 @@ module.exports = {
       msg = `${message.author} You sent ${give} points to ${mention}!`;
       current = current - give;
     }
-    console.log(current);
-    console.log(mentCurrent);
     tools.setPoints(mentCurrent, mention.id);
     tools.setPoints(current, message.author.id);
     tools.addCooldown(this.name, 3, message);
