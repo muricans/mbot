@@ -9,14 +9,13 @@ module.exports = {
     name: 'leaderboard',
     description: 'Get up to 20 users with the most points',
     async execute(message, args, client) {
-        const leaders = await leaderboard(message, client);
-        message.channel.send(leaders);
+        leaderboard(message, client).then(leaders => message.channel.send(leaders));
     },
 };
 
 function leaderboard(message, client) {
     return new Promise((resolve) => {
-        db.all('SELECT points points, id id FROM users ORDER BY points DESC', async (err, rows) => {
+        db.all('SELECT points points, id id FROM users ORDER BY points DESC', (err, rows) => {
             if (err) return console.log(err);
             const embed = new Discord.RichEmbed().setTitle('Points Leaderboard');
             if (!rows.length) return message.channel.send('No users found!');

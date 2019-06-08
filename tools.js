@@ -371,27 +371,28 @@ class Tools {
   }
 
   /**
-   * @deprecated Isn't very reliable.
+   * Handle a subreddit image.
    * 
-   * @description Web search a url, specifically better for images.
-   * @param {string} url The url to search. 
+   * @param {string} image The url of the image to process.
+   * @param {string} title Title to add to the image.
+   * @param {string} subreddit The subreddit to be displayed with the image.
+   * @param {*} randomEmoji The emoji to be shown at the footer.
    * @param {Discord.Message} message The message to respond to.
    */
-  webSearch(url, message) {
-    if (url.includes('.gifv')) {
-      message.channel.send("Random Web Search");
-      message.channel.send(url);
-      message.channel.send("Requested by: " + message.author.username);
-    } else if (this.end(url)) {
+  handleSubredditImage(image, title, subreddit, up, randomEmoji, message) {
+    if (this.end(image)) {
+      if (image.includes('.gifv')) {
+        image = image.substr(0, image.length - 1);
+      }
       const embed = new Discord.RichEmbed()
-        .setTitle("Random Web Search")
-        .setImage(url)
-        .setFooter("Requested by: " + message.author.username);
+        .setTitle(title)
+        .setImage(image)
+        .setFooter("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
       message.channel.send(embed);
     } else {
-      message.channel.send("Random Web Search");
-      message.channel.send(url);
-      message.channel.send("Requested by: " + message.author.username);
+      message.channel.send(title);
+      message.channel.send(image);
+      message.channel.send("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
     }
   }
 
@@ -531,6 +532,7 @@ class Tools {
           limit: 4000,
         });
       let allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
+      allowed = allowed.filter(post => post.data.title.length < 256);
       allowed = filterBanned === true ? allowed.filter(post => !this.banned(post.data.url)) : allowed;
       if (!allowed.length) return message.channel.send(nsfw);
       const rn = Math.floor(Math.random() * allowed.length);
@@ -539,21 +541,7 @@ class Tools {
       const title = postData.title;
       const up = postData.ups;
       const subreddit = postData.subreddit_name_prefixed;
-      if (image.includes('.gifv')) {
-        message.channel.send(title);
-        message.channel.send(image);
-        message.channel.send("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
-      } else if (this.end(image)) {
-        const embed = new Discord.RichEmbed()
-          .setTitle(title)
-          .setImage(image)
-          .setFooter("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
-        message.channel.send(embed);
-      } else {
-        message.channel.send(title);
-        message.channel.send(image);
-        message.channel.send("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
-      }
+      this.handleSubredditImage(image, title, subreddit, up, randomEmoji, message);
     } catch (err) {
       console.log(err);
     }
@@ -579,7 +567,8 @@ class Tools {
           limit: 4000,
         });
       let allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
-      allowed = filterBanned ? allowed.filter(post => !this.banned(post.data.url)) : allowed;
+      allowed = allowed.filter(post => post.data.title.length < 256);
+      allowed = filterBanned === true ? allowed.filter(post => !this.banned(post.data.url)) : allowed;
       if (!allowed.length) return message.channel.send(nsfw);
       const rn = Math.floor(Math.random() * allowed.length);
       const postData = allowed[rn].data;
@@ -587,24 +576,7 @@ class Tools {
       const title = postData.title;
       const up = postData.ups;
       const subreddit = postData.subreddit_name_prefixed;
-      if (this.banned(image) && filterBanned) {
-        return this.rSearch(sub, time, message, filterBanned);
-      }
-      if (image.includes('.gifv')) {
-        message.channel.send(title);
-        message.channel.send(image);
-        message.channel.send("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
-      } else if (this.end(image)) {
-        const embed = new Discord.RichEmbed()
-          .setTitle(title)
-          .setImage(image)
-          .setFooter("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
-        message.channel.send(embed);
-      } else {
-        message.channel.send(title);
-        message.channel.send(image);
-        message.channel.send("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
-      }
+      this.handleSubredditImage(image, title, subreddit, up, randomEmoji, message);
     } catch (err) {
       console.log(err);
     }
@@ -632,6 +604,7 @@ class Tools {
           limit: 4000,
         });
       let allowed = message.channel.nsfw ? body.data.children : body.data.children.filter(post => !post.data.over_18);
+      allowed = allowed.filter(post => post.data.title.length < 256);
       allowed = filterBanned ? allowed.filter(post => !this.banned(post.data.url)) : allowed;
       const found = body.data.dist;
       const rn = Math.floor(Math.random() * allowed.length);
@@ -644,21 +617,7 @@ class Tools {
       const title = postData.title;
       const up = postData.ups;
       const subreddit = postData.subreddit_name_prefixed;
-      if (image.includes('.gifv')) {
-        message.channel.send(title);
-        message.channel.send(image);
-        message.channel.send("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
-      } else if (this.end(image)) {
-        const embed = new Discord.RichEmbed()
-          .setTitle(title)
-          .setImage(image)
-          .setFooter("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
-        message.channel.send(embed);
-      } else {
-        message.channel.send(title);
-        message.channel.send(image);
-        message.channel.send("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
-      }
+      this.handleSubredditImage(image, title, subreddit, up, randomEmoji, message);
     } catch (err) {
       console.log(err);
     }
@@ -739,7 +698,11 @@ class Tools {
    * All others will be turned into seconds.
    * 
    * @param {string} object The string that you want to parse time out of.
-   * @returns {number} The time parsed from the given string in milliseconds. 
+   * @returns {number} The time parsed from the given string in milliseconds.
+   * @example
+   * const hourInMil = tools.parseTime('10h');
+   * console.log(hourInMil);
+   * // -> 36000000
    */
   parseTime(object) {
     if (isNaN(parseInt(object))) {
