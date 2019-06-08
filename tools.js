@@ -773,6 +773,14 @@ class Tools {
     }
   }
 
+  /**
+   * Create a timer for a user.
+   * 
+   * @param {string} userId The id of the user to add the timer to.
+   * @param {number} time The amount of time the timer should run for in milliseconds.
+   * @param {string} timerId The id of the timer to create.
+   * @param {string} timerName The name of the timer to create.
+   */
   createTimer(userId, time, timerId, timerName) {
     const users = require('./commands/util/timer').users;
     if (!users.has(userId)) {
@@ -785,23 +793,31 @@ class Tools {
     user.get('ids').set(timerId, timerName);
     user.get('shortIds').set(timerName, timerId.substr(0, 6));
     const timeout = setTimeout(() => {
-      this.deleteTimer(userId, timerId, timerName);
+      this.deleteTimer(userId, timerId);
       mbot.event.emit('timerFinished', userId, timerId, timerName);
     }, time);
     user.get('timeouts').set(timerId, timeout);
     timeout;
   }
 
-  deleteTimer(userId, timerId, timerName) {
+  /**
+   * Delete a timer from a user.
+   * 
+   * @param {string} userId ID of the user to delete the timer from.
+   * @param {*} timerId The timers id to delete.
+   * @param {*} timerName The name of the timer to delete.
+   */
+  deleteTimer(userId, timerId) {
     const timer = require('./commands/util/timer');
     const user = timer.users.get(userId);
+    const timerName = user.get('ids').get(timerId);
     user.get('dates').delete(timerId);
     user.get('timers').delete(timerId);
     clearTimeout(user.get('timeouts').get(timerId));
     user.get('timeouts').delete(timerId);
     user.get('names').delete(timerName);
-    user.get('ids').delete(timerId);
     user.get('shortIds').delete(timerName);
+    user.get('ids').delete(timerId);
   }
 }
 module.exports.Tools = Tools;

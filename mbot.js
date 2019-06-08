@@ -29,6 +29,8 @@ if (settings.token === "YOURTOKEN" || !settings.token.length) {
 module.exports.event = new tools.Event();
 const event = module.exports.event;
 
+let alive = false;
+
 /**
  * The custom commands in the server.
  * @type {Array<cmds>}
@@ -290,8 +292,20 @@ process.openStdin().on('data', (val) => {
   }
 });
 
+setTimeout(() => {
+  if (!alive) {
+    Logger.warn("Bot is having trouble contacting discord...");
+    setTimeout(() => {
+      Logger.error("Failed to contact discord, stopping bot.");
+      process.exit(1);
+    }, 30000);
+  }
+}, 5000);
+
 //login to the client
-client.login(settings.token).catch(err => {
+client.login(settings.token).then(() => {
+  alive = true;
+}).catch(err => {
   if (err) {
     if (settings.debug) {
       return console.log(err);

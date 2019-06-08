@@ -59,16 +59,17 @@ module.exports = {
                   .addField(prefix + 'help [command]', 'Returns a list of commands for this bot')
                   .addField(prefix + 'imgur [hash]', 'Returns a random image from imgur, or an image with the provided hash')
                   .addField(prefix + 'kick <user> [reason]', 'Kicks specified user')
+                  .addField(prefix + 'leaderboard', 'Get up to 20 users with the most points')
                   .addField(prefix + 'meme', 'Returns a random meme')
                   .addField(prefix + 'modules <moduleName> <moduleOption> [setTo, ?name] [?setTo]', 'Use modules for your server. [Documentation](https://muricans.github.io/mbot/)')
                   .addField(prefix + `mute <user> <time?'min','hour'>`, `Keeps a player from chatting for specified time.`)
-                  .addField(prefix + 'ping', 'Returns pong')
                   .setFooter(pageData);
                 sent.edit(embed);
                 break;
               case 3:
                 embed = new Discord.RichEmbed()
                   .setTitle('Commands')
+                  .addField(prefix + 'ping', 'Returns pong')
                   .addField(prefix + 'prefix <newPrefix>', 'Changes the bots prefix [admin only]')
                   .addField(prefix + 'points [user]', "Returns the designated user's (or your own) points")
                   .addField(prefix + 'qr <information>', 'Returns a QR code with the designated information')
@@ -76,13 +77,13 @@ module.exports = {
                   .addField(prefix + 'roulette <amount>', 'Returns win/loss and new total points')
                   .addField(prefix + 'roll [number]', 'Returns a random number between 1 and the chosen number')
                   .addField(prefix + 'suggest <suggestion>', 'Suggest a command or feature for the bot')
-                  .addField(prefix + 'suggestions [clear]', 'Check the suggestions, (include <clear> [admin only] to clear the suggestions)')
                   .setFooter(pageData);
                 sent.edit(embed);
                 break;
               case 4:
                 embed = new Discord.RichEmbed()
                   .setTitle('Commands')
+                  .addField(prefix + 'suggestions [clear]', 'Check the suggestions, (include <clear> [admin only] to clear the suggestions)')
                   .addField(prefix + `timer <time?'min','hour'|cancel|list> [name]`, 'Set a timer for the bot to remind you on when it completes.')
                   .addField(prefix + 'unmute <user>', 'Unmute a muted user')
                   .addField(prefix + 'userinfo [user]', "Returns the designated user's info")
