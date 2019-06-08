@@ -787,6 +787,16 @@ class Tools {
     user.get('shortIds').delete(timerName);
     user.get('ids').delete(timerId);
   }
+
+  /**
+   * Get the value of a percentage.
+   * 
+   * @param {number} percentage The percentage to parse.
+   * @returns {number} The value of the given percentage.
+   */
+  parsePercent(percentage) {
+    return Math.floor(percentage / 100);
+  }
 }
 module.exports.Tools = Tools;
 
