@@ -9,7 +9,8 @@ module.exports = {
     name: 'leaderboard',
     description: 'Get up to 20 users with the most points',
     async execute(message, args, client) {
-        leaderboard(message, client).then(leaders => message.channel.send(leaders));
+        const leaders = await leaderboard(message, client);
+        return message.channel.send(leaders);
     },
 };
 
