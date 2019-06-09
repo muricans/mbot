@@ -76,19 +76,19 @@ module.exports = {
                   .addField(prefix + 'random <subreddit> [time|search] [search]', 'Returns a random thread from a subreddit')
                   .addField(prefix + 'roulette <amount>', 'Returns win/loss and new total points')
                   .addField(prefix + 'roll [number]', 'Returns a random number between 1 and the chosen number')
-                  .addField(prefix + 'suggest <suggestion>', 'Suggest a command or feature for the bot')
+                  .addField(prefix + 'serverinfo [serverID]', 'Get server info on the server you are currently on, or another the bot is currently on by giving that servers ID.')
                   .setFooter(pageData);
                 sent.edit(embed);
                 break;
               case 4:
                 embed = new Discord.RichEmbed()
                   .setTitle('Commands')
+                  .addField(prefix + 'set <user> <points>', 'Sets the users points [admin only]')
+                  .addField(prefix + 'suggest <suggestion>', 'Suggest a command or feature for the bot')
                   .addField(prefix + 'suggestions [clear]', 'Check the suggestions, (include <clear> [admin only] to clear the suggestions)')
                   .addField(prefix + `timer <time?'min','hour'|cancel|list> [name]`, 'Set a timer for the bot to remind you on when it completes.')
                   .addField(prefix + 'unmute <user>', 'Unmute a muted user')
                   .addField(prefix + 'userinfo [user]', "Returns the designated user's info")
-                  .addField(prefix + 'set <user> <points>', 'Sets the users points [admin only]')
-                  .addField(prefix + 'serverinfo [serverID]', 'Get server info on the server you are currently on, or another the bot is currently on by giving that servers ID.')
                   .addField(prefix + 'version', 'Returns the bot version and information')
                   .addField('NSFW Commands on Page 5+6', '🔞')
                   .setFooter(pageData);
@@ -101,22 +101,22 @@ module.exports = {
                   .addField(prefix + 'ass', 'Returns an image of an ass')
                   .addField(prefix + 'blowjob', 'Returns a blowjob image')
                   .addField(prefix + 'boobs', 'Returns a picture of a pair of milkers')
+                  .addField(prefix + 'dick', 'Returns an image of a dick')
+                  .addField(prefix + 'gay', 'Returns a gay porn image')
                   .addField(prefix + 'hardcore', 'Returns a hardcore porn image')
-                  .addField(prefix + 'hentai', 'Returns a hentai image')
-                  .addField(prefix + 'nsfw', 'Returns an nsfw image (Straight)')
                   .setFooter(pageData);
                 sent.edit(embed);
                 break;
               case 6:
                 embed = new Discord.RichEmbed()
                   .setTitle('NSFW Commands')
+                  .addField(prefix + 'hentai', 'Returns a hentai image')
+                  .addField(prefix + 'nsfw', 'Returns an nsfw image (Straight)')
                   .addField(prefix + 'pegging', 'Returns a pegging image')
                   .addField(prefix + 'r34xxx [tags]', 'Returns an image from rule34')
                   .addField(prefix + 'rule34', 'Returns a rule34 image from reddit')
                   .addField(prefix + 'thighs', 'Retuns an image of thighs')
                   .addField(prefix + 'trap', 'Returns a trap image')
-                  .addField(prefix + 'dick', 'Returns an image of a dick')
-                  .addField(prefix + 'gay', 'Returns a gay porn image')
                   .setFooter(pageData);
                 sent.edit(embed);
                 break;
