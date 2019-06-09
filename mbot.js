@@ -73,7 +73,7 @@ function initDb(guild) {
       'general');
     db.run('INSERT OR IGNORE INTO prefix(id, prefix) VALUES(?,?)',
       guild.id.toString(),
-      '!');
+      'm!');
     db.run('INSERT OR IGNORE INTO serverInfo(id, use) VALUES(?,?)',
       guild.id.toString(),
       1);
