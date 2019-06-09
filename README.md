@@ -5,6 +5,10 @@ and edited by [felanbird](https://www.twitch.tv/felanbird)
 
 [useful info](https://muricans.github.io/mbot/)
 
+[invite](https://discordapp.com/oauth2/authorize?client_id=570454808494866447&permissions=268823670&scope=bot)
+
+[support server](https://discord.gg/kWFXGPX)
+
 ## Installation
 mbot runs using [Node.js](https://nodejs.org/)
 mbot also uses [jq](https://stedolan.github.io/jq/download/) However, it can run without jq if you remove the memory variable from the start script.
