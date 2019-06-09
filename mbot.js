@@ -284,17 +284,29 @@ process.openStdin().on('data', (val) => {
     case "version":
       require('fs').readFile('./version.txt', 'utf8', (err, data) => {
         if (err) return Logger.error(err.stack);
-        Logger.info(
-          `Application: mbot\n  Version: ${pkg.version}\n  Author: Muricans\n  Git repo: https://github.com/muricans/mbot\n  Git commit: ${data}\n  Website: https://muricans.github.io/mbot`
-        );
+        Logger.info(`Application: mbot
+      Version: ${pkg.version}
+      Author: Muricans
+      Git repo: https://github.com/muricans/mbot
+      Git commit: ${data}
+      Website: https://muricans.github.io/mbot`);
       });
+      break;
+    case "help":
+      Logger.info(`Commands:
+      stop - stops the bot
+      version - gets the bots version and other information`);
       break;
   }
 });
 
+process.on('exit', (code) => {
+  Logger.info(`mbot v${pkg.version} has exited with code (${code})`);
+});
+
 setTimeout(() => {
   if (!alive) {
-    Logger.warn("Bot is having trouble contacting discord...");
+    Logger.warn("mbot is having trouble contacting discord...");
     setTimeout(() => {
       Logger.error("Failed to contact discord, stopping bot.");
       process.exit(1);
@@ -310,7 +322,7 @@ client.login(settings.token).then(() => {
     if (settings.debug) {
       return console.log(err);
     } else {
-      console.log('There was an error starting the bot. Maybe check credentials?\nTo check the actual error, enable debug in your settings file.');
+      Logger.error('There was an error starting the bot. Maybe check credentials?\nTo check the actual error, enable debug in your settings file.');
     }
   }
 });

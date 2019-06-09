@@ -63,7 +63,7 @@ module.exports.registerCommands = async (client, mbot) => {
   const othercmds = [
     'ping', 'test', 'meme', 'trap', 'thighs', 'rule34', 'pegging',
     'nsfw', 'hentai', 'hardcore', 'gay', 'dick', 'boobs', 'blowjob',
-    'ass', 'anal', 'uptime', 'database',
+    'ass', 'anal', 'uptime',
   ];
 
   function handleOther(command, message, args) {
@@ -90,10 +90,6 @@ module.exports.registerCommands = async (client, mbot) => {
 
 
     switch (command) {
-      case "database":
-        const database = new Discord.Attachment('./mbot.db');
-        message.channel.send(database);
-        break;
       case "uptime":
         message.channel.send(`${message.author} mbot has been up for: ${mbot.getUptime()}`);
         break;
