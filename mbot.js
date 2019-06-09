@@ -223,7 +223,7 @@ module.exports.getUptime = () => {
 };
 
 //game | only allows for default emojis
-const games = ['Minecraft', 'Murdering Martine the BOT', 'nymnBridge PewDiePie', 'Acrozze a mega gay',
+const games = ['Minecraft', 'forsenPls', 'nymnBridge PewDiePie', 'wow',
   'This bot was made by me 😃', 'help me',
 ];
 event.on('uptimeMinute', () => {
