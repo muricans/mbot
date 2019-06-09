@@ -233,7 +233,7 @@ module.exports.registerCommands = async (client, mbot) => {
   }
 
   client.on('message', async message => {
-    //if (message.author.bot) return;
+    if (message.author.bot) return;
     if (!timer.users.has(message.author.id)) {
       timer.users.set(message.author.id, new Discord.Collection());
       const user = timer.users.get(message.author.id);
@@ -247,7 +247,6 @@ module.exports.registerCommands = async (client, mbot) => {
     if (message.channel.type === 'dm') {
       const args = message.content.split(' ');
       const command = args.shift().toLowerCase();
-      if (message.author.bot) return;
       switch (command) {
         case "timer":
           if (args.length < timer.minArgs) {
