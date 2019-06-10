@@ -5,6 +5,7 @@ module.exports = {
     name: 'danbooru',
     usage: '[tags]',
     description: 'Returns a danbooru image [NSFW Available]',
+    nsfw: true,
     execute(message, args) {
         message.delete(1000);
         if (args.length === 0) {

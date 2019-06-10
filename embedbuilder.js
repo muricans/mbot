@@ -1,6 +1,7 @@
 const {
     TextChannel,
     RichEmbed,
+    Message
 } = require("discord.js");
 const {
     event,
@@ -19,6 +20,10 @@ class EmbedBuilder {
          * @type {boolean}
          */
         this.hasColor = false;
+        /**
+         * @type {object[]}
+         */
+        this.emojis = [];
     }
 
     /**
@@ -50,7 +55,7 @@ class EmbedBuilder {
 
     /**
      * 
-     * @param {Discord.RichEmbed} embed The embed to push to the array of embeds.
+     * @param {RichEmbed} embed The embed to push to the array of embeds.
      */
     addEmbed(embed) {
         this.embedArray.push(embed);
@@ -140,28 +145,73 @@ class EmbedBuilder {
             index(i);
     }
 
+    /**
+     * Set the emoji for going backwards.
+     * 
+     * @param {string} unicodeEmoji 
+     */
     setBackEmoji(unicodeEmoji) {
         this.back = unicodeEmoji;
         return this;
     }
 
+    /**
+     * Set the emoji for going forward.
+     * 
+     * @param {string} unicodeEmoji 
+     */
     setNextEmoji(unicodeEmoji) {
         this.next = unicodeEmoji;
         return this;
     }
 
+    /**
+     * Set the emoji to stop the embed from listening for reactions.
+     * 
+     * @param {string} unicodeEmoji 
+     */
     setStopEmoji(unicodeEmoji) {
         this.stop = unicodeEmoji;
         return this;
     }
 
+    /**
+     * Set the emoji to go to the first page.
+     * 
+     * @param {string} unicodeEmoji 
+     */
     setFirstEmoji(unicodeEmoji) {
         this.first = unicodeEmoji;
         return this;
     }
 
+    /**
+     * Set the emoji to go the the last page.
+     * 
+     * @param {string} unicodeEmoji 
+     */
     setLastEmoji(unicodeEmoji) {
         this.last = unicodeEmoji;
+        return this;
+    }
+
+    /**
+     * @callback addEmoji
+     * @param {Message} sent
+     * @param {EmbedBuilder} builder
+     */
+
+    /**
+     * Add an emoji which will perform it's own action when pressed.
+     * 
+     * @param {string} unicodeEmoji 
+     * @param {addEmoji} func 
+     */
+    addEmoji(unicodeEmoji, func) {
+        this.emojis.push({
+            emoji: unicodeEmoji,
+            do: func,
+        });
         return this;
     }
 
@@ -203,6 +253,10 @@ class EmbedBuilder {
             await sent.react(stop);
             await sent.react(last);
             await sent.react(next);
+            if (this.emojis.length !== 0) {
+                for (let i = 0; i < this.emojis.length; i++)
+                    await sent.react(this.emojis[i].emoji);
+            }
             const collection = sent.createReactionCollector((reaction, user) => user.id !== sent.author.id && reaction.remove(user), {
                 time: this.time,
             }).on('end', () => {
@@ -228,6 +282,10 @@ class EmbedBuilder {
                     case last:
                         page = this.embedArray.length - 1;
                         break;
+                }
+                for (let i = 0; i < this.emojis.length; i++) {
+                    if (reaction.emoji.name === this.emojis[i].emoji)
+                        return this.emojis[i].do(sent, this);
                 }
                 sent.edit(this.embedArray[page]);
             });
