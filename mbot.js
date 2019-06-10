@@ -59,7 +59,12 @@ db.serialize(() => {
   db.run('CREATE TABLE if not exists roles(id TEXT, def TEXT, use INTEGER, UNIQUE(id))');
 });
 
+/**
+ * 
+ * @param {Discord.Guild} guild 
+ */
 function initDb(guild) {
+  if (guild.id === "264445053596991498") return;
   db.serialize(() => {
     db.run('INSERT OR IGNORE INTO welcomeMessage(id, use, message, channel) VALUES(?,?,?,?)',
       guild.id.toString(),
@@ -121,6 +126,7 @@ client.on('guildCreate', (guild) => {
 });
 
 client.on('guildMemberAdd', (guildMember) => {
+  if (guildMember.guild.id === "264445053596991498") return;
   new tools.Tools().getNLMessage('welcomeMessage', guildMember.guild.id, (use, msg, channel) => {
     if (use === 1) {
       const chnl = guildMember.guild.channels.find(c => c.name === channel);
@@ -150,6 +156,7 @@ client.on('guildMemberAdd', (guildMember) => {
 });
 
 client.on('guildMemberRemove', (guildMember) => {
+  if (guildMember.guild.id === "264445053596991498") return;
   new tools.Tools().getNLMessage('leaveMessage', guildMember.guild.id.toString(), (use, msg, channel) => {
     if (use === 1) {
       const chnl = guildMember.guild.channels.find(c => c.name === channel);
