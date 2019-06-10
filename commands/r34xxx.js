@@ -5,6 +5,7 @@ module.exports = {
   name: 'r34xxx',
   usage: '[tags]',
   description: 'Returns an image from rule34',
+  nsfw: true,
   execute(message, args) {
     message.delete(1000);
     if (!message.channel.nsfw) {

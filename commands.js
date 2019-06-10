@@ -40,6 +40,10 @@ module.exports.registerCommands = async (client, mbot) => {
     const mod = require(`./commands/mod/${file}`);
     client.commands.set(mod.name, mod);
   }
+  client.commands.set('meme', {
+    name: 'meme',
+    description: 'Gets a random meme',
+  });
 
   mbot.event.emit('filesLoaded');
 
@@ -65,6 +69,50 @@ module.exports.registerCommands = async (client, mbot) => {
     'nsfw', 'hentai', 'hardcore', 'gay', 'dick', 'boobs', 'blowjob',
     'ass', 'anal', 'uptime',
   ];
+
+  const nCmds = [];
+
+  nCmds.push({
+    name: 'anal',
+  }, {
+    name: 'trap',
+  }, {
+    name: 'thighs',
+  }, {
+    name: 'rule34',
+  }, {
+    name: 'pegging',
+  }, {
+    name: 'nsfw',
+  }, {
+    name: 'hentai',
+  }, {
+    name: 'hardcore',
+  }, {
+    name: 'ass',
+  }, {
+    name: 'gay',
+  }, {
+    name: 'dick',
+  }, {
+    name: 'boobs',
+  }, {
+    name: 'blowjob',
+  });
+
+  for (let i = 0; i < nCmds.length; i++) {
+    const description = `Gets a random ${nCmds[i].name} image`;
+    nCmds[i].description = description;
+  }
+
+  const nsfwcmds = client.commands.array().filter(cmd => cmd.nsfw === true);
+  for (let i = 0; i < nsfwcmds.length; i++) {
+    nCmds.push({
+      name: nsfwcmds[i].name,
+      description: nsfwcmds[i].description,
+    });
+  }
+  nCmds.sort((a, b) => (a.name > b.name) ? 1 : -1);
 
   function handleOther(command, message, args) {
     if (command === 'test') {
@@ -190,7 +238,7 @@ module.exports.registerCommands = async (client, mbot) => {
     }
   }
 
-  function doCommand(comm, message, prefix, args) {
+  function doCommand(comm, message, prefix, args, n) {
     if (comm.args) {
       if (args.length < comm.minArgs) {
         return message.channel.send(`${message.author} Please add params! ${prefix}${comm.name} ${comm.usage}`);
@@ -199,7 +247,7 @@ module.exports.registerCommands = async (client, mbot) => {
     const isOwner = bot_owners_id.find(id => id === message.author.id);
     if (isOwner) {
       try {
-        return comm.execute(message, args, client, prefix);
+        return comm.execute(message, args, client, prefix, n);
       } catch (err) {
         console.log(err);
       }
@@ -223,7 +271,7 @@ module.exports.registerCommands = async (client, mbot) => {
             return message.channel.send(`${message.author} Please wait ${left.toFixed(1)} second(s) before running that command again!`);
           }
         }
-        comm.execute(message, args, client, prefix);
+        comm.execute(message, args, client, prefix, n);
         timestamps.set(message.author.id, now);
         setTimeout(() => timestamps.delete(message.author.id), cooldown);
       } catch (err) {
@@ -339,15 +387,15 @@ module.exports.registerCommands = async (client, mbot) => {
             if (message.author.id != owner) {
               return message.channel.send(`${message.author} You don't have permission to use this command!`);
             } else {
-              return doCommand(comm, message, prefix, args);
+              return doCommand(comm, message, prefix, args, nCmds);
             }
           }
         });
       } else if (comm.mod) {
         if (message.author.id === client.user.id) return;
-        return doCommand(comm, message, prefix, args);
+        return doCommand(comm, message, prefix, args, nCmds);
       } else {
-        return doCommand(comm, message, prefix, args);
+        return doCommand(comm, message, prefix, args, nCmds);
       }
     });
   });

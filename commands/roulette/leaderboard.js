@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const sqlite = require('sqlite3').verbose();
+const EmbedBuilder = require('../../embedbuilder');
 
 const db = new sqlite.Database('./mbot.db', (err) => {
     if (err) console.log(err.message);
@@ -9,38 +10,23 @@ module.exports = {
     name: 'leaderboard',
     description: 'Get up to 50 users with the most points',
     async execute(message, args, client) {
-        const leaders = await leaderboard(message, client);
-        let page = 0;
-        message.channel.send(leaders[page]).then(async sent => {
-            await sent.react('◀');
-            await sent.react('▶');
-            sent.awaitReactions((reaction, user) => {
-                if (user.id === client.user.id) return;
-                reaction.remove(user);
-                switch (reaction.emoji.name) {
-                    case "◀":
-                        if (page === 0) return;
-                        page--;
-                        break;
-                    case "▶":
-                        if (page === leaders.length - 1) return;
-                        page++;
-                        break;
-                }
-                sent.edit(leaders[page]);
-            }, {
-                time: (2 * 60000),
-            });
-        });
+        const leaders = await leaderboard(message.channel, client);
+        leaders.build();
     },
 };
 
-function leaderboard(message, client) {
+/**
+ * 
+ * @param {Discord.Message} message 
+ * @param {Discord.Client} client 
+ * @returns {Promise<EmbedBuilder>}
+ */
+function leaderboard(channel, client) {
     return new Promise((resolve) => {
         db.all('SELECT points points, id id FROM users ORDER BY points DESC LIMIT 0,50', async (err, rows) => {
             if (err) return console.log(err);
-            const embeds = [];
-            if (!rows.length) return message.channel.send('No users found!');
+            const embeds = new EmbedBuilder();
+            if (!rows.length) return channel.send('No users found!');
             const each = new Promise((resolve) => {
                 const users = [];
                 rows.forEach((val, i, arr) => {
@@ -52,10 +38,17 @@ function leaderboard(message, client) {
                 return resolve(users);
             });
             await each.then(async users => {
-                let method = Math.floor(users.length / 10) - 1;
-                for (let i = -1; i < method; i++) {
-                    embeds.push(new Discord.RichEmbed());
-                    method = Math.floor(users.length / 10);
+                let pages = 0;
+                let m = 1;
+                for (let i = 0; i < 10 * m; i++) {
+                    if (i === 50)
+                        break;
+                    if (!embeds.getEmbeds()[m - 1] && users[i]) {
+                        embeds.addEmbed(new Discord.RichEmbed());
+                        pages++;
+                    }
+                    if (i === (10 * m) - 1)
+                        m++;
                 }
                 let multiplier = 1;
                 for (let i = 0; i < 10 * multiplier; i++) {
@@ -64,14 +57,18 @@ function leaderboard(message, client) {
                     }
                     if (users[i]) {
                         const user = await client.fetchUser(users[i].id);
-                        embeds[multiplier - 1].addField(`${i + 1}. ${user.username}`, users[i].points, true);
+                        embeds.getEmbeds()[multiplier - 1]
+                            .addField(`${i + 1}. ${user.username}`, users[i].points, true)
+                            .setFooter(`Page ${multiplier}/${pages}`);
                         if (i === (10 * multiplier) - 1) {
                             multiplier++;
                         }
                     }
                 }
-                for (let i = 0; i < embeds.length; i++)
-                    embeds[i].setTitle('Points Leaderboard');
+                embeds
+                    .setTitle('Points Leaderboard')
+                    .setTime(2 * 60000)
+                    .setChannel(channel);
             });
             return resolve(embeds);
         });
