@@ -13,7 +13,8 @@ module.exports = {
       const embedBuilder = new EmbedBuilder()
         .setChannel(message.channel)
         .setTime(35000);
-      const cmds = client.commands.array().filter(cmd => cmd.nsfw !== true).sort();
+      const cmds = client.commands.array().filter(cmd => cmd.nsfw !== true);
+      cmds.sort((a, b) => (a.name > b.name) ? 1 : -1);
       let method = Math.floor(cmds.length / 8) - 1;
       let pages = 0;
       for (let i = -1; i < method; i++) {
