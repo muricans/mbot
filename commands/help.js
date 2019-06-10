@@ -1,144 +1,108 @@
 const Discord = require('discord.js');
+const EmbedBuilder = require('../embedbuilder');
 
 // 17 commands + [5 admin only commands] + 14 nsfw commands
 // seperate admin only commands at a later time
-const min = 1;
-const max = 6;
-
-function pageOne(edit, message, prefix) {
-  const embed = new Discord.RichEmbed()
-    .setTitle('Commands')
-    .addField(prefix + '8ball <question>', 'Ask the bot a question')
-    .addField(prefix + 'article [category]', 'Returns a random article with specified category if one is provided.')
-    .addField(prefix + 'ban <user> [reason]', 'Bans specified user.')
-    .addField(prefix + 'create <commandName> <message>', 'Adds a command to the bot')
-    .addField(prefix + 'clean <user> [messageAmount]', 'Deletes a specified amount of messages for a user [admin only]')
-    .addField(prefix + 'danbooru [tags]', 'Returns a danbooru image [NSFW Available]')
-    .addField(prefix + 'delete <commandName>', 'Deletes a command [added by !create] from the bot [admin only]')
-    .addField(prefix + 'echo <message>', 'Returns your message from the bot [admin only]')
-    .setFooter('Page (1/' + max + ')');
-  if (edit) {
-    return message.edit(embed);
-  } else if (!edit) {
-    return message.channel.send(embed);
-  }
-}
-
 module.exports = {
   name: 'help',
   usage: '[command]',
   description: 'Gives you a list of help commands, or info on a specified command.',
   cooldown: 3,
-  execute(message, args, client, prefix) {
-    if (args.length === 0) {
-      let page = 1;
-      pageOne(false, message, prefix).then(async sent => {
-        await sent.react("◀");
-        await sent.react("▶");
-        sent.awaitReactions((reaction, user) => {
-          if (user.id != client.user.id) {
-            if (reaction.emoji.name === "◀") {
-              reaction.remove(user);
-              page--;
-            } else if (reaction.emoji.name === "▶") {
-              reaction.remove(user);
-              page++;
-            }
-
-            const pageData = 'Page (' + page + '/' + max + ')';
-            let embed;
-
-            switch (page) {
-              case 1:
-                pageOne(true, sent, prefix);
-                break;
-              case 2:
-                embed = new Discord.RichEmbed()
-                  .setTitle('Commands')
-                  .addField(prefix + 'give <user> <points>', 'Gives a user [x] amount of points')
-                  .addField(prefix + 'help [command]', 'Returns a list of commands for this bot')
-                  .addField(prefix + 'imgur [hash]', 'Returns a random image from imgur, or an image with the provided hash')
-                  .addField(prefix + 'kick <user> [reason]', 'Kicks specified user')
-                  .addField(prefix + 'leaderboard', 'Get up to 50 users with the most points')
-                  .addField(prefix + 'meme', 'Returns a random meme')
-                  .addField(prefix + 'modules <moduleName> <moduleOption> [setTo, ?name] [?setTo]', 'Use modules for your server. [Documentation](https://muricans.github.io/mbot/)')
-                  .addField(prefix + `mute <user> <time?'min','hour'>`, `Keeps a player from chatting for specified time.`)
-                  .setFooter(pageData);
-                sent.edit(embed);
-                break;
-              case 3:
-                embed = new Discord.RichEmbed()
-                  .setTitle('Commands')
-                  .addField(prefix + 'ping', 'Returns pong')
-                  .addField(prefix + 'prefix <newPrefix>', 'Changes the bots prefix [admin only]')
-                  .addField(prefix + 'points [user]', "Returns the designated user's (or your own) points")
-                  .addField(prefix + 'qr <information>', 'Returns a QR code with the designated information')
-                  .addField(prefix + 'random <subreddit> [time|search] [search]', 'Returns a random thread from a subreddit')
-                  .addField(prefix + 'roulette <amount>', 'Returns win/loss and new total points')
-                  .addField(prefix + 'roll [number]', 'Returns a random number between 1 and the chosen number')
-                  .addField(prefix + 'serverinfo [serverID]', 'Get server info on the server you are currently on, or another the bot is currently on by giving that servers ID.')
-                  .setFooter(pageData);
-                sent.edit(embed);
-                break;
-              case 4:
-                embed = new Discord.RichEmbed()
-                  .setTitle('Commands')
-                  .addField(prefix + 'set <user> <points>', 'Sets the users points [admin only]')
-                  .addField(prefix + 'suggest <suggestion>', 'Suggest a command or feature for the bot')
-                  .addField(prefix + 'suggestions [clear]', 'Check the suggestions, (include <clear> [admin only] to clear the suggestions)')
-                  .addField(prefix + `timer <time?'min','hour'|cancel|list> [name]`, 'Set a timer for the bot to remind you on when it completes.')
-                  .addField(prefix + 'unmute <user>', 'Unmute a muted user')
-                  .addField(prefix + 'userinfo [user]', "Returns the designated user's info")
-                  .addField(prefix + 'version', 'Returns the bot version and information')
-                  .addField('NSFW Commands on Page 5+6', '🔞')
-                  .setFooter(pageData);
-                sent.edit(embed);
-                break;
-              case 5:
-                embed = new Discord.RichEmbed()
-                  .setTitle('NSFW Commands')
-                  .addField(prefix + 'anal', 'Returns an anal image')
-                  .addField(prefix + 'ass', 'Returns an image of an ass')
-                  .addField(prefix + 'blowjob', 'Returns a blowjob image')
-                  .addField(prefix + 'boobs', 'Returns a picture of a pair of milkers')
-                  .addField(prefix + 'dick', 'Returns an image of a dick')
-                  .addField(prefix + 'gay', 'Returns a gay porn image')
-                  .addField(prefix + 'hardcore', 'Returns a hardcore porn image')
-                  .setFooter(pageData);
-                sent.edit(embed);
-                break;
-              case 6:
-                embed = new Discord.RichEmbed()
-                  .setTitle('NSFW Commands')
-                  .addField(prefix + 'hentai', 'Returns a hentai image')
-                  .addField(prefix + 'nsfw', 'Returns an nsfw image (Straight)')
-                  .addField(prefix + 'pegging', 'Returns a pegging image')
-                  .addField(prefix + 'r34xxx [tags]', 'Returns an image from rule34')
-                  .addField(prefix + 'rule34', 'Returns a rule34 image from reddit')
-                  .addField(prefix + 'thighs', 'Retuns an image of thighs')
-                  .addField(prefix + 'trap', 'Returns a trap image')
-                  .setFooter(pageData);
-                sent.edit(embed);
-                break;
-            }
-
-            if (page > max) {
-              page = max;
-            }
-
-            if (page < min) {
-              page = min;
-            }
-          }
-        }, {
-          time: 35000,
-        });
-      });
-      return;
+  execute(message, args, client, prefix, nsfwCmds) {
+    if (!args.length) {
+      const embedBuilder = new EmbedBuilder()
+        .setChannel(message.channel)
+        .setTime(35000);
+      const cmds = client.commands.array().filter(cmd => cmd.nsfw !== true).sort();
+      let method = Math.floor(cmds.length / 8) - 1;
+      let pages = 0;
+      for (let i = -1; i < method; i++) {
+        pages++;
+        embedBuilder.addEmbed(new Discord.RichEmbed());
+        method = Math.floor(cmds.length / 8);
+      }
+      let multiplier = 1;
+      for (let i = 0; i < 8 * multiplier; i++) {
+        if (i === cmds.length)
+          break;
+        if (cmds[i]) {
+          const cmd = cmds[i];
+          embedBuilder.getEmbeds()[multiplier - 1]
+            .addField(`${prefix}${cmd.name}`, cmd.description)
+            .setFooter(`Page ${multiplier}/${pages}`);
+          if (i === (8 * multiplier) - 1)
+            multiplier++;
+        }
+      }
+      embedBuilder.getEmbeds()[embedBuilder.getEmbeds().length - 1].addField('NSFW Commands', `${prefix}help nsfw`);
+      return embedBuilder
+        .setTitle('Commands')
+        .build();
+    }
+    if (args[0].toLowerCase() === "nsfw") {
+      const embedBuilder = new EmbedBuilder()
+        .setChannel(message.channel)
+        .setTime(35000);
+      let method = Math.floor(nsfwCmds.length / 8) - 1;
+      let pages = 0;
+      for (let i = -1; i < method; i++) {
+        pages++;
+        embedBuilder.addEmbed(new Discord.RichEmbed());
+        method = Math.floor(nsfwCmds.length / 8);
+      }
+      let multiplier = 1;
+      for (let i = 0; i < 8 * multiplier; i++) {
+        if (i === nsfwCmds.length)
+          break;
+        if (nsfwCmds[i]) {
+          const cmd = nsfwCmds[i];
+          embedBuilder.getEmbeds()[multiplier - 1]
+            .addField(`${prefix}${cmd.name}`, cmd.description)
+            .setFooter(`Page ${multiplier}/${pages}`);
+          if (i === (8 * multiplier) - 1)
+            multiplier++;
+        }
+      }
+      return embedBuilder
+        .setTitle('NSFW Commands')
+        .build();
     }
     const cmd = client.commands.get(args[0].toLowerCase());
     if (!cmd) {
-      return message.channel.send(message.author + ' That command does not exist!');
+      const cmds = client.commands.array().filter(c => c.name.includes(args[0].toLowerCase()));
+      if (!cmds.length)
+        return message.channel.send(message.author + ' That command does not exist!');
+      const embedBuilder = new EmbedBuilder()
+        .setChannel(message.channel)
+        .setTime(35000);
+      let pages = 0;
+      let m = 1;
+      for (let i = 0; i < 8 * m; i++) {
+        if (i === cmds.length)
+          break;
+        if (!embedBuilder.getEmbeds()[m - 1]) {
+          embedBuilder.addEmbed(new Discord.RichEmbed());
+          pages++;
+        }
+        if (i === (8 * m) - 1)
+          m++;
+      }
+      let multiplier = 1;
+      for (let i = 0; i < 8 * multiplier; i++) {
+        if (i === cmds.length)
+          break;
+        if (cmds[i]) {
+          const c = cmds[i];
+          embedBuilder.getEmbeds()[multiplier - 1]
+            .addField(`${prefix}${c.name}`, c.description)
+            .setFooter(`Page ${multiplier}/${pages}`);
+          if (i === (8 * multiplier) - 1)
+            multiplier++;
+        }
+      }
+      return embedBuilder
+        .setTitle(`Results with: ${args[0].toLowerCase()}`)
+        .build();
     }
     const {
       usage,

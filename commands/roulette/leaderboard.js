@@ -38,10 +38,17 @@ function leaderboard(channel, client) {
                 return resolve(users);
             });
             await each.then(async users => {
-                let method = Math.floor(users.length / 10) - 1;
-                for (let i = -1; i < method; i++) {
-                    embeds.addEmbed(new Discord.RichEmbed());
-                    method = Math.floor(users.length / 10);
+                let pages = 0;
+                let m = 1;
+                for (let i = 0; i < 10 * m; i++) {
+                    if (i === 50)
+                        break;
+                    if (!embeds.getEmbeds()[m - 1] && users[i]) {
+                        embeds.addEmbed(new Discord.RichEmbed());
+                        pages++;
+                    }
+                    if (i === (10 * m) - 1)
+                        m++;
                 }
                 let multiplier = 1;
                 for (let i = 0; i < 10 * multiplier; i++) {
@@ -50,7 +57,9 @@ function leaderboard(channel, client) {
                     }
                     if (users[i]) {
                         const user = await client.fetchUser(users[i].id);
-                        embeds.getEmbeds()[multiplier - 1].addField(`${i + 1}. ${user.username}`, users[i].points, true);
+                        embeds.getEmbeds()[multiplier - 1]
+                            .addField(`${i + 1}. ${user.username}`, users[i].points, true)
+                            .setFooter(`Page ${multiplier}/${pages}`);
                         if (i === (10 * multiplier) - 1) {
                             multiplier++;
                         }
