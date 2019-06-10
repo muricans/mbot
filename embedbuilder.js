@@ -1,11 +1,8 @@
 const {
     TextChannel,
     RichEmbed,
-    Message
+    Message,
 } = require("discord.js");
-const {
-    event,
-} = require('./mbot');
 
 /**
  * Builds an embed with a number of pages based on how many are in the RichEmbed array given.
@@ -24,6 +21,19 @@ class EmbedBuilder {
          * @type {object[]}
          */
         this.emojis = [];
+        /**
+         * @type {boolean}
+         */
+        this.usingPages = true;
+    }
+
+    /**
+     * 
+     * @param {boolean} use Use the page system for the embed.
+     */
+    usePages(use) {
+        this.usingPages = use;
+        return this;
     }
 
     /**
@@ -198,6 +208,8 @@ class EmbedBuilder {
     /**
      * @callback addEmoji
      * @param {Message} sent
+     * @param {number} page
+     * @param {string} emoji
      * @param {EmbedBuilder} builder
      */
 
@@ -212,6 +224,16 @@ class EmbedBuilder {
             emoji: unicodeEmoji,
             do: func,
         });
+        return this;
+    }
+
+    /**
+     * 
+     * @param {string} unicodeEmoji 
+     */
+    deleteEmoji(unicodeEmoji) {
+        const index = this.emojis.find(emoji => emoji.emoji === unicodeEmoji);
+        this.emojis.splice(this.emojis.indexOf(index), 1);
         return this;
     }
 
@@ -248,11 +270,13 @@ class EmbedBuilder {
             this._setColor(0x2872DB);
         let page = 0;
         this.channel.send(this.embedArray[page]).then(async sent => {
-            await sent.react(back);
-            await sent.react(first);
-            await sent.react(stop);
-            await sent.react(last);
-            await sent.react(next);
+            if (this.usingPages && this.embedArray.length > 1) {
+                await sent.react(back);
+                await sent.react(first);
+                await sent.react(stop);
+                await sent.react(last);
+                await sent.react(next);
+            }
             if (this.emojis.length !== 0) {
                 for (let i = 0; i < this.emojis.length; i++)
                     await sent.react(this.emojis[i].emoji);
@@ -261,31 +285,33 @@ class EmbedBuilder {
                 time: this.time,
             }).on('end', () => {
                 if (!this.hasColor)
-                    this._setColor(0xE21717);
+                    sent.edit(this.embedArray[page].setColor(0xE21717));
             });
             collection.on('collect', reaction => {
-                switch (reaction.emoji.name) {
-                    case first:
-                        page = 0;
-                        break;
-                    case back:
-                        if (page === 0) return;
-                        page--;
-                        break;
-                    case stop:
-                        collection.stop();
-                        break;
-                    case next:
-                        if (page === this.embedArray.length - 1) return;
-                        page++;
-                        break;
-                    case last:
-                        page = this.embedArray.length - 1;
-                        break;
+                if (this.usingPages && this.embedArray.length > 1) {
+                    switch (reaction.emoji.name) {
+                        case first:
+                            page = 0;
+                            break;
+                        case back:
+                            if (page === 0) return;
+                            page--;
+                            break;
+                        case stop:
+                            collection.stop();
+                            break;
+                        case next:
+                            if (page === this.embedArray.length - 1) return;
+                            page++;
+                            break;
+                        case last:
+                            page = this.embedArray.length - 1;
+                            break;
+                    }
                 }
                 for (let i = 0; i < this.emojis.length; i++) {
                     if (reaction.emoji.name === this.emojis[i].emoji)
-                        return this.emojis[i].do(sent, this);
+                        return this.emojis[i].do(sent, page, this, this.emojis[i].emoji);
                 }
                 sent.edit(this.embedArray[page]);
             });
