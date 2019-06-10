@@ -190,8 +190,9 @@ client.on('ready', async () => {
         let u, user;
         for (u in client.users.array()) {
           user = client.users.array()[u];
-          if (row.id === user.id.toString()) {
-            return new tools.Tools().setPoints((row.points + 10), user.id.toString());
+          if (row.id === user.id) {
+            if (user.bot) return;
+            return new tools.Tools().setPoints((row.points + 10), user.id);
           }
         }
       });
