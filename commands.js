@@ -328,6 +328,8 @@ module.exports.registerCommands = async (client, mbot) => {
         return;
       }
 
+      if (comm.roulette && message.guild.id === "264445053596991498") return;
+
       if (comm.owner) {
         return fs.readFile('./settings.json', 'utf8', (err, data) => {
           if (err) return console.log(err);
