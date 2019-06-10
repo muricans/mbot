@@ -5,6 +5,7 @@ module.exports = {
   name: 'points',
   usage: '[user]',
   description: `Returns the designated user's points`,
+  roulette: true,
   async execute(message, args) {
     let current;
     let msg;

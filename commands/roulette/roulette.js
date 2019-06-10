@@ -9,6 +9,7 @@ module.exports = {
   args: true,
   minArgs: 1,
   mod: true,
+  roulette: true,
   async execute(message, args, client) {
     const current = await tools.getPoints(message.author.id);
     const num = parseInt(args[0]);

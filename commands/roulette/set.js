@@ -8,6 +8,7 @@ module.exports = {
   args: true,
   minArgs: 2,
   owner: true,
+  roulette: true,
   execute(message, args) {
     if (!message.mentions.users.first()) {
       return message.reply('That user does not exist!');
