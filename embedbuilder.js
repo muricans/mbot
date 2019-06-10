@@ -1,7 +1,10 @@
 const {
     TextChannel,
-    RichEmbed
+    RichEmbed,
 } = require("discord.js");
+const {
+    event,
+} = require('./mbot');
 
 /**
  * Builds an embed with a number of pages based on how many are in the RichEmbed array given.
@@ -12,6 +15,10 @@ class EmbedBuilder {
          * @type {RichEmbed[]}
          */
         this.embedArray = [];
+        /**
+         * @type {boolean}
+         */
+        this.hasColor = false;
     }
 
     /**
@@ -133,31 +140,96 @@ class EmbedBuilder {
             index(i);
     }
 
+    setBackEmoji(unicodeEmoji) {
+        this.back = unicodeEmoji;
+        return this;
+    }
+
+    setNextEmoji(unicodeEmoji) {
+        this.next = unicodeEmoji;
+        return this;
+    }
+
+    setStopEmoji(unicodeEmoji) {
+        this.stop = unicodeEmoji;
+        return this;
+    }
+
+    setFirstEmoji(unicodeEmoji) {
+        this.first = unicodeEmoji;
+        return this;
+    }
+
+    setLastEmoji(unicodeEmoji) {
+        this.last = unicodeEmoji;
+        return this;
+    }
+
+    /**
+     * 
+     * @param {*} color 
+     */
+    setColor(color) {
+        this._all((i) => {
+            this.embedArray[i].setColor(color);
+        });
+        this.hasColor = true;
+        return this;
+    }
+
+    _setColor(color) {
+        this._all((i) => {
+            this.embedArray[i].setColor(color);
+        });
+        return this;
+    }
+
     /**
      * Builds the embed.
      */
     build() {
         if (!this.channel || !this.embedArray.length || !this.time) throw new Error('A channel, an array of embeds, and time is required!');
+        const back = this.back ? this.back : '◀';
+        const first = this.first ? this.first : '⏪';
+        const stop = this.stop ? this.stop : '⏹';
+        const last = this.last ? this.last : '⏩';
+        const next = this.next ? this.next : '▶';
+        if (!this.hasColor)
+            this._setColor(0x2872DB);
         let page = 0;
         this.channel.send(this.embedArray[page]).then(async sent => {
-            await sent.react('◀');
-            await sent.react('▶');
-            sent.awaitReactions((reaction, user) => {
-                if (user.id === sent.author.id) return;
-                reaction.remove(user);
+            await sent.react(back);
+            await sent.react(first);
+            await sent.react(stop);
+            await sent.react(last);
+            await sent.react(next);
+            const collection = sent.createReactionCollector((reaction, user) => user.id !== sent.author.id && reaction.remove(user), {
+                time: this.time,
+            }).on('end', () => {
+                if (!this.hasColor)
+                    this._setColor(0xE21717);
+            });
+            collection.on('collect', reaction => {
                 switch (reaction.emoji.name) {
-                    case '◀':
+                    case first:
+                        page = 0;
+                        break;
+                    case back:
                         if (page === 0) return;
                         page--;
                         break;
-                    case '▶':
+                    case stop:
+                        collection.stop();
+                        break;
+                    case next:
                         if (page === this.embedArray.length - 1) return;
                         page++;
                         break;
+                    case last:
+                        page = this.embedArray.length - 1;
+                        break;
                 }
                 sent.edit(this.embedArray[page]);
-            }, {
-                time: this.time,
             });
         });
     }
