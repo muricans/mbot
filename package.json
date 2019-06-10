@@ -1,7 +1,7 @@
 {
   "name": "mbot",
-  "version": "7.6.0",
-  "description": "Private discord bot",
+  "version": "7.6.1",
+  "description": "Discord bot",
   "main": "mbot.js",
   "scripts": {
     "test": "node test.js"

@@ -37,11 +37,11 @@ module.exports = {
 
 function leaderboard(message, client) {
     return new Promise((resolve) => {
-        db.all('SELECT points points, id id FROM users ORDER BY points DESC', async (err, rows) => {
+        db.all('SELECT points points, id id FROM users ORDER BY points DESC LIMIT 0,50', async (err, rows) => {
             if (err) return console.log(err);
             const embeds = [];
             if (!rows.length) return message.channel.send('No users found!');
-            const each = new Promise(async (resolve) => {
+            const each = new Promise((resolve) => {
                 const users = [];
                 rows.forEach((val, i, arr) => {
                     users.push({
@@ -70,6 +70,8 @@ function leaderboard(message, client) {
                         }
                     }
                 }
+                for (let i = 0; i < embeds.length; i++)
+                    embeds[i].setTitle('Points Leaderboard');
             });
             return resolve(embeds);
         });
