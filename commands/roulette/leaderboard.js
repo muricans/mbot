@@ -28,7 +28,9 @@ module.exports = {
                         break;
                 }
                 sent.edit(leaders[page]);
-            }, (2 * 60000));
+            }, {
+                time: (2 * 60000),
+            });
         });
     },
 };
