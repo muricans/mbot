@@ -18,7 +18,7 @@ module.exports.getCooldowns = (key) => {
  * @param {Discord.Client} client The bots client.
  * @param mbot mbot main script.
  */
-module.exports.registerCommands = async (client, mbot) => {
+module.exports.registerCommands = async (client, mbot, db) => {
   client.commands = new Discord.Collection();
   const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
   for (const file of commandFiles) {
@@ -249,7 +249,7 @@ module.exports.registerCommands = async (client, mbot) => {
     const isOwner = bot_owners_id.find(id => id === message.author.id);
     if (isOwner) {
       try {
-        return comm.execute(message, args, client, prefix, n);
+        return comm.execute(message, args, client, prefix, db, n);
       } catch (err) {
         console.log(err);
       }
@@ -273,7 +273,7 @@ module.exports.registerCommands = async (client, mbot) => {
             return message.channel.send(`${message.author} Please wait ${left.toFixed(1)} second(s) before running that command again!`);
           }
         }
-        comm.execute(message, args, client, prefix, n);
+        comm.execute(message, args, client, prefix, db, n);
         timestamps.set(message.author.id, now);
         setTimeout(() => timestamps.delete(message.author.id), cooldown);
       } catch (err) {

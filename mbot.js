@@ -12,10 +12,10 @@ const commands = require('./commands.js');
 const tools = require('./tools.js');
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const sqlite = require('sqlite3').verbose();
 const Logger = require('./logger');
 const figlet = require('figlet');
 const chalk = require('chalk');
+const Database = require('./database/database');
 
 if (settings.token === "YOURTOKEN" || !settings.token.length) {
   Logger.error('Please add your token to the bot!');
@@ -36,13 +36,7 @@ let alive = false;
  * @type {Array<cmds>}
  */
 module.exports.cCommands = [];
-
-const db = new sqlite.Database('./mbot.db', (err) => {
-  if (err) {
-    console.error(err.message);
-  }
-  Logger.info('Connected to bot database');
-});
+const db = new Database('./mbot.db').db;
 
 let seconds = 0;
 let minutes = 0;
@@ -284,7 +278,7 @@ console.log(chalk.magenta(figlet.textSync('mbot', {
   horizontalLayout: "full",
 })));
 
-commands.registerCommands(client, this);
+commands.registerCommands(client, this, db);
 
 process.openStdin().on('data', (val) => {
   const command = val.toString().trim();

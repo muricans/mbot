@@ -1,11 +1,3 @@
-const sqlite = require('sqlite3').verbose();
-
-const db = new sqlite.Database('./mbot.db', (err) => {
-  if (err) {
-    console.error(err.message);
-  }
-});
-
 module.exports = {
   name: 'prefix',
   usage: '<newPrefix>',
@@ -14,7 +6,7 @@ module.exports = {
   args: true,
   minArgs: 1,
   mod: true,
-  execute(message, args, client) {
+  execute(message, args, client, prefix, db) {
     const weirdChamp = client.emojis.get("572690273247821824");
 
     const hasAdmin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");

@@ -8,7 +8,7 @@ module.exports = {
   usage: '[command]',
   description: 'Gives you a list of help commands, or info on a specified command.',
   cooldown: 3,
-  execute(message, args, client, prefix, nsfwCmds) {
+  execute(message, args, client, prefix, db, nsfwCmds) {
     if (!args.length) {
       const embedBuilder = new EmbedBuilder()
         .setChannel(message.channel)
