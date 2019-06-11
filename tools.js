@@ -1,18 +1,13 @@
 const snekfetch = require('snekfetch');
 const Discord = require('discord.js');
 const settings = require('./settings.json');
-const sqlite = require('sqlite3').verbose();
 const EventEmitter = require('events');
 const mbot = require('./mbot');
 const fs = require('fs');
 const Logger = require('./logger');
 const https = require('https');
-
-const db = new sqlite.Database('./mbot.db', (err) => {
-  if (err) {
-    console.error(err.message);
-  }
-});
+const Database = require('./database/database');
+const db = new Database('./mbot.db').db;
 
 const minAlias = ['min', 'minute', 'm', 'minutes', 'mins'];
 const hourAlias = ['hour', 'hours', 'h', 'hr', 'hrs'];
@@ -240,6 +235,22 @@ class Tools {
     db.get(`SELECT def def, use use FROM roles WHERE id = ${id}`, (err, row) => {
       if (err) return console.log(err);
       callback(row.def, row.use);
+    });
+  }
+
+  usingNsfwModules(id) {
+    return new Promise(resolve => {
+      db.get(`SELECT use use FROM nsfw WHERE id = ${id}`, (err, row) => {
+        if (err) return console.log(err);
+        switch (row.use) {
+          case 0:
+            resolve(false);
+            break;
+          case 1:
+            resolve(true);
+            break;
+        }
+      });
     });
   }
 

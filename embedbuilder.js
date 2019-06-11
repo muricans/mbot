@@ -6,6 +6,15 @@ const {
 
 /**
  * Builds an embed with a number of pages based on how many are in the RichEmbed array given.
+ * @example
+ * const myEmbeds = [new Discord.RichEmbed().addField('This is', 'a field!'),
+ *  new Discord.RichEmbed().addField('This is', 'another field!')];
+ * embedBuilder
+ *  .setChannel(message.channel)
+ *  .setTime(30000)
+ *  .setEmbeds(myEmbeds)
+ *  .build();
+ * // returns -> an embed with 2 pages that will listen for reactions for a total of 30 seconds. embed will be sent to channel specified.
  */
 class EmbedBuilder {
     constructor() {
@@ -211,6 +220,7 @@ class EmbedBuilder {
      * @param {number} page
      * @param {string} emoji
      * @param {EmbedBuilder} builder
+     * @returns {void}
      */
 
     /**
@@ -253,6 +263,24 @@ class EmbedBuilder {
         this._all((i) => {
             this.embedArray[i].setColor(color);
         });
+        return this;
+    }
+
+    /**
+     * 
+     * @callback callback
+     * @returns {void}
+     */
+
+    /**
+     * Cancel the EmbedBuilder
+     * 
+     * @param {callback} [callback]
+     */
+    cancel(callback) {
+        this.collection.stop();
+        if (callback)
+            callback();
         return this;
     }
 
@@ -315,6 +343,7 @@ class EmbedBuilder {
                 }
                 sent.edit(this.embedArray[page]);
             });
+            this.collection = collection;
         });
     }
 }

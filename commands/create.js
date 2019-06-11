@@ -1,13 +1,6 @@
 const tools = require('../tools.js');
 const mbot = require('../mbot');
-const sqlite = require('sqlite3').verbose();
 const cCommands = mbot.cCommands;
-
-const db = new sqlite.Database('./mbot.db', (err) => {
-  if (err) {
-    console.error(err.message);
-  }
-});
 
 module.exports = {
   name: 'create',
@@ -16,7 +9,7 @@ module.exports = {
   cooldown: 600,
   args: true,
   minArgs: 2,
-  execute(message, args, client, prefix) {
+  execute(message, args, client, prefix, db) {
     new tools.Tools().getCommandOptions(message.guild.id, (everyone) => {
       if (everyone != 1) {
         const hasAdmin = message.channel.permissionsFor(message.member).has('ADMINISTRATOR');

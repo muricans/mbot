@@ -18,7 +18,7 @@ module.exports.getCooldowns = (key) => {
  * @param {Discord.Client} client The bots client.
  * @param mbot mbot main script.
  */
-module.exports.registerCommands = async (client, mbot) => {
+module.exports.registerCommands = async (client, mbot, db) => {
   client.commands = new Discord.Collection();
   const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
   for (const file of commandFiles) {
@@ -114,7 +114,7 @@ module.exports.registerCommands = async (client, mbot) => {
   }
   nCmds.sort((a, b) => (a.name > b.name) ? 1 : -1);
 
-  function handleOther(command, message, args) {
+  async function handleOther(command, message, args) {
     if (command === 'test') {
       message.channel.send("Test recieved").then(async sent => {
         sent.react("🔼");
@@ -148,93 +148,95 @@ module.exports.registerCommands = async (client, mbot) => {
         message.delete(1000);
         message.channel.stopTyping(true);
         break;
+    }
 
-
-        // porn commands
-
-      case "anal":
-        message.channel.startTyping();
-        tools.search(anal[Math.floor(Math.random() * anal.length)], 'all', message, true);
-        message.delete(1000);
-        message.channel.stopTyping(true);
-        break;
-      case "ass":
-        message.channel.startTyping();
-        tools.search(ass[Math.floor(Math.random() * ass.length)], 'all', message, true);
-        message.delete(1000);
-        message.channel.stopTyping(true);
-        break;
-      case "blowjob":
-        message.channel.startTyping();
-        tools.search(blowjob[Math.floor(Math.random() * blowjob.length)], 'all', message, true);
-        message.delete(1000);
-        message.channel.stopTyping(true);
-        break;
-      case "boobs":
-        message.channel.startTyping();
-        tools.search(boobs[Math.floor(Math.random() * boobs.length)], 'all', message, true);
-        message.delete(1000);
-        message.channel.stopTyping(true);
-        break;
-      case "dick":
-        message.channel.startTyping();
-        tools.search(dick[Math.floor(Math.random() * dick.length)], 'all', message, true);
-        message.delete(1000);
-        message.channel.stopTyping(true);
-        break;
-      case "gay":
-        message.channel.startTyping();
-        tools.search(gay[Math.floor(Math.random() * gay.length)], 'all', message, true);
-        message.delete(1000);
-        message.channel.stopTyping(true);
-        break;
-      case "hardcore":
-        message.channel.startTyping();
-        tools.search(hardcore[Math.floor(Math.random() * hardcore.length)], 'all', message, true);
-        message.delete(1000);
-        message.channel.stopTyping(true);
-        break;
-      case "hentai":
-        message.channel.startTyping();
-        tools.search(hentai[Math.floor(Math.random() * hentai.length)], 'all', message, true);
-        message.delete(1000);
-        message.channel.stopTyping(true);
-        break;
-      case "nsfw":
-        message.channel.startTyping();
-        tools.search(nsfw[Math.floor(Math.random() * nsfw.length)], 'all', message, true);
-        message.delete(1000);
-        message.channel.stopTyping(true);
-        break;
-      case "pegging":
-        message.channel.startTyping();
-        tools.search(pegging[Math.floor(Math.random() * pegging.length)], 'all', message, true);
-        message.delete(1000);
-        message.channel.stopTyping(true);
-        break;
-        // rule34 code different than others
-      case "rule34":
-        message.channel.startTyping();
-        if (!args.length) {
-          tools.search(rule34[Math.floor(Math.random() * rule34.length)], 'all', message, true);
+    const allowNsfw = await tools.usingNsfwModules(message.guild.id);
+    if (allowNsfw) {
+      switch (command) {
+        case "anal":
+          message.channel.startTyping();
+          tools.search(anal[Math.floor(Math.random() * anal.length)], 'all', message, true);
           message.delete(1000);
-          return message.channel.stopTyping(true);
-        }
-        tools.find(rule34[Math.floor(Math.random() * rule34.length)], args.toString().replace(' ', '+'), 'all', message, true);
-        message.channel.stopTyping(true);
-        break;
-      case "thighs":
-        message.channel.startTyping();
-        tools.search(thighs[Math.floor(Math.random() * thighs.length)], 'all', message, true);
-        message.delete(1000);
-        message.channel.stopTyping(true);
-        break;
-      case "trap":
-        message.channel.startTyping();
-        tools.search(traps[Math.floor(Math.random() * traps.length)], 'all', message, true);
-        message.delete(1000);
-        message.channel.stopTyping(true);
-        break;
+          message.channel.stopTyping(true);
+          break;
+        case "ass":
+          message.channel.startTyping();
+          tools.search(ass[Math.floor(Math.random() * ass.length)], 'all', message, true);
+          message.delete(1000);
+          message.channel.stopTyping(true);
+          break;
+        case "blowjob":
+          message.channel.startTyping();
+          tools.search(blowjob[Math.floor(Math.random() * blowjob.length)], 'all', message, true);
+          message.delete(1000);
+          message.channel.stopTyping(true);
+          break;
+        case "boobs":
+          message.channel.startTyping();
+          tools.search(boobs[Math.floor(Math.random() * boobs.length)], 'all', message, true);
+          message.delete(1000);
+          message.channel.stopTyping(true);
+          break;
+        case "dick":
+          message.channel.startTyping();
+          tools.search(dick[Math.floor(Math.random() * dick.length)], 'all', message, true);
+          message.delete(1000);
+          message.channel.stopTyping(true);
+          break;
+        case "gay":
+          message.channel.startTyping();
+          tools.search(gay[Math.floor(Math.random() * gay.length)], 'all', message, true);
+          message.delete(1000);
+          message.channel.stopTyping(true);
+          break;
+        case "hardcore":
+          message.channel.startTyping();
+          tools.search(hardcore[Math.floor(Math.random() * hardcore.length)], 'all', message, true);
+          message.delete(1000);
+          message.channel.stopTyping(true);
+          break;
+        case "hentai":
+          message.channel.startTyping();
+          tools.search(hentai[Math.floor(Math.random() * hentai.length)], 'all', message, true);
+          message.delete(1000);
+          message.channel.stopTyping(true);
+          break;
+        case "nsfw":
+          message.channel.startTyping();
+          tools.search(nsfw[Math.floor(Math.random() * nsfw.length)], 'all', message, true);
+          message.delete(1000);
+          message.channel.stopTyping(true);
+          break;
+        case "pegging":
+          message.channel.startTyping();
+          tools.search(pegging[Math.floor(Math.random() * pegging.length)], 'all', message, true);
+          message.delete(1000);
+          message.channel.stopTyping(true);
+          break;
+          // rule34 code different than others
+        case "rule34":
+          message.channel.startTyping();
+          if (!args.length) {
+            tools.search(rule34[Math.floor(Math.random() * rule34.length)], 'all', message, true);
+            message.delete(1000);
+            return message.channel.stopTyping(true);
+          }
+          tools.find(rule34[Math.floor(Math.random() * rule34.length)], args.toString().replace(' ', '+'), 'all', message, true);
+          message.channel.stopTyping(true);
+          break;
+        case "thighs":
+          message.channel.startTyping();
+          tools.search(thighs[Math.floor(Math.random() * thighs.length)], 'all', message, true);
+          message.delete(1000);
+          message.channel.stopTyping(true);
+          break;
+        case "trap":
+          message.channel.startTyping();
+          tools.search(traps[Math.floor(Math.random() * traps.length)], 'all', message, true);
+          message.delete(1000);
+          message.channel.stopTyping(true);
+          break;
+      }
     }
   }
 
@@ -247,7 +249,7 @@ module.exports.registerCommands = async (client, mbot) => {
     const isOwner = bot_owners_id.find(id => id === message.author.id);
     if (isOwner) {
       try {
-        return comm.execute(message, args, client, prefix, n);
+        return comm.execute(message, args, client, prefix, db, n);
       } catch (err) {
         console.log(err);
       }
@@ -271,7 +273,7 @@ module.exports.registerCommands = async (client, mbot) => {
             return message.channel.send(`${message.author} Please wait ${left.toFixed(1)} second(s) before running that command again!`);
           }
         }
-        comm.execute(message, args, client, prefix, n);
+        comm.execute(message, args, client, prefix, db, n);
         timestamps.set(message.author.id, now);
         setTimeout(() => timestamps.delete(message.author.id), cooldown);
       } catch (err) {
@@ -375,6 +377,9 @@ module.exports.registerCommands = async (client, mbot) => {
       if (!comm) {
         return;
       }
+
+      const allowNsfw = await tools.usingNsfwModules(message.guild.id);
+      if (comm.nsfw && !allowNsfw) return;
 
       if (comm.roulette && message.guild.id === "264445053596991498") return;
 

@@ -1,14 +1,6 @@
-const sqlite = require('sqlite3').verbose();
 const tls = require('../../tools');
 const tools = new tls.Tools();
 const mbot = require('../../mbot');
-
-const db = new sqlite.Database('./mbot.db', (err) => {
-    if (err) {
-        console.error(err.message);
-    }
-});
-
 
 module.exports = {
     name: "modules",
@@ -17,7 +9,7 @@ module.exports = {
     args: true,
     minArgs: 2,
     mod: true,
-    execute(message, args, client, prefix) {
+    execute(message, args, client, prefix, db) {
         //0=moduleName
         //1=moduleOption
         //2=setTo
@@ -219,6 +211,27 @@ module.exports = {
                                 break;
                             default:
                                 message.reply(`${message.author} Please add params! ${prefix}modules roles use <true|false>`);
+                                break;
+                        }
+                        break;
+                }
+                break;
+            case "nsfw":
+                switch (args[1]) {
+                    case "use":
+                        switch (args[2]) {
+                            case "true":
+                                db.run('UPDATE nsfw SET use = ? WHERE id = ?', 1, message.guild.id);
+                                tools.addCooldown(this.name, 10, message);
+                                message.channel.send(`${message.author} Enabled use of nsfw modules!`);
+                                break;
+                            case "false":
+                                db.run('UPDATE nsfw SET use = ? WHERE id = ?', 0, message.guild.id);
+                                tools.addCooldown(this.name, 10, message);
+                                message.channel.send(`${message.author} Disabled use of nsfw modules!`);
+                                break;
+                            default:
+                                message.reply(`${message.author} Please add params! ${prefix}modules nsfw use <true|false>`);
                                 break;
                         }
                         break;

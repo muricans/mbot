@@ -36,20 +36,18 @@ module.exports = {
       tools.addCooldown(module.exports.name, 5, message);
       return message.channel.send(embed);
     } else if (!isNaN(args[0])) {
-      client.fetchUser(args[0].toString()).then((mention) => {
-        const embed = new Discord.RichEmbed()
-          .setAuthor(mention.username)
-          .setDescription('User info is being displayed.')
-          .addField('Full Username', `${mention.username}#${mention.discriminator}`)
-          .addField('ID', mention.id)
-          .addField('Time of Creation', mention.createdAt)
-          .addField('Avatar URL', mention.avatarURL)
-          .setThumbnail(mention.avatarURL);
-        tools.addCooldown(module.exports.name, 5, message);
-        return message.channel.send(embed);
-      }).catch(() => {
-        return message.channel.send(`${message.author} Could not find that user!`);
-      });
+      const mention = tools.users(client).find(user => user.id === args[0]);
+      if (!mention) return message.channel.send('Could not find that user!');
+      const embed = new Discord.RichEmbed()
+        .setAuthor(mention.username)
+        .setDescription('User info is being displayed.')
+        .addField('Full Username', `${mention.username}#${mention.discriminator}`)
+        .addField('ID', mention.id)
+        .addField('Time of Creation', mention.createdAt)
+        .addField('Avatar URL', mention.avatarURL)
+        .setThumbnail(mention.avatarURL);
+      tools.addCooldown(this.name, 5, message);
+      return message.channel.send(embed);
     }
   },
 };

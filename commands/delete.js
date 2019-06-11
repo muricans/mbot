@@ -1,12 +1,5 @@
-const sqlite = require('sqlite3').verbose();
 const mbot = require('../mbot');
 const cCommands = mbot.cCommands;
-
-const db = new sqlite.Database('./mbot.db', (err) => {
-  if (err) {
-    console.error(err.message);
-  }
-});
 
 module.exports = {
   name: 'delete',
@@ -16,7 +9,7 @@ module.exports = {
   args: true,
   minArgs: 1,
   mod: true,
-  execute(message, args, client) {
+  execute(message, args, client, prefix, db) {
     const weirdChamp = client.emojis.get("572690273247821824");
     const hasAdmin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");
     if (!hasAdmin) {
