@@ -243,6 +243,22 @@ class Tools {
     });
   }
 
+  usingNsfwModules(id) {
+    return new Promise(resolve => {
+      db.get(`SELECT use use FROM nsfw WHERE id = ${id}`, (err, row) => {
+        if (err) return console.log(err);
+        switch (row.use) {
+          case 0:
+            resolve(false);
+            break;
+          case 1:
+            resolve(true);
+            break;
+        }
+      });
+    });
+  }
+
   /**
    * @callback gallery
    * @param {Object} body The body of the gallery it returns.

@@ -57,6 +57,7 @@ db.serialize(() => {
   db.run('CREATE TABLE if not exists commands(id TEXT, name TEXT, message TEXT)');
   db.run('CREATE TABLE if not exists commandOptions(id TEXT, everyone INTEGER, use INTEGER, UNIQUE(id))');
   db.run('CREATE TABLE if not exists roles(id TEXT, def TEXT, use INTEGER, UNIQUE(id))');
+  db.run('CREATE TABLE if not exists nsfw(id TEXT, use INTEGER, UNIQUE(id))');
 });
 
 /**
@@ -89,6 +90,9 @@ function initDb(guild) {
     db.run('INSERT OR IGNORE INTO roles(id, def, use) VALUES(?,?,?)',
       guild.id.toString(),
       '_none',
+      1);
+    db.run('INSERT OR IGNORE INTO nsfw(id, use) VALUES(?,?)',
+      guild.id,
       1);
     for (let i = 0; i < guild.members.array().length; i++) {
       const guildMember = guild.members.array()[i];
