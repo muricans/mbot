@@ -22,7 +22,9 @@ const emojis = ['🍆', '💦', '😳', '🍌', '😏', '🍑', '😊'];
 /**
  * A list of all admin commands for the bot.
  */
-module.exports.adminCommands = ['set', 'give', 'delete', 'echo', 'clean', 'prefix', 'suggestions'];
+module.exports.adminCommands = ['set', 'give', 'delete', 'echo', 'clean', 'prefix', 'suggestions',
+  'eval', 'mute', 'unmute', 'kick', 'ban', 'modules', 'serverinfo',
+];
 
 const cooldowns = new Discord.Collection();
 

@@ -126,6 +126,7 @@ client.on('guildCreate', (guild) => {
 client.on('guildMemberAdd', (guildMember) => {
   if (guildMember.guild.id === "264445053596991498") return;
   new tools.Tools().getNLMessage('welcomeMessage', guildMember.guild.id, (use, msg, channel) => {
+    if (guildMember.user.bot) return;
     if (use === 1) {
       const chnl = guildMember.guild.channels.find(c => c.name === channel);
       if (!chnl) {
@@ -146,6 +147,7 @@ client.on('guildMemberAdd', (guildMember) => {
     }
   });
   db.serialize(() => {
+    if (guildMember.user.bot) return;
     db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', guildMember.user.id.toString(), 100);
     if (settings.debug) {
       Logger.debug('New user found, registering them to the bot database with ID of ' + guildMember.user.id.toString());
@@ -156,6 +158,7 @@ client.on('guildMemberAdd', (guildMember) => {
 client.on('guildMemberRemove', (guildMember) => {
   if (guildMember.guild.id === "264445053596991498") return;
   new tools.Tools().getNLMessage('leaveMessage', guildMember.guild.id.toString(), (use, msg, channel) => {
+    if (guildMember.user.bot) return;
     if (use === 1) {
       const chnl = guildMember.guild.channels.find(c => c.name === channel);
       if (!chnl) {
@@ -174,6 +177,7 @@ client.on('ready', async () => {
     let u, user;
     for (u in client.users.array()) {
       user = client.users.array()[u];
+      if (user.bot) continue;
       db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', user.id.toString(), 100);
     }
   });
@@ -186,23 +190,15 @@ client.on('ready', async () => {
       console.log(err);
     }
   }
-  setInterval(() => {
-    db.serialize(() => {
-      db.each("SELECT points points, id id FROM users", (err, row) => {
-        if (err) {
-          console.log(err);
-        }
-        let u, user;
-        for (u in client.users.array()) {
-          user = client.users.array()[u];
-          if (row.id === user.id) {
-            if (user.bot) return;
-            return new tools.Tools().setPoints((row.points + 10), user.id);
-          }
-        }
-      });
-    });
-  }, (60000 * 10));
+  setInterval(async () => {
+    const tls = new tools.Tools();
+    for (let i = 0; i < tls.users(client).length; i++) {
+      const user = tls.users(client)[i];
+      //if (user.bot) continue;
+      const current = await tls.getPoints(user.id);
+      tls.setPoints(current + 10, user.id);
+    }
+  }, (10 * 60000));
   setInterval(() => {
     seconds++;
     if (seconds >= 60) {

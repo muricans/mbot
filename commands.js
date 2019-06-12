@@ -133,7 +133,29 @@ module.exports.registerCommands = async (client, mbot, db) => {
 
     const ppHop = client.emojis.get("572687346529468428");
     if (command === 'ping') {
-      message.reply('pong ' + ppHop + '\n mbot has been up for: ' + mbot.getUptime());
+      const then = Date.now();
+      let uptime = mbot.getUptime().split(':');
+      let hours = uptime[0] === '00' ? '' : uptime[0] + 'hour(s) ';
+      hours = hours.startsWith('0') ? hours.substr(1) : hours;
+      let minutes = uptime[1] === '00' ? '' : uptime[1] + ' minute(s) ';
+      minutes = minutes.startsWith('0') ? minutes.substr(1) : minutes;
+      let seconds = uptime[2] === '00' ? '' : uptime[2] + ' second(s)';
+      seconds = seconds.startsWith('0') ? seconds.substr(1) : seconds;
+      uptime = `${hours}${minutes}${seconds}`;
+      let embed = new Discord.RichEmbed()
+        .setTitle('pong ' + ppHop)
+        .setColor(0x2872DB)
+        .setDescription(`mbot has been up for: ${uptime}`)
+        .addField('Connection/Reaction Time', ppHop);
+      message.channel.send(embed).then(sent => {
+        const reactionTime = Date.now() - then;
+        embed = new Discord.RichEmbed()
+          .setTitle('pong ' + ppHop)
+          .setColor(0x2872DB)
+          .setDescription(`mbot has been up for: ${uptime}`)
+          .addField('Connection/Reaction Time', reactionTime + ' ms');
+        sent.edit(embed);
+      });
     }
 
 
@@ -387,14 +409,9 @@ module.exports.registerCommands = async (client, mbot, db) => {
         return fs.readFile('./settings.json', 'utf8', (err, data) => {
           if (err) return console.log(err);
           const settings = JSON.parse(data);
-          for (const i in settings.bot_owners_id) {
-            const owner = settings.bot_owners_id[i];
-            if (message.author.id != owner) {
-              return message.channel.send(`${message.author} You don't have permission to use this command!`);
-            } else {
-              return doCommand(comm, message, prefix, args, nCmds);
-            }
-          }
+          const owner = settings.bot_owners_id.find(id => id === message.author.id);
+          if (!owner) return message.channel.send(`${message.author} You don't have permission to use this command!`);
+          else doCommand(comm, message, prefix, args, nCmds);
         });
       } else if (comm.mod) {
         if (message.author.id === client.user.id) return;
