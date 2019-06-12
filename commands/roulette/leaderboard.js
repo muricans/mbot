@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const EmbedBuilder = require('../../embedbuilder');
+const EmbedBuilder = require('discord-embedbuilder');
 const {
     Tools,
 } = require('../../tools');

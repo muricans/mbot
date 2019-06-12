@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const EmbedBuilder = require('../embedbuilder');
+const EmbedBuilder = require('discord-embedbuilder');
 
 // 17 commands + [5 admin only commands] + 14 nsfw commands
 // seperate admin only commands at a later time
