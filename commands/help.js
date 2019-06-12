@@ -16,9 +16,7 @@ module.exports = {
       const cmds = client.commands.array().filter(cmd => cmd.nsfw !== true);
       cmds.sort((a, b) => (a.name > b.name) ? 1 : -1);
       let method = Math.floor(cmds.length / 8) - 1;
-      let pages = 0;
       for (let i = -1; i < method; i++) {
-        pages++;
         embedBuilder.addEmbed(new Discord.RichEmbed());
         method = Math.floor(cmds.length / 8);
       }
@@ -29,8 +27,7 @@ module.exports = {
         if (cmds[i]) {
           const cmd = cmds[i];
           embedBuilder.getEmbeds()[multiplier - 1]
-            .addField(`${prefix}${cmd.name}`, cmd.description)
-            .setFooter(`Page ${multiplier}/${pages}`);
+            .addField(`${prefix}${cmd.name}`, cmd.description);
           if (i === (8 * multiplier) - 1)
             multiplier++;
         }
@@ -45,9 +42,7 @@ module.exports = {
         .setChannel(message.channel)
         .setTime(35000);
       let method = Math.floor(nsfwCmds.length / 8) - 1;
-      let pages = 0;
       for (let i = -1; i < method; i++) {
-        pages++;
         embedBuilder.addEmbed(new Discord.RichEmbed());
         method = Math.floor(nsfwCmds.length / 8);
       }
@@ -58,8 +53,7 @@ module.exports = {
         if (nsfwCmds[i]) {
           const cmd = nsfwCmds[i];
           embedBuilder.getEmbeds()[multiplier - 1]
-            .addField(`${prefix}${cmd.name}`, cmd.description)
-            .setFooter(`Page ${multiplier}/${pages}`);
+            .addField(`${prefix}${cmd.name}`, cmd.description);
           if (i === (8 * multiplier) - 1)
             multiplier++;
         }
@@ -76,14 +70,12 @@ module.exports = {
       const embedBuilder = new EmbedBuilder()
         .setChannel(message.channel)
         .setTime(35000);
-      let pages = 0;
       let m = 1;
       for (let i = 0; i < 8 * m; i++) {
         if (i === cmds.length)
           break;
         if (!embedBuilder.getEmbeds()[m - 1]) {
           embedBuilder.addEmbed(new Discord.RichEmbed());
-          pages++;
         }
         if (i === (8 * m) - 1)
           m++;
@@ -95,8 +87,7 @@ module.exports = {
         if (cmds[i]) {
           const c = cmds[i];
           embedBuilder.getEmbeds()[multiplier - 1]
-            .addField(`${prefix}${c.name}`, c.description)
-            .setFooter(`Page ${multiplier}/${pages}`);
+            .addField(`${prefix}${c.name}`, c.description);
           if (i === (8 * multiplier) - 1)
             multiplier++;
         }

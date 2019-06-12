@@ -34,14 +34,12 @@ function leaderboard(channel, client) {
             });
         }
         users.sort((a, b) => (a.points > b.points) ? -1 : 1);
-        let pages = 0;
         let m = 1;
         for (let i = 0; i < 10 * m; i++) {
             if (i === 50)
                 break;
             if (!embeds.getEmbeds()[m - 1] && users[i]) {
                 embeds.addEmbed(new Discord.RichEmbed());
-                pages++;
             }
             if (i === (10 * m) - 1)
                 m++;
@@ -53,8 +51,7 @@ function leaderboard(channel, client) {
             }
             if (users[i]) {
                 embeds.getEmbeds()[multiplier - 1]
-                    .addField(`${i + 1}. ${users[i].username}`, users[i].points, true)
-                    .setFooter(`Page ${multiplier}/${pages}`);
+                    .addField(`${i + 1}. ${users[i].username}`, users[i].points, true);
                 if (i === (10 * multiplier) - 1) {
                     multiplier++;
                 }
