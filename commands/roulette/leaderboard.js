@@ -33,7 +33,7 @@ function leaderboard(channel, client) {
                 points: points,
             });
         }
-        users.sort((a, b) => (a.points > b.points) ? 1 : -1);
+        users.sort((a, b) => (a.points > b.points) ? -1 : 1);
         let pages = 0;
         let m = 1;
         for (let i = 0; i < 10 * m; i++) {
