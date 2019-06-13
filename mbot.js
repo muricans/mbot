@@ -113,7 +113,7 @@ event.on('ready', () => {
   });
   event.on('timerFinished', (userId, timerId, timerName) => {
     Logger.debug(`Timer ${timerId} has finished.`);
-    client.fetchUser(userId).then(user => {
+    client.users.fetch(userId, false).then(user => {
       user.send(`Your timer '${timerName}' has finished!`);
     }).catch();
   });
@@ -194,7 +194,7 @@ client.on('ready', async () => {
     const tls = new tools.Tools();
     for (let i = 0; i < tls.users(client).length; i++) {
       const user = tls.users(client)[i];
-      //if (user.bot) continue;
+      if (user.bot) continue;
       const current = await tls.getPoints(user.id);
       tls.setPoints(current + 10, user.id);
     }

@@ -15,23 +15,9 @@ module.exports = {
         .setTime(35000);
       const cmds = client.commands.array().filter(cmd => cmd.nsfw !== true);
       cmds.sort((a, b) => (a.name > b.name) ? 1 : -1);
-      let method = Math.floor(cmds.length / 8) - 1;
-      for (let i = -1; i < method; i++) {
-        embedBuilder.addEmbed(new Discord.RichEmbed());
-        method = Math.floor(cmds.length / 8);
-      }
-      let multiplier = 1;
-      for (let i = 0; i < 8 * multiplier; i++) {
-        if (i === cmds.length)
-          break;
-        if (cmds[i]) {
-          const cmd = cmds[i];
-          embedBuilder.getEmbeds()[multiplier - 1]
-            .addField(`${prefix}${cmd.name}`, cmd.description);
-          if (i === (8 * multiplier) - 1)
-            multiplier++;
-        }
-      }
+      embedBuilder.calculatePages(cmds.length, 8, (embed, i) => {
+        embed.addField(`${prefix}${cmds[i].name}`, cmds[i].description);
+      });
       embedBuilder.getEmbeds()[embedBuilder.getEmbeds().length - 1].addField('NSFW Commands', `${prefix}help nsfw`);
       return embedBuilder
         .setTitle('Commands')
@@ -41,23 +27,9 @@ module.exports = {
       const embedBuilder = new EmbedBuilder()
         .setChannel(message.channel)
         .setTime(35000);
-      let method = Math.floor(nsfwCmds.length / 8) - 1;
-      for (let i = -1; i < method; i++) {
-        embedBuilder.addEmbed(new Discord.RichEmbed());
-        method = Math.floor(nsfwCmds.length / 8);
-      }
-      let multiplier = 1;
-      for (let i = 0; i < 8 * multiplier; i++) {
-        if (i === nsfwCmds.length)
-          break;
-        if (nsfwCmds[i]) {
-          const cmd = nsfwCmds[i];
-          embedBuilder.getEmbeds()[multiplier - 1]
-            .addField(`${prefix}${cmd.name}`, cmd.description);
-          if (i === (8 * multiplier) - 1)
-            multiplier++;
-        }
-      }
+      embedBuilder.calculatePages(nsfwCmds.length, 8, (embed, i) => {
+        embed.addField(`${prefix}${nsfwCmds[i].name}`, nsfwCmds[i].description);
+      });
       return embedBuilder
         .setTitle('NSFW Commands')
         .build();
@@ -66,32 +38,13 @@ module.exports = {
     if (!cmd) {
       const cmds = client.commands.array().filter(c => c.name.includes(args[0].toLowerCase()));
       if (!cmds.length)
-        return message.channel.send(message.author + ' That command does not exist!');
+        return message.channel.send(`${message.author}` + ' That command does not exist!');
       const embedBuilder = new EmbedBuilder()
         .setChannel(message.channel)
         .setTime(35000);
-      let m = 1;
-      for (let i = 0; i < 8 * m; i++) {
-        if (i === cmds.length)
-          break;
-        if (!embedBuilder.getEmbeds()[m - 1]) {
-          embedBuilder.addEmbed(new Discord.RichEmbed());
-        }
-        if (i === (8 * m) - 1)
-          m++;
-      }
-      let multiplier = 1;
-      for (let i = 0; i < 8 * multiplier; i++) {
-        if (i === cmds.length)
-          break;
-        if (cmds[i]) {
-          const c = cmds[i];
-          embedBuilder.getEmbeds()[multiplier - 1]
-            .addField(`${prefix}${c.name}`, c.description);
-          if (i === (8 * multiplier) - 1)
-            multiplier++;
-        }
-      }
+      embedBuilder.calculatePages(cmds.length, 8, (embed, i) => {
+        embed.addField(`${prefix}${cmds[i].name}`, cmds[i].description);
+      });
       return embedBuilder
         .setTitle(`Results with: ${args[0].toLowerCase()}`)
         .build();
@@ -103,7 +56,7 @@ module.exports = {
     } = cmd;
     const desc = description || "No description defined.";
     const usg = usage || "No usage data found.";
-    const embed = new Discord.RichEmbed()
+    const embed = new Discord.MessageEmbed()
       .setTitle(prefix + name)
       .addField('Usage ', usg)
       .addField('Description', desc);

@@ -21,7 +21,7 @@ module.exports = {
       const msg = newArgs.join(' ');
       for (const i in tools.adminCommands) {
         if (msg.includes(prefix + tools.adminCommands[i])) {
-          return message.channel.send(message.author + ' Cannot run admin commands!');
+          return message.channel.send(`${message.author}` + ' Cannot run admin commands!');
         }
       }
       const cmds = cCommands.filter(cmd => cmd.id === message.guild.id);

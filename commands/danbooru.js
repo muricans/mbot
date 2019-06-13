@@ -7,7 +7,9 @@ module.exports = {
     description: 'Returns a danbooru image [NSFW Available]',
     nsfw: true,
     execute(message, args) {
-        message.delete(1000);
+        message.delete({
+            timeout: 1000,
+        });
         if (args.length === 0) {
             return tools.danbooru(message);
         } else {

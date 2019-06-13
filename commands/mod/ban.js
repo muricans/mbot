@@ -14,13 +14,13 @@ module.exports = {
         if (!mention) {
             return message.channel.send(`${message.author} Could not find that user!`);
         }
-        const mRole = message.guild.member(mention).highestRole;
-        const role = message.member.highestRole;
+        const mRole = message.guild.member(mention).roles.highest;
+        const role = message.member.roles.highest;
         if (mRole.comparePositionTo(role) > 0 || mRole.position === role.position) {
             return message.channel.send(`${message.author} That user has a higher role than you!`);
         }
         if (args.length === 1) {
-            return message.guild.ban(mention, {
+            return message.member.ban(mention, {
                 days: 0,
                 reason: `Banned by ${message.author.username}`,
             }).then((member) => {
@@ -30,7 +30,7 @@ module.exports = {
             });
         } else if (args.length > 1) {
             const reason = args.slice(1, args.length).join(' ');
-            return message.guild.ban(mention, {
+            return message.member.ban(mention, {
                 days: 0,
                 reason: `Banned by ${message.author.username} Reason: ${reason}`,
             }).then((member) => {

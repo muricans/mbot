@@ -7,7 +7,9 @@ module.exports = {
   description: 'Returns an image from rule34',
   nsfw: true,
   execute(message, args) {
-    message.delete(1000);
+    message.delete({
+      timeout: 1000,
+    });
     if (!message.channel.nsfw) {
       return message.channel.send("Please move to an nsfw channel :flushed:");
     }

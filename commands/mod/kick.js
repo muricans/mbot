@@ -19,8 +19,8 @@ module.exports = {
         if (hasAdmin && !admin) {
             return message.channel.send(`${message.author} You don't have permission to kick that user!`);
         }
-        const mRole = message.guild.member(mention).highestRole;
-        const role = message.member.highestRole;
+        const mRole = message.guild.member(mention).roles.highest;
+        const role = message.member.roles.highest;
         if (mRole.comparePositionTo(role) > 0 || mRole.position === role.position) {
             return message.channel.send(`${message.author} That user has a higher role than you!`);
         }

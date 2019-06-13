@@ -1,4 +1,3 @@
-const Discord = require('discord.js');
 const EmbedBuilder = require('discord-embedbuilder');
 const {
     Tools,
@@ -14,12 +13,6 @@ module.exports = {
     },
 };
 
-/**
- * 
- * @param {Discord.Message} message 
- * @param {Discord.Client} client 
- * @returns {Promise<EmbedBuilder>}
- */
 function leaderboard(channel, client) {
     return new Promise(async (resolve) => {
         const embeds = new EmbedBuilder();
@@ -34,29 +27,9 @@ function leaderboard(channel, client) {
             });
         }
         users.sort((a, b) => (a.points > b.points) ? -1 : 1);
-        let m = 1;
-        for (let i = 0; i < 10 * m; i++) {
-            if (i === 50)
-                break;
-            if (!embeds.getEmbeds()[m - 1] && users[i]) {
-                embeds.addEmbed(new Discord.RichEmbed());
-            }
-            if (i === (10 * m) - 1)
-                m++;
-        }
-        let multiplier = 1;
-        for (let i = 0; i < 10 * multiplier; i++) {
-            if (i === 50) {
-                break;
-            }
-            if (users[i]) {
-                embeds.getEmbeds()[multiplier - 1]
-                    .addField(`${i + 1}. ${users[i].username}`, users[i].points, true);
-                if (i === (10 * multiplier) - 1) {
-                    multiplier++;
-                }
-            }
-        }
+        embeds.calculatePages(users.length, 10, (embed, i) => {
+            embed.addField(`${i + 1}. ${users[i].username}`, users[i].points, true);
+        });
         embeds
             .setTitle('Points Leaderboard')
             .setTime(2 * 60000)

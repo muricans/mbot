@@ -402,7 +402,7 @@ class Tools {
       if (image.includes('.gifv')) {
         image = image.substr(0, image.length - 1);
       }
-      const embed = new Discord.RichEmbed()
+      const embed = new Discord.MessageEmbed()
         .setTitle(title)
         .setImage(image)
         .setFooter("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
@@ -464,7 +464,7 @@ class Tools {
         return message.channel.send(body.error);
       }
       const imageData = body.file_url;
-      const embed = new Discord.RichEmbed()
+      const embed = new Discord.MessageEmbed()
         .setTitle('Random rule34.xxx image')
         .setImage(imageData)
         .setFooter(footer);
@@ -512,7 +512,7 @@ class Tools {
         message.channel.send(imageData);
         message.channel.send(footer);
       } else if (this.end(imageData)) {
-        const embed = new Discord.RichEmbed()
+        const embed = new Discord.MessageEmbed()
           .setTitle("Random danbooru image")
           .setImage(imageData)
           .setFooter(footer);
