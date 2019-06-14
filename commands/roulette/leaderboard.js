@@ -16,7 +16,7 @@ module.exports = {
 function leaderboard(channel, client) {
     return new Promise(async (resolve) => {
         const embeds = new EmbedBuilder(channel);
-        const users = [];
+        let users = [];
         for (let i = 0; i < tools.users(client).length; i++) {
             const user = tools.users(client)[i];
             const points = await tools.getPoints(user.id);
@@ -26,7 +26,7 @@ function leaderboard(channel, client) {
                 points: points,
             });
         }
-        users.sort((a, b) => (a.points > b.points) ? -1 : 1);
+        users = users.sort((a, b) => (a.points > b.points) ? -1 : 1).slice(0, 50);
         embeds.calculatePages(users.length, 10, (embed, i) => {
             embed.addField(`${i + 1}. ${users[i].username}`, users[i].points, true);
         });
