@@ -19,7 +19,7 @@ module.exports = {
       return message.channel.send(embed);
     }
     if (isNaN(args[0])) {
-      const mention = message.mentions.users.first();
+      const mention = tools.parseMention(args[0], client);
       if (!mention) {
         return message.channel.send(`${message.author} Could not find that user!`);
       }

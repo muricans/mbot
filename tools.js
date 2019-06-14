@@ -810,6 +810,21 @@ class Tools {
   parsePercent(percentage) {
     return Math.floor(percentage / 100);
   }
+
+  /**
+   * 
+   * @param {string} mention 
+   * @param {Discord.Client} client 
+   */
+  parseMention(mention, client) {
+    if (!mention) return;
+    if (mention.startsWith('<@') && mention.endsWith('>')) {
+      mention = mention.slice(2, -1);
+      if (mention.startsWith('!'))
+        mention = mention.slice(1);
+    }
+    return client.users.get(mention);
+  }
 }
 module.exports.Tools = Tools;
 

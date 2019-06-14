@@ -27,7 +27,7 @@ module.exports = {
             this.mutesGuilds.set(message.guild.id, new Discord.Collection());
             this.timeoutsGuilds.set(message.guild.id, new Discord.Collection());
         }
-        const mention = message.mentions.users.first();
+        const mention = tools.parseMention(args[0], client);
         if (!mention) {
             return message.channel.send(`${message.author} Could not find that user!`);
         }

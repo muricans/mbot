@@ -1,3 +1,8 @@
+const {
+  Tools,
+} = require('../../tools');
+const tools = new Tools();
+
 module.exports = {
   name: 'clean',
   usage: '[user|all] [number]',
@@ -67,7 +72,7 @@ module.exports = {
         return message.channel.send('There were no messages found in this channel!');
       }
     }
-    const mention = message.mentions.users.first();
+    const mention = tools.parseMention(args[0], client);
     if (!mention) {
       return message.channel.send('That user does not exist!');
     } else {

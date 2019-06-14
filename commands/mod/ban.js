@@ -1,3 +1,8 @@
+const {
+    Tools,
+} = require('../../tools');
+const tools = new Tools();
+
 module.exports = {
     name: 'ban',
     usage: '<user> [reason]',
@@ -5,12 +10,12 @@ module.exports = {
     args: true,
     minArgs: 1,
     mod: true,
-    execute(message, args) {
+    execute(message, args, client) {
         const canBan = message.channel.permissionsFor(message.member).has('BAN_MEMBERS');
         if (!canBan) {
             return message.channel.send(`${message.author} You don't have permission to use this command!`);
         }
-        const mention = message.mentions.users.first();
+        const mention = tools.parseMention(args[0], client);
         if (!mention) {
             return message.channel.send(`${message.author} Could not find that user!`);
         }
