@@ -59,7 +59,6 @@ module.exports.registerCommands = async (client, mbot, db) => {
     name: 'uptime',
     description: 'Gets the bots uptime',
   });
-  setTimeout(() => console.log(client.commands.array()), 5000);
   mbot.event.emit('filesLoaded');
 
   const meme = ['comedycemetery', 'comedyheaven', 'dankmemes', 'me_irl', 'teenagers'];
