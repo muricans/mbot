@@ -10,8 +10,7 @@ module.exports = {
   cooldown: 3,
   execute(message, args, client, prefix, db, nsfwCmds) {
     if (!args.length) {
-      const embedBuilder = new EmbedBuilder()
-        .setChannel(message.channel)
+      const embedBuilder = new EmbedBuilder(message.channel)
         .setTime(35000);
       const cmds = client.commands.array().filter(cmd => cmd.nsfw !== true);
       cmds.sort((a, b) => (a.name > b.name) ? 1 : -1);
@@ -24,8 +23,7 @@ module.exports = {
         .build();
     }
     if (args[0].toLowerCase() === "nsfw") {
-      const embedBuilder = new EmbedBuilder()
-        .setChannel(message.channel)
+      const embedBuilder = new EmbedBuilder(message.channel)
         .setTime(35000);
       embedBuilder.calculatePages(nsfwCmds.length, 8, (embed, i) => {
         embed.addField(`${prefix}${nsfwCmds[i].name}`, nsfwCmds[i].description);
@@ -39,8 +37,7 @@ module.exports = {
       const cmds = client.commands.array().filter(c => c.name.includes(args[0].toLowerCase()));
       if (!cmds.length)
         return message.channel.send(`${message.author}` + ' That command does not exist!');
-      const embedBuilder = new EmbedBuilder()
-        .setChannel(message.channel)
+      const embedBuilder = new EmbedBuilder(message.channel)
         .setTime(35000);
       embedBuilder.calculatePages(cmds.length, 8, (embed, i) => {
         embed.addField(`${prefix}${cmds[i].name}`, cmds[i].description);

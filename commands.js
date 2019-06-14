@@ -13,6 +13,32 @@ module.exports.getCooldowns = (key) => {
   return cooldowns.get(key);
 };
 
+function scanComamnds(dir, insert) {
+  const files = fs.readdirSync(dir);
+  for (const file of files) {
+    fs.stat(`${dir}/${file}`, (err, stats) => {
+      if (err) return;
+      if (!stats.isDirectory() && file.endsWith('.js')) {
+        const cmd = require(`${dir}/${file}`);
+        insert.set(cmd.name, cmd);
+      } else if (stats.isDirectory()) {
+        const oFiles = fs.readdirSync(`${dir}/${file}`);
+        for (const oFile of oFiles)
+          if (oFile.endsWith('.js')) {
+            const cmd = require(`${dir}/${file}/${oFile}`);
+            insert.set(cmd.name, cmd);
+          } else {
+            fs.stat(`${dir}/${file}/${oFile}`, (e, s) => {
+              if (e) return;
+              if (s.isDirectory())
+                scanComamnds(`${dir}/${file}/${oFile}`, insert);
+            });
+          }
+      }
+    });
+  }
+}
+
 /**
  * Register commands for the bot.
  * @param {Discord.Client} client The bots client.
@@ -20,31 +46,20 @@ module.exports.getCooldowns = (key) => {
  */
 module.exports.registerCommands = async (client, mbot, db) => {
   client.commands = new Discord.Collection();
-  const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-  for (const file of commandFiles) {
-    const cmd = require(`./commands/${file}`);
-    client.commands.set(cmd.name, cmd);
-  }
-  const rouletteFiles = fs.readdirSync('./commands/roulette').filter(file => file.endsWith('.js'));
-  for (const file of rouletteFiles) {
-    const rlt = require(`./commands/roulette/${file}`);
-    client.commands.set(rlt.name, rlt);
-  }
-  const utilFiles = fs.readdirSync('./commands/util').filter(file => file.endsWith('.js'));
-  for (const file of utilFiles) {
-    const utl = require(`./commands/util/${file}`);
-    client.commands.set(utl.name, utl);
-  }
-  const modFiles = fs.readdirSync('./commands/mod').filter(file => file.endsWith('.js'));
-  for (const file of modFiles) {
-    const mod = require(`./commands/mod/${file}`);
-    client.commands.set(mod.name, mod);
-  }
+  scanComamnds('./commands', client.commands);
   client.commands.set('meme', {
     name: 'meme',
     description: 'Gets a random meme',
   });
-
+  client.commands.set('ping', {
+    name: 'ping',
+    description: 'Pings the bot',
+  });
+  client.commands.set('uptime', {
+    name: 'uptime',
+    description: 'Gets the bots uptime',
+  });
+  setTimeout(() => console.log(client.commands.array()), 5000);
   mbot.event.emit('filesLoaded');
 
   const meme = ['comedycemetery', 'comedyheaven', 'dankmemes', 'me_irl', 'teenagers'];

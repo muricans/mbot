@@ -15,7 +15,7 @@ module.exports = {
 
 function leaderboard(channel, client) {
     return new Promise(async (resolve) => {
-        const embeds = new EmbedBuilder();
+        const embeds = new EmbedBuilder(channel);
         const users = [];
         for (let i = 0; i < tools.users(client).length; i++) {
             const user = tools.users(client)[i];
@@ -32,8 +32,7 @@ function leaderboard(channel, client) {
         });
         embeds
             .setTitle('Points Leaderboard')
-            .setTime(2 * 60000)
-            .setChannel(channel);
+            .setTime(2 * 60000);
         return resolve(embeds);
     });
 }
