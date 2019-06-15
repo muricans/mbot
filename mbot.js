@@ -281,7 +281,7 @@ process.openStdin().on('data', (val) => {
   switch (command.toLowerCase()) {
     case "stop":
       Logger.info('Stopping mbot...');
-      process.exit(0);
+      event.emit('stop');
       break;
     case "version":
       require('fs').readFile('./version.txt', 'utf8', (err, data) => {
@@ -302,9 +302,30 @@ process.openStdin().on('data', (val) => {
   }
 });
 
+event.on('stop', () => {
+  exit().then(() => {
+    process.exit(0);
+  }).catch(err => {
+    Logger.error(err);
+    process.exit(1);
+  });
+});
+
 process.on('exit', (code) => {
   Logger.info(`mbot v${pkg.version} has exited with code (${code})`);
 });
+
+function exit() {
+  return new Promise((resolve, reject) => {
+    db.close((err) => {
+      if (err)
+        return reject(err);
+      client.voice.connections.array().map(val => val.disconnect());
+      client.destroy();
+      return resolve();
+    });
+  });
+}
 
 setTimeout(() => {
   if (!alive) {
