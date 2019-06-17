@@ -6,7 +6,7 @@ module.exports = {
   name: 'userinfo',
   usage: '[user]',
   description: `Returns the designated user's info`,
-  execute(message, args, client) {
+  async execute(message, args, client) {
     if (args.length === 0) {
       const embed = new Discord.MessageEmbed()
         .setAuthor(message.author.username)
@@ -34,7 +34,7 @@ module.exports = {
       tools.addCooldown(module.exports.name, 5, message);
       return message.channel.send(embed);
     } else if (!isNaN(args[0])) {
-      const mention = client.users.fetch(args[0], false);
+      const mention = await client.users.fetch(args[0], false);
       if (!mention) return message.channel.send('Could not find that user!');
       const embed = new Discord.MessageEmbed()
         .setAuthor(mention.username)
