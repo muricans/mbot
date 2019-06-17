@@ -20,7 +20,6 @@ module.exports = {
       return tools.roulette(current, current, message, client, true);
     } else if (args[0].endsWith('%')) {
       let percentage = tools.parsePercent(current * num);
-      console.log(percentage);
       if (percentage > current) {
         percentage = current;
       }

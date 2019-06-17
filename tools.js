@@ -463,12 +463,12 @@ class Tools {
     if (chance > 560) {
       if (all) {
         const won = current * 2;
-        this.setPoints(won, message.author.id.toString());
-        return message.reply(smile + " You won " + (won - current) + " points! Now you have " + won + " points.");
+        this.setPoints(won, message.author.id);
+        return message.reply(`${smile}` + " You won " + (won - current) + " points! Now you have " + won + " points.");
       } else {
         const won = current + amnt;
-        this.setPoints(won, message.author.id.toString());
-        return message.reply(smile + " You won " + (won - current) + " points! Now you have " + won + " points.");
+        this.setPoints(won, message.author.id);
+        return message.reply(`${smile}` + " You won " + (won - current) + " points! Now you have " + won + " points.");
       }
     } else {
       if (all) {
@@ -476,8 +476,8 @@ class Tools {
       } else {
         lost = current - amnt;
       }
-      this.setPoints(lost, message.author.id.toString());
-      return message.reply(wtf + " You lost " + amnt + " points! Now you have " + lost + " points.");
+      this.setPoints(lost, message.author.id);
+      return message.reply(`${wtf}` + " You lost " + amnt + " points! Now you have " + lost + " points.");
     }
   }
 
