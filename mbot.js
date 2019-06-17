@@ -141,7 +141,7 @@ client.on('ready', async () => {
       console.log(err);
     }
   }
-  setInterval(() => {
+  /*setInterval(() => {
     tls.db.each("SELECT points points, id id FROM users", (err, row) => {
       if (err) {
         console.log(err);
@@ -155,7 +155,7 @@ client.on('ready', async () => {
         }
       });
     });
-  }, (60000 * 10));
+  }, (60000 * 10));*/
   setInterval(() => {
     seconds++;
     if (seconds >= 60) {
