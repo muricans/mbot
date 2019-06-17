@@ -167,7 +167,7 @@ module.exports.registerCommands = async (client, mbot, db) => {
           .setTitle('pong')
           .setColor(0x2872DB)
           .setDescription(`mbot has been up for: ${uptime}`)
-          .addField('Connection/Reaction Time', reactionTime + ' ms ' + ppHop);
+          .addField('Connection/Reaction Time', reactionTime + ' ms ' + `${ppHop}`);
         sent.edit(embed);
       });
     }
