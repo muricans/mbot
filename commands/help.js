@@ -10,15 +10,12 @@ module.exports = {
   cooldown: 3,
   execute(message, args, client, prefix, db, nsfwCmds) {
     if (!args.length) {
-      const embedBuilder = new EmbedBuilder(message.channel)
-        .setTime(35000);
-      const cmds = client.commands.array().filter(cmd => cmd.nsfw !== true);
-      cmds.sort((a, b) => (a.name > b.name) ? 1 : -1);
-      embedBuilder.calculatePages(cmds.length, 8, (embed, i) => {
-        embed.addField(`${prefix}${cmds[i].name}`, cmds[i].description);
-      });
-      embedBuilder.getEmbeds()[embedBuilder.getEmbeds().length - 1].addField('NSFW Commands', `${prefix}help nsfw`);
-      return embedBuilder
+      const cmds = client.commands.array().filter(cmd => cmd.nsfw !== true).sort((a, b) => (a.name > b.name) ? 1 : -1);
+      return new EmbedBuilder(message.channel)
+        .setTime(35000)
+        .calculatePages(cmds.length, 8, (embed, i) => {
+          embed.addField(`${prefix}${cmds[i].name}`, cmds[i].description);
+        })
         .setTitle('Commands')
         .build();
     }

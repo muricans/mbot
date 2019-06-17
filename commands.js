@@ -439,7 +439,7 @@ module.exports.registerCommands = async (client, mbot, db) => {
       });
 
       const comm = client.commands.get(command);
-      if (!comm || comm.name === "meme") {
+      if (!comm || !comm.execute) {
         return;
       }
 
