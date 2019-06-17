@@ -16,6 +16,7 @@ const Logger = require('./logger');
 const figlet = require('figlet');
 const chalk = require('chalk');
 const Database = require('./database/database');
+const tls = new tools.Tools();
 
 if (settings.token === "YOURTOKEN" || !settings.token.length) {
   Logger.error('Please add your token to the bot!');
@@ -54,51 +55,10 @@ db.serialize(() => {
   db.run('CREATE TABLE if not exists nsfw(id TEXT, use INTEGER, UNIQUE(id))');
 });
 
-/**
- * 
- * @param {Discord.Guild} guild 
- */
-function initDb(guild) {
-  if (guild.id === "264445053596991498") return;
-  db.serialize(() => {
-    db.run('INSERT OR IGNORE INTO welcomeMessage(id, use, message, channel) VALUES(?,?,?,?)',
-      guild.id.toString(),
-      0,
-      'User $user has joined the server!',
-      'general');
-    db.run('INSERT OR IGNORE INTO leaveMessage(id, use, message, channel) VALUES(?,?,?,?)',
-      guild.id.toString(),
-      0,
-      'User $user has left the server!',
-      'general');
-    db.run('INSERT OR IGNORE INTO prefix(id, prefix) VALUES(?,?)',
-      guild.id.toString(),
-      'm!');
-    db.run('INSERT OR IGNORE INTO serverInfo(id, use) VALUES(?,?)',
-      guild.id.toString(),
-      1);
-    db.run('INSERT OR IGNORE INTO commandOptions(id, everyone, use) VALUES(?,?,?)',
-      guild.id.toString(),
-      1,
-      1);
-    db.run('INSERT OR IGNORE INTO roles(id, def, use) VALUES(?,?,?)',
-      guild.id.toString(),
-      '_none',
-      1);
-    db.run('INSERT OR IGNORE INTO nsfw(id, use) VALUES(?,?)',
-      guild.id,
-      1);
-    for (let i = 0; i < guild.members.array().length; i++) {
-      const guildMember = guild.members.array()[i];
-      db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', guildMember.user.id.toString(), 100);
-    }
-  });
-}
-
 event.on('ready', () => {
   for (const i in client.guilds.array()) {
     const guild = client.guilds.array()[i];
-    initDb(guild);
+    tls.initDb(guild);
   }
   db.each('SELECT id id, name name, message message FROM commands', (err, row) => {
     if (err) return console.log(err);
@@ -120,7 +80,7 @@ event.on('ready', () => {
 });
 
 client.on('guildCreate', (guild) => {
-  initDb(guild);
+  tls.initDb(guild);
 });
 
 client.on('guildMemberAdd', (guildMember) => {
@@ -145,12 +105,7 @@ client.on('guildMemberAdd', (guildMember) => {
       }
     }
   });
-  db.serialize(() => {
-    db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', guildMember.user.id.toString(), 100);
-    if (settings.debug) {
-      Logger.debug('New user found, registering them to the bot database with ID of ' + guildMember.user.id.toString());
-    }
-  });
+  tls.addMember(guildMember);
 });
 
 client.on('guildMemberRemove', (guildMember) => {
@@ -174,7 +129,7 @@ client.on('ready', async () => {
     let u, user;
     for (u in client.users.array()) {
       user = client.users.array()[u];
-      db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', user.id.toString(), 100);
+      tls.addUser(user);
     }
   });
   Logger.info('mbot v' + pkg.version + " has been enabled.");
