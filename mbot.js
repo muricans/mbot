@@ -141,21 +141,6 @@ client.on('ready', async () => {
       console.log(err);
     }
   }
-  /*setInterval(() => {
-    tls.db.each("SELECT points points, id id FROM users", (err, row) => {
-      if (err) {
-        console.log(err);
-      }
-      let user;
-      client.users.array().map((val, u) => {
-        user = client.users.array()[u];
-        if (user.bot) return;
-        if (row.id === user.id) {
-          return tls.setPoints((row.points + 10), user.id);
-        }
-      });
-    });
-  }, (60000 * 10));*/
   setInterval(() => {
     seconds++;
     if (seconds >= 60) {
