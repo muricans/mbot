@@ -176,12 +176,6 @@ class Tools {
     });
   }
 
-  pointsExist(id) {
-    return new Promise(resolve => {
-      db.exist
-    });
-  }
-
   /**
    * @callback nlMessage
    * @param {number} use Whether the module is being used. Gives a 1 or 0.
