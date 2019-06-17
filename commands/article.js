@@ -67,7 +67,7 @@ function handleArticle(message, body) {
     if (!article) {
         return message.channel.send('No articles were found!');
     }
-    const embed = new Discord.RichEmbed()
+    const embed = new Discord.MessageEmbed()
         .setTitle(article.title)
         .setDescription(article.description)
         .setAuthor(article.author)

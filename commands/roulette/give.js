@@ -10,14 +10,14 @@ module.exports = {
   minArgs: 2,
   mod: true,
   roulette: true,
-  async execute(message, args) {
-    if (message.mentions.users.first() === message.author) {
+  async execute(message, args, client) {
+    const mention = tools.parseMention(args[0], client);
+    if (mention === message.author) {
       return message.reply('You cannot give points to yourself!');
     }
-    if (!message.mentions.users.first()) {
+    if (!mention) {
       return message.reply('That user does not exist!');
     }
-    const mention = message.mentions.users.first();
     let current = await tools.getPoints(message.author.id);
     const give = parseInt(args[1]);
     let all = false;

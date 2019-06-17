@@ -27,7 +27,7 @@ module.exports = {
             this.mutesGuilds.set(message.guild.id, new Discord.Collection());
             this.timeoutsGuilds.set(message.guild.id, new Discord.Collection());
         }
-        const mention = message.mentions.users.first();
+        const mention = tools.parseMention(args[0], client);
         if (!mention) {
             return message.channel.send(`${message.author} Could not find that user!`);
         }
@@ -49,8 +49,8 @@ module.exports = {
         if (isAdmin && !admin) {
             return message.channel.send(`${message.author} You don't have permission to mute that user!`);
         }
-        const mRole = message.guild.member(mention).highestRole;
-        const role = message.member.highestRole;
+        const mRole = message.guild.member(mention).roles.highest;
+        const role = message.member.roles.highest;
         if (mRole.comparePositionTo(role) > 0 || mRole.position === role.position) {
             return message.channel.send(`${message.author} That user has a higher role than you!`);
         }

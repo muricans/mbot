@@ -13,18 +13,18 @@ module.exports = {
             }
             if (!args.length) {
                 const guild = message.guild;
-                let icon = guild.iconURL;
+                let icon = guild.iconURL();
                 if (icon === null) {
                     icon = "No icon data found.";
                 }
-                const embed = new Discord.RichEmbed()
+                const embed = new Discord.MessageEmbed()
                     .setAuthor(guild.name)
                     .setDescription('Server information is now being displayed.')
                     .addField('Owner', `${guild.owner.user.username}#${guild.owner.user.discriminator}`)
                     .addField('Server ID', guild.id)
                     .addField('Time of Creation', guild.createdAt)
                     .addField('Icon URL', icon)
-                    .setThumbnail(guild.iconURL)
+                    .setThumbnail(guild.iconURL())
                     .addField('Members', guild.memberCount);
                 return message.channel.send(embed);
             }
@@ -33,18 +33,18 @@ module.exports = {
                 if (!guild) {
                     return message.channel.send(`${message.author} Could not find a server with the given ID!`);
                 }
-                let icon = guild.iconURL;
+                let icon = guild.iconURL();
                 if (icon === null) {
                     icon = "No icon data found.";
                 }
-                const embed = new Discord.RichEmbed()
+                const embed = new Discord.MessageEmbed()
                     .setAuthor(guild.name)
                     .setDescription('Server information is now being displayed.')
                     .addField('Owner', `${guild.owner.user.username}#${guild.owner.user.discriminator}`)
                     .addField('Server ID', guild.id)
                     .addField('Time of Creation', guild.createdAt)
                     .addField('Icon URL', icon)
-                    .setThumbnail(guild.iconURL)
+                    .setThumbnail(guild.iconURL())
                     .addField('Members', guild.memberCount);
                 return message.channel.send(embed);
             } else {

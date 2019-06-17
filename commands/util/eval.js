@@ -17,7 +17,7 @@ module.exports = {
                 toRun = require('util').inspect(toRun);
             const cleaned = clean(toRun);
             if (cleaned.length > 2000)
-                return message.channel.send(`Result has ${cleaned.length} chars.\nType \`dump\` to dump result anyway.`)
+                return message.channel.send(`Result has \`${cleaned.length}\` chars.\nType \`dump\` to dump result anyway.`)
                     .then(sent => {
                         const collector = sent.channel.createMessageCollector((msg => msg.author.id === message.author.id && msg.content.toLowerCase() === 'dump'), {
                             time: 10000,

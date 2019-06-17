@@ -22,7 +22,9 @@ const emojis = ['🍆', '💦', '😳', '🍌', '😏', '🍑', '😊'];
 /**
  * A list of all admin commands for the bot.
  */
-module.exports.adminCommands = ['set', 'give', 'delete', 'echo', 'clean', 'prefix', 'suggestions'];
+module.exports.adminCommands = ['set', 'give', 'delete', 'echo', 'clean', 'prefix', 'suggestions',
+  'eval', 'mute', 'unmute', 'kick', 'ban', 'modules', 'serverinfo',
+];
 
 const cooldowns = new Discord.Collection();
 
@@ -457,7 +459,7 @@ class Tools {
       if (image.includes('.gifv')) {
         image = image.substr(0, image.length - 1);
       }
-      const embed = new Discord.RichEmbed()
+      const embed = new Discord.MessageEmbed()
         .setTitle(title)
         .setImage(image)
         .setFooter("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
@@ -519,7 +521,7 @@ class Tools {
         return message.channel.send(body.error);
       }
       const imageData = body.file_url;
-      const embed = new Discord.RichEmbed()
+      const embed = new Discord.MessageEmbed()
         .setTitle('Random rule34.xxx image')
         .setImage(imageData)
         .setFooter(footer);
@@ -567,7 +569,7 @@ class Tools {
         message.channel.send(imageData);
         message.channel.send(footer);
       } else if (this.end(imageData)) {
-        const embed = new Discord.RichEmbed()
+        const embed = new Discord.MessageEmbed()
           .setTitle("Random danbooru image")
           .setImage(imageData)
           .setFooter(footer);
@@ -864,6 +866,21 @@ class Tools {
    */
   parsePercent(percentage) {
     return Math.floor(percentage / 100);
+  }
+
+  /**
+   * 
+   * @param {string} mention 
+   * @param {Discord.Client} client 
+   */
+  parseMention(mention, client) {
+    if (!mention) return;
+    if (mention.startsWith('<@') && mention.endsWith('>')) {
+      mention = mention.slice(2, -1);
+      if (mention.startsWith('!'))
+        mention = mention.slice(1);
+    }
+    return client.users.get(mention);
   }
 }
 module.exports.Tools = Tools;

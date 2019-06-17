@@ -10,7 +10,7 @@ module.exports = {
     execute(message) {
         fs.readFile('./version.txt', 'utf8', (err, data) => {
             if (err) return console.log(err);
-            const embed = new Discord.RichEmbed()
+            const embed = new Discord.MessageEmbed()
                 .setTitle('mbot info')
                 .setThumbnail('https://hotemoji.com/images/dl/v/robot-face-emoji-by-twitter.png')
                 .setColor('#e9225f')

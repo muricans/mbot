@@ -73,7 +73,7 @@ event.on('ready', () => {
   });
   event.on('timerFinished', (userId, timerId, timerName) => {
     Logger.debug(`Timer ${timerId} has finished.`);
-    client.fetchUser(userId).then(user => {
+    client.users.fetch(userId, false).then(user => {
       user.send(`Your timer '${timerName}' has finished!`);
     }).catch();
   });
@@ -86,6 +86,7 @@ client.on('guildCreate', (guild) => {
 client.on('guildMemberAdd', (guildMember) => {
   if (guildMember.guild.id === "264445053596991498") return;
   tls.getNLMessage('welcomeMessage', guildMember.guild.id, (use, msg, channel) => {
+    if (guildMember.user.bot) return;
     if (use === 1) {
       const chnl = guildMember.guild.channels.find(c => c.name === channel);
       if (!chnl) {
@@ -111,6 +112,7 @@ client.on('guildMemberAdd', (guildMember) => {
 client.on('guildMemberRemove', (guildMember) => {
   if (guildMember.guild.id === "264445053596991498") return;
   tls.getNLMessage('leaveMessage', guildMember.guild.id.toString(), (use, msg, channel) => {
+    if (guildMember.user.bot) return;
     if (use === 1) {
       const chnl = guildMember.guild.channels.find(c => c.name === channel);
       if (!chnl) {
@@ -141,6 +143,14 @@ client.on('ready', async () => {
       console.log(err);
     }
   }
+  setInterval(async () => {
+    for (let i = 0; i < tls.users(client).length; i++) {
+      const user = tls.users(client)[i];
+      if (user.bot) continue;
+      const current = await tls.getPoints(user.id);
+      tls.setPoints(current + 10, user.id);
+    }
+  }, (10 * 60000));
   setInterval(() => {
     seconds++;
     if (seconds >= 60) {
@@ -217,8 +227,7 @@ process.openStdin().on('data', (val) => {
   switch (command.toLowerCase()) {
     case "stop":
       Logger.info('Stopping mbot...');
-      tls.db.close();
-      process.exit(0);
+      event.emit('stop');
       break;
     case "version":
       require('fs').readFile('./version.txt', 'utf8', (err, data) => {
@@ -239,9 +248,30 @@ process.openStdin().on('data', (val) => {
   }
 });
 
+event.on('stop', () => {
+  exit().then(() => {
+    process.exit(0);
+  }).catch(err => {
+    Logger.error(err);
+    process.exit(1);
+  });
+});
+
 process.on('exit', (code) => {
   Logger.info(`mbot v${pkg.version} has exited with code (${code})`);
 });
+
+function exit() {
+  return new Promise((resolve, reject) => {
+    db.close((err) => {
+      if (err)
+        return reject(err);
+      client.voice.connections.array().map(val => val.disconnect());
+      client.destroy();
+      return resolve();
+    });
+  });
+}
 
 setTimeout(() => {
   if (!alive) {
