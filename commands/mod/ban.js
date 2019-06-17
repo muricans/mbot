@@ -1,3 +1,8 @@
+const {
+    Tools,
+} = require('../../tools');
+const tools = new Tools();
+
 module.exports = {
     name: 'ban',
     usage: '<user> [reason]',
@@ -5,22 +10,22 @@ module.exports = {
     args: true,
     minArgs: 1,
     mod: true,
-    execute(message, args) {
+    execute(message, args, client) {
         const canBan = message.channel.permissionsFor(message.member).has('BAN_MEMBERS');
         if (!canBan) {
             return message.channel.send(`${message.author} You don't have permission to use this command!`);
         }
-        const mention = message.mentions.users.first();
+        const mention = tools.parseMention(args[0], client);
         if (!mention) {
             return message.channel.send(`${message.author} Could not find that user!`);
         }
-        const mRole = message.guild.member(mention).highestRole;
-        const role = message.member.highestRole;
+        const mRole = message.guild.member(mention).roles.highest;
+        const role = message.member.roles.highest;
         if (mRole.comparePositionTo(role) > 0 || mRole.position === role.position) {
             return message.channel.send(`${message.author} That user has a higher role than you!`);
         }
         if (args.length === 1) {
-            return message.guild.ban(mention, {
+            return message.member.ban(mention, {
                 days: 0,
                 reason: `Banned by ${message.author.username}`,
             }).then((member) => {
@@ -30,7 +35,7 @@ module.exports = {
             });
         } else if (args.length > 1) {
             const reason = args.slice(1, args.length).join(' ');
-            return message.guild.ban(mention, {
+            return message.member.ban(mention, {
                 days: 0,
                 reason: `Banned by ${message.author.username} Reason: ${reason}`,
             }).then((member) => {

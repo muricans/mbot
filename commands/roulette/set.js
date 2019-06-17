@@ -9,15 +9,16 @@ module.exports = {
   minArgs: 2,
   owner: true,
   roulette: true,
-  execute(message, args) {
-    if (!message.mentions.users.first()) {
+  execute(message, args, client) {
+    const mention = tools.parseMention(args[0], client);
+    if (!mention) {
       return message.reply('That user does not exist!');
     }
     const amnt = parseInt(args[1]);
     if (isNaN(amnt)) {
       return message.channel.send('Please use numbers!');
     }
-    tools.setPoints(amnt, message.mentions.users.first().id);
-    return message.channel.send(`${message.author} You set ${message.mentions.users.first()}'s points to ${amnt}!`);
+    tools.setPoints(amnt, mention.id);
+    return message.channel.send(`${message.author} You set ${mention}'s points to ${amnt}!`);
   },
 };

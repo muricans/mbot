@@ -11,7 +11,7 @@ module.exports = {
         const newArgs = args.join(' ');
         const encoded = encodeURI(newArgs);
         message.delete();
-        const embed = new Discord.RichEmbed()
+        const embed = new Discord.MessageEmbed()
             .setTitle('Your QR code:')
             .setImage('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + encoded)
             .setFooter('Requested by: ' + message.author.username);

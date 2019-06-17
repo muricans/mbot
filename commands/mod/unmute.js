@@ -9,12 +9,12 @@ module.exports = {
     args: true,
     minArgs: 1,
     mod: true,
-    execute(message) {
+    execute(message, args, client) {
         const canKick = message.channel.permissionsFor(message.member).has("KICK_MEMBERS");
         if (!canKick) {
             return message.channel.send(`${message.author} You do not have permission to use this command!`);
         }
-        const mention = message.mentions.users.first();
+        const mention = tools.parseMention(args[0], client);
         if (!mention) {
             return message.channel.send(`${message.author} Could not find that user!`);
         }

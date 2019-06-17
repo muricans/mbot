@@ -1,4 +1,3 @@
-const Discord = require('discord.js');
 const EmbedBuilder = require('discord-embedbuilder');
 const {
     Tools,
@@ -14,53 +13,27 @@ module.exports = {
     },
 };
 
-/**
- * 
- * @param {Discord.Message} message 
- * @param {Discord.Client} client 
- * @returns {Promise<EmbedBuilder>}
- */
 function leaderboard(channel, client) {
     return new Promise(async (resolve) => {
-        const embeds = new EmbedBuilder();
-        const users = [];
-        for (let i = 0; i < tools.users(client).length; i++) {
-            const user = tools.users(client)[i];
-            const points = await tools.getPoints(user.id);
+        const embeds = new EmbedBuilder(channel);
+        let users = [];
+        const pUsers = await tools.pointsUsers();
+        for (let i = 0; i < pUsers.length; i++) {
+            const user = tools.users(client).find(usr => usr.id === pUsers[i].id);
+            if (!user || user.bot) continue;
             users.push({
                 id: user.id,
                 username: user.username,
-                points: points,
+                points: pUsers[i].points,
             });
         }
-        users.sort((a, b) => (a.points > b.points) ? -1 : 1);
-        let m = 1;
-        for (let i = 0; i < 10 * m; i++) {
-            if (i === 50)
-                break;
-            if (!embeds.getEmbeds()[m - 1] && users[i]) {
-                embeds.addEmbed(new Discord.RichEmbed());
-            }
-            if (i === (10 * m) - 1)
-                m++;
-        }
-        let multiplier = 1;
-        for (let i = 0; i < 10 * multiplier; i++) {
-            if (i === 50) {
-                break;
-            }
-            if (users[i]) {
-                embeds.getEmbeds()[multiplier - 1]
-                    .addField(`${i + 1}. ${users[i].username}`, users[i].points, true);
-                if (i === (10 * multiplier) - 1) {
-                    multiplier++;
-                }
-            }
-        }
+        users = users.sort((a, b) => (a.points > b.points) ? -1 : 1).slice(0, 50);
+        embeds.calculatePages(users.length, 10, (embed, i) => {
+            embed.addField(`${i + 1}. ${users[i].username}`, users[i].points, true);
+        });
         embeds
             .setTitle('Points Leaderboard')
-            .setTime(2 * 60000)
-            .setChannel(channel);
+            .setTime(2 * 60000);
         return resolve(embeds);
     });
 }

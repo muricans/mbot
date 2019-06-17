@@ -35,6 +35,9 @@ const cooldowns = new Discord.Collection();
  * const tools = new tls.Tools();
  */
 class Tools {
+  constructor() {
+    this.db = db;
+  }
   initCooldown(command) {
     if (!cooldowns.has(command)) {
       cooldowns.set(command, new Discord.Collection());
@@ -78,6 +81,89 @@ class Tools {
     return contains;
   }
 
+  initDb(guild) {
+    if (guild.id === "264445053596991498") return;
+    db.serialize(() => {
+      db.run('INSERT OR IGNORE INTO welcomeMessage(id, use, message, channel) VALUES(?,?,?,?)',
+        guild.id.toString(),
+        0,
+        'User $user has joined the server!',
+        'general');
+      db.run('INSERT OR IGNORE INTO leaveMessage(id, use, message, channel) VALUES(?,?,?,?)',
+        guild.id.toString(),
+        0,
+        'User $user has left the server!',
+        'general');
+      db.run('INSERT OR IGNORE INTO prefix(id, prefix) VALUES(?,?)',
+        guild.id.toString(),
+        'm!');
+      db.run('INSERT OR IGNORE INTO serverInfo(id, use) VALUES(?,?)',
+        guild.id.toString(),
+        1);
+      db.run('INSERT OR IGNORE INTO commandOptions(id, everyone, use) VALUES(?,?,?)',
+        guild.id.toString(),
+        1,
+        1);
+      db.run('INSERT OR IGNORE INTO roles(id, def, use) VALUES(?,?,?)',
+        guild.id.toString(),
+        '_none',
+        1);
+      db.run('INSERT OR IGNORE INTO nsfw(id, use) VALUES(?,?)',
+        guild.id,
+        1);
+      for (let i = 0; i < guild.members.array().length; i++) {
+        const guildMember = guild.members.array()[i];
+        if (guildMember.user.bot) continue;
+        db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', guildMember.user.id, 100);
+      }
+    });
+  }
+
+  /**
+   * @typedef users
+   * @property {string} id
+   * @property {number} points
+   */
+
+  /**
+   * @returns {Promise<users[]>}
+   */
+  pointsUsers() {
+    return new Promise(resolve => {
+      db.all('SELECT points, id FROM users', async (err, rows) => {
+        if (err) return console.log(err);
+        const points =
+          new Promise(resolve => {
+            const users = [];
+            rows.forEach((val, i, arr) => {
+              users.push({
+                id: arr[i].id,
+                points: arr[i].points,
+              });
+            });
+            return resolve(users);
+          });
+        const pts = await points;
+        resolve(pts);
+      });
+    });
+  }
+
+  addMember(guildMember) {
+    if (guildMember.guild.id === "264445053596991498") return;
+    db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', guildMember.user.id, 100);
+  }
+
+  async addUser(user) {
+    const add = () => {
+      new Promise(resolve => {
+        db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', user.id, 100);
+        resolve();
+      });
+    };
+    await add;
+  }
+
   /**
    * Checks if the string provided contains one of the banned links in the bannedLinks list.
    * @param {string} string
@@ -102,7 +188,6 @@ class Tools {
    */
   setPoints(amnt, id) {
     db.run('UPDATE users SET points = ? WHERE id = ?', amnt, id);
-    mbot.event.emit('pointsUpdated', amnt, id);
   }
 
   /**
@@ -112,9 +197,17 @@ class Tools {
    */
   getPoints(id) {
     return new Promise((resolve) => {
-      db.get('SELECT points points FROM users WHERE id = ' + id, (err, row) => {
-        if (err) return console.log(err);
-        resolve(row.points);
+      db.get('SELECT points FROM users WHERE id = ' + id, (err, row) => {
+        return resolve(row.points);
+      });
+    });
+  }
+
+  pointsExist(id) {
+    return new Promise(resolve => {
+      db.get('SELECT points FROM users WHERE id = ' + id, (err, row) => {
+        if (row === undefined) return resolve(false);
+        else return resolve(true);
       });
     });
   }
@@ -370,12 +463,12 @@ class Tools {
     if (chance > 560) {
       if (all) {
         const won = current * 2;
-        this.setPoints(won, message.author.id.toString());
-        return message.reply(smile + " You won " + (won - current) + " points! Now you have " + won + " points.");
+        this.setPoints(won, message.author.id);
+        return message.reply(`${smile}` + " You won " + (won - current) + " points! Now you have " + won + " points.");
       } else {
         const won = current + amnt;
-        this.setPoints(won, message.author.id.toString());
-        return message.reply(smile + " You won " + (won - current) + " points! Now you have " + won + " points.");
+        this.setPoints(won, message.author.id);
+        return message.reply(`${smile}` + " You won " + (won - current) + " points! Now you have " + won + " points.");
       }
     } else {
       if (all) {
@@ -383,8 +476,8 @@ class Tools {
       } else {
         lost = current - amnt;
       }
-      this.setPoints(lost, message.author.id.toString());
-      return message.reply(wtf + " You lost " + amnt + " points! Now you have " + lost + " points.");
+      this.setPoints(lost, message.author.id);
+      return message.reply(`${wtf}` + " You lost " + amnt + " points! Now you have " + lost + " points.");
     }
   }
 
@@ -402,7 +495,7 @@ class Tools {
       if (image.includes('.gifv')) {
         image = image.substr(0, image.length - 1);
       }
-      const embed = new Discord.RichEmbed()
+      const embed = new Discord.MessageEmbed()
         .setTitle(title)
         .setImage(image)
         .setFooter("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
@@ -464,7 +557,7 @@ class Tools {
         return message.channel.send(body.error);
       }
       const imageData = body.file_url;
-      const embed = new Discord.RichEmbed()
+      const embed = new Discord.MessageEmbed()
         .setTitle('Random rule34.xxx image')
         .setImage(imageData)
         .setFooter(footer);
@@ -512,7 +605,7 @@ class Tools {
         message.channel.send(imageData);
         message.channel.send(footer);
       } else if (this.end(imageData)) {
-        const embed = new Discord.RichEmbed()
+        const embed = new Discord.MessageEmbed()
           .setTitle("Random danbooru image")
           .setImage(imageData)
           .setFooter(footer);
@@ -809,6 +902,21 @@ class Tools {
    */
   parsePercent(percentage) {
     return Math.floor(percentage / 100);
+  }
+
+  /**
+   * 
+   * @param {string} mention 
+   * @param {Discord.Client} client 
+   */
+  parseMention(mention, client) {
+    if (!mention) return;
+    if (mention.startsWith('<@') && mention.endsWith('>')) {
+      mention = mention.slice(2, -1);
+      if (mention.startsWith('!'))
+        mention = mention.slice(1);
+    }
+    return client.users.get(mention);
   }
 }
 module.exports.Tools = Tools;

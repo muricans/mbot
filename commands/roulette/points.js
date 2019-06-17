@@ -6,10 +6,10 @@ module.exports = {
   usage: '[user]',
   description: `Returns the designated user's points`,
   roulette: true,
-  async execute(message, args) {
+  async execute(message, args, client) {
     let current;
     let msg;
-    const mention = message.mentions.users.first();
+    const mention = tools.parseMention(args[0], client);
     if (!args.length) {
       current = await tools.getPoints(message.author.id);
       msg = `You have ${current} points!`;

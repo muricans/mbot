@@ -13,6 +13,32 @@ module.exports.getCooldowns = (key) => {
   return cooldowns.get(key);
 };
 
+function scanComamnds(dir, insert) {
+  const files = fs.readdirSync(dir);
+  for (const file of files) {
+    fs.stat(`${dir}/${file}`, (err, stats) => {
+      if (err) return;
+      if (!stats.isDirectory() && file.endsWith('.js')) {
+        const cmd = require(`${dir}/${file}`);
+        insert.set(cmd.name, cmd);
+      } else if (stats.isDirectory()) {
+        const oFiles = fs.readdirSync(`${dir}/${file}`);
+        for (const oFile of oFiles)
+          if (oFile.endsWith('.js')) {
+            const cmd = require(`${dir}/${file}/${oFile}`);
+            insert.set(cmd.name, cmd);
+          } else {
+            fs.stat(`${dir}/${file}/${oFile}`, (e, s) => {
+              if (e) return;
+              if (s.isDirectory())
+                scanComamnds(`${dir}/${file}/${oFile}`, insert);
+            });
+          }
+      }
+    });
+  }
+}
+
 /**
  * Register commands for the bot.
  * @param {Discord.Client} client The bots client.
@@ -20,31 +46,19 @@ module.exports.getCooldowns = (key) => {
  */
 module.exports.registerCommands = async (client, mbot, db) => {
   client.commands = new Discord.Collection();
-  const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-  for (const file of commandFiles) {
-    const cmd = require(`./commands/${file}`);
-    client.commands.set(cmd.name, cmd);
-  }
-  const rouletteFiles = fs.readdirSync('./commands/roulette').filter(file => file.endsWith('.js'));
-  for (const file of rouletteFiles) {
-    const rlt = require(`./commands/roulette/${file}`);
-    client.commands.set(rlt.name, rlt);
-  }
-  const utilFiles = fs.readdirSync('./commands/util').filter(file => file.endsWith('.js'));
-  for (const file of utilFiles) {
-    const utl = require(`./commands/util/${file}`);
-    client.commands.set(utl.name, utl);
-  }
-  const modFiles = fs.readdirSync('./commands/mod').filter(file => file.endsWith('.js'));
-  for (const file of modFiles) {
-    const mod = require(`./commands/mod/${file}`);
-    client.commands.set(mod.name, mod);
-  }
+  scanComamnds('./commands', client.commands);
   client.commands.set('meme', {
     name: 'meme',
     description: 'Gets a random meme',
   });
-
+  client.commands.set('ping', {
+    name: 'ping',
+    description: 'Pings the bot',
+  });
+  client.commands.set('uptime', {
+    name: 'uptime',
+    description: 'Gets the bots uptime',
+  });
   mbot.event.emit('filesLoaded');
 
   const meme = ['comedycemetery', 'comedyheaven', 'dankmemes', 'me_irl', 'teenagers'];
@@ -142,18 +156,18 @@ module.exports.registerCommands = async (client, mbot, db) => {
       let seconds = uptime[2] === '00' ? '' : uptime[2] + ' second(s)';
       seconds = seconds.startsWith('0') ? seconds.substr(1) : seconds;
       uptime = `${hours}${minutes}${seconds}`;
-      let embed = new Discord.RichEmbed()
-        .setTitle('pong ' + ppHop)
+      let embed = new Discord.MessageEmbed()
+        .setTitle('pong')
         .setColor(0x2872DB)
         .setDescription(`mbot has been up for: ${uptime}`)
         .addField('Connection/Reaction Time', ppHop);
       message.channel.send(embed).then(sent => {
         const reactionTime = Date.now() - then;
-        embed = new Discord.RichEmbed()
-          .setTitle('pong ' + ppHop)
+        embed = new Discord.MessageEmbed()
+          .setTitle('pong')
           .setColor(0x2872DB)
           .setDescription(`mbot has been up for: ${uptime}`)
-          .addField('Connection/Reaction Time', reactionTime + ' ms');
+          .addField('Connection/Reaction Time', reactionTime + ' ms ' + ppHop);
         sent.edit(embed);
       });
     }
@@ -167,7 +181,9 @@ module.exports.registerCommands = async (client, mbot, db) => {
       case "meme":
         message.channel.startTyping();
         tools.search(meme[Math.floor(Math.random() * meme.length)], 'all', message, false);
-        message.delete(1000);
+        message.delete({
+          time: 1000,
+        });
         message.channel.stopTyping(true);
         break;
     }
@@ -178,61 +194,81 @@ module.exports.registerCommands = async (client, mbot, db) => {
         case "anal":
           message.channel.startTyping();
           tools.search(anal[Math.floor(Math.random() * anal.length)], 'all', message, true);
-          message.delete(1000);
+          message.delete({
+            timeout: 1000,
+          });
           message.channel.stopTyping(true);
           break;
         case "ass":
           message.channel.startTyping();
           tools.search(ass[Math.floor(Math.random() * ass.length)], 'all', message, true);
-          message.delete(1000);
+          message.delete({
+            timeout: 1000,
+          });
           message.channel.stopTyping(true);
           break;
         case "blowjob":
           message.channel.startTyping();
           tools.search(blowjob[Math.floor(Math.random() * blowjob.length)], 'all', message, true);
-          message.delete(1000);
+          message.delete({
+            timeout: 1000,
+          });
           message.channel.stopTyping(true);
           break;
         case "boobs":
           message.channel.startTyping();
           tools.search(boobs[Math.floor(Math.random() * boobs.length)], 'all', message, true);
-          message.delete(1000);
+          message.delete({
+            timeout: 1000,
+          });
           message.channel.stopTyping(true);
           break;
         case "dick":
           message.channel.startTyping();
           tools.search(dick[Math.floor(Math.random() * dick.length)], 'all', message, true);
-          message.delete(1000);
+          message.delete({
+            timeout: 1000,
+          });
           message.channel.stopTyping(true);
           break;
         case "gay":
           message.channel.startTyping();
           tools.search(gay[Math.floor(Math.random() * gay.length)], 'all', message, true);
-          message.delete(1000);
+          message.delete({
+            timeout: 1000,
+          });
           message.channel.stopTyping(true);
           break;
         case "hardcore":
           message.channel.startTyping();
           tools.search(hardcore[Math.floor(Math.random() * hardcore.length)], 'all', message, true);
-          message.delete(1000);
+          message.delete({
+            timeout: 1000,
+          });
           message.channel.stopTyping(true);
           break;
         case "hentai":
           message.channel.startTyping();
           tools.search(hentai[Math.floor(Math.random() * hentai.length)], 'all', message, true);
-          message.delete(1000);
+          message.delete({
+            timeout: 1000,
+          });
           message.channel.stopTyping(true);
           break;
         case "nsfw":
           message.channel.startTyping();
           tools.search(nsfw[Math.floor(Math.random() * nsfw.length)], 'all', message, true);
-          message.delete(1000);
+          message.delete({
+            timeout: 1000,
+          });
           message.channel.stopTyping(true);
           break;
         case "pegging":
           message.channel.startTyping();
           tools.search(pegging[Math.floor(Math.random() * pegging.length)], 'all', message, true);
-          message.delete(1000);
+          message.delete({
+            timeout: 1000,
+          });
           message.channel.stopTyping(true);
           break;
           // rule34 code different than others
@@ -240,7 +276,9 @@ module.exports.registerCommands = async (client, mbot, db) => {
           message.channel.startTyping();
           if (!args.length) {
             tools.search(rule34[Math.floor(Math.random() * rule34.length)], 'all', message, true);
-            message.delete(1000);
+            message.delete({
+              timeout: 1000,
+            });
             return message.channel.stopTyping(true);
           }
           tools.find(rule34[Math.floor(Math.random() * rule34.length)], args.toString().replace(' ', '+'), 'all', message, true);
@@ -249,13 +287,17 @@ module.exports.registerCommands = async (client, mbot, db) => {
         case "thighs":
           message.channel.startTyping();
           tools.search(thighs[Math.floor(Math.random() * thighs.length)], 'all', message, true);
-          message.delete(1000);
+          message.delete({
+            timeout: 1000,
+          });
           message.channel.stopTyping(true);
           break;
         case "trap":
           message.channel.startTyping();
           tools.search(traps[Math.floor(Math.random() * traps.length)], 'all', message, true);
-          message.delete(1000);
+          message.delete({
+            timeout: 1000,
+          });
           message.channel.stopTyping(true);
           break;
       }
@@ -305,6 +347,7 @@ module.exports.registerCommands = async (client, mbot, db) => {
   }
 
   client.on('message', async message => {
+    if (message.guild.id === "264445053596991498") return;
     if (message.author.bot) return;
     if (!timer.users.has(message.author.id)) {
       timer.users.set(message.author.id, new Discord.Collection());
@@ -319,6 +362,7 @@ module.exports.registerCommands = async (client, mbot, db) => {
     if (message.channel.type === 'dm') {
       const args = message.content.split(' ');
       const command = args.shift().toLowerCase();
+      if (message.author.bot) return;
       switch (command) {
         case "timer":
           if (args.length < timer.minArgs) {
@@ -357,7 +401,8 @@ module.exports.registerCommands = async (client, mbot, db) => {
         });
       }
     }
-    tools.getPrefix(message.guild.id.toString(), async (prefix) => {
+    if (message.author.bot) return;
+    tools.getPrefix(message.guild.id, async (prefix) => {
       if (message.content.indexOf(prefix) !== 0) return;
       const args = message.content.slice(prefix.length).split(' ');
       const command = args.shift().toLowerCase();
@@ -396,7 +441,7 @@ module.exports.registerCommands = async (client, mbot, db) => {
       });
 
       const comm = client.commands.get(command);
-      if (!comm) {
+      if (!comm || !comm.execute) {
         return;
       }
 
