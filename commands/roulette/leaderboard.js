@@ -17,15 +17,15 @@ function leaderboard(channel, client) {
     return new Promise(async (resolve) => {
         const embeds = new EmbedBuilder(channel);
         let users = [];
-        for (let i = 0; i < tools.users(client).length; i++) {
-            const user = tools.users(client)[i];
+        const pUsers = await tools.pointsUsers();
+        for (let i = 0; i < pUsers.length; i++) {
+            const user = tools.users(client).find(usr => usr.id === pUsers[i].id);
             const exists = await tools.pointsExist(user.id);
             if (user.bot || !exists) continue;
-            const points = await tools.getPoints(user.id);
             users.push({
                 id: user.id,
                 username: user.username,
-                points: points,
+                points: pUsers[i].points,
             });
         }
         users = users.sort((a, b) => (a.points > b.points) ? -1 : 1).slice(0, 50);

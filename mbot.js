@@ -77,6 +77,7 @@ event.on('ready', () => {
       user.send(`Your timer '${timerName}' has finished!`);
     }).catch();
   });
+  db.close(() => Logger.debug('Database for mbot.js closed successfully.'));
 });
 
 client.on('guildCreate', (guild) => {
@@ -136,15 +137,15 @@ client.on('ready', async () => {
       console.log(err);
     }
   }
-  /*setInterval(async () => {
-    for (let i = 0; i < tls.users(client).length; i++) {
-      const user = tls.users(client)[i];
-      const exists = await tls.pointsExist(user.id);
-      if (user.bot || !exists) continue;
-      const current = await tls.getPoints(user.id);
+  setInterval(async () => {
+    const users = await tls.pointsUsers();
+    for (let i = 0; i < users.length; i++) {
+      const user = tls.users(client).find(usr => usr.id === users[i].id);
+      if (user.bot || !user) continue;
+      const current = users[i].points;
       tls.setPoints(current + 10, user.id);
     }
-  }, (10 * 60000));*/
+  }, (10 * 60000));
   setInterval(() => {
     seconds++;
     if (seconds >= 60) {
@@ -257,7 +258,7 @@ process.on('exit', (code) => {
 
 function exit() {
   return new Promise((resolve, reject) => {
-    db.close((err) => {
+    tls.db.close((err) => {
       if (err)
         return reject(err);
       client.voice.connections.array().map(val => val.disconnect());

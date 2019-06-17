@@ -18,6 +18,6 @@
     "figlet": "^1.2.3",
     "newsapi": "^2.4.0",
     "snekfetch": "^4.0.4",
-    "sqlite3": "^4.0.8"
+    "sqlite3": "^4.0.9"
   }
 }

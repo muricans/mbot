@@ -167,7 +167,7 @@ module.exports.registerCommands = async (client, mbot, db) => {
           .setTitle('pong')
           .setColor(0x2872DB)
           .setDescription(`mbot has been up for: ${uptime}`)
-          .addField('Connection/Reaction Time ' + ppHop, reactionTime + ' ms');
+          .addField('Connection/Reaction Time', reactionTime + ' ms ' + ppHop);
         sent.edit(embed);
       });
     }
@@ -402,7 +402,7 @@ module.exports.registerCommands = async (client, mbot, db) => {
       }
     }
     if (message.author.bot) return;
-    tools.getPrefix(message.guild.id.toString(), async (prefix) => {
+    tools.getPrefix(message.guild.id, async (prefix) => {
       if (message.content.indexOf(prefix) !== 0) return;
       const args = message.content.slice(prefix.length).split(' ');
       const command = args.shift().toLowerCase();

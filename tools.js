@@ -119,6 +119,37 @@ class Tools {
     });
   }
 
+  /**
+   * @typedef users
+   * @property {string} id
+   * @property {number} points
+   */
+
+  /**
+   * @returns {Promise<users[]>}
+   */
+  pointsUsers() {
+    return new Promise(resolve => {
+      db.all('SELECT points, id FROM users', async (err, rows) => {
+        if (err) return console.log(err);
+        const points = () => {
+          return new Promise(resolve => {
+            const users = [];
+            rows.forEach((val, i, arr) => {
+              users.push({
+                id: arr[i].id,
+                points: arr[i].points,
+              });
+            });
+            return resolve(users);
+          });
+        };
+        const pts = await points;
+        resolve(pts);
+      });
+    });
+  }
+
   addMember(guildMember) {
     if (guildMember.guild.id === "264445053596991498") return;
     db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', guildMember.user.id, 100);
