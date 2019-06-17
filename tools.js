@@ -158,7 +158,6 @@ class Tools {
    */
   setPoints(amnt, id) {
     db.run('UPDATE users SET points = ? WHERE id = ?', amnt, id);
-    mbot.event.emit('pointsUpdated', amnt, id);
   }
 
   /**

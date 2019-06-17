@@ -146,14 +146,14 @@ client.on('ready', async () => {
       if (err) {
         console.log(err);
       }
-      let u, user;
-      for (u in client.users.array()) {
+      let user;
+      client.users.array().map((val, u) => {
         user = client.users.array()[u];
-        if (user.bot) continue;
+        if (user.bot) return;
         if (row.id === user.id) {
           return tls.setPoints((row.points + 10), user.id);
         }
-      }
+      });
     });
   }, (60000 * 10));
   setInterval(() => {
@@ -197,10 +197,6 @@ event.on('uptimeMinute', () => {
 
 event.on('filesLoaded', () => {
   Logger.file('Command files loaded!');
-});
-
-event.on('pointsUpdated', (amnt, id) => {
-  Logger.debug(`Set ${id}'s points to ${amnt}!`);
 });
 
 event.on('newCommand', (id, name, message) => {
