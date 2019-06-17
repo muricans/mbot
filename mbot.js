@@ -177,11 +177,8 @@ const games = ['Minecraft', 'forsenPls', 'nymnBridge PewDiePie', 'wow',
 ];
 event.on('uptimeMinute', () => {
   const randomStatus = games[Math.floor(Math.random() * games.length)];
-  client.user.setPresence({
-    satus: 'online',
-    game: {
-      name: randomStatus,
-    },
+  client.user.setActivity(randomStatus, {
+    type: 'PLAYING',
   });
 });
 

@@ -152,9 +152,6 @@ class Tools {
   addMember(guildMember) {
     if (guildMember.guild.id === "264445053596991498") return;
     db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', guildMember.user.id, 100);
-    if (settings.debug) {
-      Logger.debug('New user found, registering them to the bot database with ID of ' + guildMember.user.id);
-    }
   }
 
   async addUser(user) {
