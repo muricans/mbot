@@ -85,7 +85,7 @@ client.on('guildCreate', (guild) => {
 
 client.on('guildMemberAdd', (guildMember) => {
   if (guildMember.guild.id === "264445053596991498") return;
-  new tools.Tools().getNLMessage('welcomeMessage', guildMember.guild.id, (use, msg, channel) => {
+  tls.getNLMessage('welcomeMessage', guildMember.guild.id, (use, msg, channel) => {
     if (use === 1) {
       const chnl = guildMember.guild.channels.find(c => c.name === channel);
       if (!chnl) {
@@ -95,7 +95,7 @@ client.on('guildMemberAdd', (guildMember) => {
       }
     }
   });
-  new tools.Tools().getDefaultRole(guildMember.guild.id, (defaultRole, use) => {
+  tls.getDefaultRole(guildMember.guild.id, (defaultRole, use) => {
     if (use === 1) {
       const role = guildMember.guild.roles.find((r => r.name === defaultRole));
       if (!role) {
@@ -110,7 +110,7 @@ client.on('guildMemberAdd', (guildMember) => {
 
 client.on('guildMemberRemove', (guildMember) => {
   if (guildMember.guild.id === "264445053596991498") return;
-  new tools.Tools().getNLMessage('leaveMessage', guildMember.guild.id.toString(), (use, msg, channel) => {
+  tls.getNLMessage('leaveMessage', guildMember.guild.id.toString(), (use, msg, channel) => {
     if (use === 1) {
       const chnl = guildMember.guild.channels.find(c => c.name === channel);
       if (!chnl) {
@@ -142,20 +142,18 @@ client.on('ready', async () => {
     }
   }
   setInterval(() => {
-    db.serialize(() => {
-      db.each("SELECT points points, id id FROM users", (err, row) => {
-        if (err) {
-          console.log(err);
+    tls.db.each("SELECT points points, id id FROM users", (err, row) => {
+      if (err) {
+        console.log(err);
+      }
+      let u, user;
+      for (u in client.users.array()) {
+        user = client.users.array()[u];
+        if (user.bot) continue;
+        if (row.id === user.id) {
+          return tls.setPoints((row.points + 10), user.id);
         }
-        let u, user;
-        for (u in client.users.array()) {
-          user = client.users.array()[u];
-          if (row.id === user.id) {
-            if (user.bot) return;
-            return new tools.Tools().setPoints((row.points + 10), user.id);
-          }
-        }
-      });
+      }
     });
   }, (60000 * 10));
   setInterval(() => {
@@ -202,9 +200,7 @@ event.on('filesLoaded', () => {
 });
 
 event.on('pointsUpdated', (amnt, id) => {
-  if (settings.debug) {
-    Logger.debug(`Set ${id}'s points to ${amnt}!`);
-  }
+  Logger.debug(`Set ${id}'s points to ${amnt}!`);
 });
 
 event.on('newCommand', (id, name, message) => {
@@ -233,13 +229,14 @@ console.log(chalk.magenta(figlet.textSync('mbot', {
   horizontalLayout: "full",
 })));
 
-commands.registerCommands(client, this, db);
+commands.registerCommands(client, this, tls.db);
 
 process.openStdin().on('data', (val) => {
   const command = val.toString().trim();
   switch (command.toLowerCase()) {
     case "stop":
       Logger.info('Stopping mbot...');
+      tls.db.close();
       process.exit(0);
       break;
     case "version":

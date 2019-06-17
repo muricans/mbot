@@ -33,6 +33,9 @@ const cooldowns = new Discord.Collection();
  * const tools = new tls.Tools();
  */
 class Tools {
+  constructor() {
+    this.db = db;
+  }
   initCooldown(command) {
     if (!cooldowns.has(command)) {
       cooldowns.set(command, new Discord.Collection());
@@ -75,6 +78,7 @@ class Tools {
     }
     return contains;
   }
+
   initDb(guild) {
     if (guild.id === "264445053596991498") return;
     db.serialize(() => {
@@ -120,11 +124,14 @@ class Tools {
     }
   }
 
-  addUser(user) {
-    db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', user.id, 100);
-    if (settings.debug) {
-      Logger.debug('New user found, registering them to the bot database with ID of ' + user.id);
-    }
+  async addUser(user) {
+    const add = () => {
+      new Promise(resolve => {
+        db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', user.id, 100);
+        resolve();
+      });
+    };
+    await add;
   }
 
   /**
