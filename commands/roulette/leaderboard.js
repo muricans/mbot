@@ -20,13 +20,14 @@ function leaderboard(channel, client) {
         for (let i = 0; i < tools.users(client).length; i++) {
             const user = tools.users(client)[i];
             if (user.bot) continue;
-            tools.getPoints(user.id).then(points => {
-                users.push({
-                    id: user.id,
-                    username: user.username,
-                    points: points,
-                });
-            }).catch();
+            const exists = await tools.pointsExist(user.id);
+            if (!exists) continue;
+            const points = await tools.getPoints(user.id);
+            users.push({
+                id: user.id,
+                username: user.username,
+                points: points,
+            });
         }
         users = users.sort((a, b) => (a.points > b.points) ? -1 : 1).slice(0, 50);
         embeds.calculatePages(users.length, 10, (embed, i) => {
