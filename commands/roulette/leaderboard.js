@@ -18,8 +18,8 @@ function leaderboard(channel, client) {
         const embeds = new EmbedBuilder(channel);
         let users = [];
         for (let i = 0; i < tools.users(client).length; i++) {
-            if (user.bot) continue;
             const user = tools.users(client)[i];
+            if (user.bot) continue;
             const points = await tools.getPoints(user.id);
             users.push({
                 id: user.id,
