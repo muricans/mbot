@@ -283,6 +283,7 @@ module.exports.registerCommands = async (client, mbot, db) => {
   }
 
   client.on('message', async message => {
+    if (message.guild.id === "264445053596991498") return;
     if (message.author.bot) return;
     if (!timer.users.has(message.author.id)) {
       timer.users.set(message.author.id, new Discord.Collection());
