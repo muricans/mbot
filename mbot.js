@@ -127,13 +127,6 @@ client.on('guildMemberRemove', (guildMember) => {
 // actions
 client.on('ready', async () => {
   event.emit('ready');
-  db.serialize(() => {
-    let u, user;
-    for (u in client.users.array()) {
-      user = client.users.array()[u];
-      tls.addUser(user);
-    }
-  });
   Logger.info('mbot v' + pkg.version + " has been enabled.");
   if (settings.debug) {
     try {
@@ -146,7 +139,8 @@ client.on('ready', async () => {
   /*setInterval(async () => {
     for (let i = 0; i < tls.users(client).length; i++) {
       const user = tls.users(client)[i];
-      if (user.bot) continue;
+      const exists = await tls.pointsExist(user.id);
+      if (user.bot || !exists) continue;
       const current = await tls.getPoints(user.id);
       tls.setPoints(current + 10, user.id);
     }

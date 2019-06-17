@@ -19,9 +19,8 @@ function leaderboard(channel, client) {
         let users = [];
         for (let i = 0; i < tools.users(client).length; i++) {
             const user = tools.users(client)[i];
-            if (user.bot) continue;
             const exists = await tools.pointsExist(user.id);
-            if (!exists) continue;
+            if (user.bot || !exists) continue;
             const points = await tools.getPoints(user.id);
             users.push({
                 id: user.id,

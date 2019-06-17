@@ -113,7 +113,8 @@ class Tools {
         1);
       for (let i = 0; i < guild.members.array().length; i++) {
         const guildMember = guild.members.array()[i];
-        db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', guildMember.user.id.toString(), 100);
+        if (guildMember.user.bot) continue;
+        db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', guildMember.user.id, 100);
       }
     });
   }

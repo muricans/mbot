@@ -157,17 +157,17 @@ module.exports.registerCommands = async (client, mbot, db) => {
       seconds = seconds.startsWith('0') ? seconds.substr(1) : seconds;
       uptime = `${hours}${minutes}${seconds}`;
       let embed = new Discord.MessageEmbed()
-        .setTitle('pong ' + ppHop)
+        .setTitle('pong')
         .setColor(0x2872DB)
         .setDescription(`mbot has been up for: ${uptime}`)
         .addField('Connection/Reaction Time', ppHop);
       message.channel.send(embed).then(sent => {
         const reactionTime = Date.now() - then;
         embed = new Discord.MessageEmbed()
-          .setTitle('pong ' + ppHop)
+          .setTitle('pong')
           .setColor(0x2872DB)
           .setDescription(`mbot has been up for: ${uptime}`)
-          .addField('Connection/Reaction Time', reactionTime + ' ms');
+          .addField('Connection/Reaction Time ' + ppHop, reactionTime + ' ms');
         sent.edit(embed);
       });
     }
