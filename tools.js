@@ -168,11 +168,17 @@ class Tools {
    * @returns {Promise<number>} A promise containing the points of the user.
    */
   getPoints(id) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       db.get('SELECT points points FROM users WHERE id = ' + id, (err, row) => {
-        if (err) return console.log(err);
-        resolve(row.points);
+        if (err) return reject(err);
+        return resolve(row.points);
       });
+    });
+  }
+
+  pointsExist(id) {
+    return new Promise(resolve => {
+      db.exist
     });
   }
 
