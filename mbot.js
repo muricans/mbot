@@ -143,14 +143,14 @@ client.on('ready', async () => {
       console.log(err);
     }
   }
-  setInterval(async () => {
+  /*setInterval(async () => {
     for (let i = 0; i < tls.users(client).length; i++) {
       const user = tls.users(client)[i];
       if (user.bot) continue;
       const current = await tls.getPoints(user.id);
       tls.setPoints(current + 10, user.id);
     }
-  }, (10 * 60000));
+  }, (10 * 60000));*/
   setInterval(() => {
     seconds++;
     if (seconds >= 60) {
