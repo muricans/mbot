@@ -141,7 +141,7 @@ client.on('ready', async () => {
     const users = await tls.pointsUsers();
     for (let i = 0; i < users.length; i++) {
       const user = tls.users(client).find(usr => usr.id === users[i].id);
-      if (user.bot || !user) continue;
+      if (!user || user.bot) continue;
       const current = users[i].points;
       tls.setPoints(current + 10, user.id);
     }

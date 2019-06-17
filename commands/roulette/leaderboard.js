@@ -18,10 +18,10 @@ function leaderboard(channel, client) {
         const embeds = new EmbedBuilder(channel);
         let users = [];
         const pUsers = await tools.pointsUsers();
+        console.log(pUsers);
         for (let i = 0; i < pUsers.length; i++) {
             const user = tools.users(client).find(usr => usr.id === pUsers[i].id);
-            const exists = await tools.pointsExist(user.id);
-            if (user.bot || !exists) continue;
+            if (!user || user.bot) continue;
             users.push({
                 id: user.id,
                 username: user.username,

@@ -132,8 +132,8 @@ class Tools {
     return new Promise(resolve => {
       db.all('SELECT points, id FROM users', async (err, rows) => {
         if (err) return console.log(err);
-        const points = () => {
-          return new Promise(resolve => {
+        const points =
+          new Promise(resolve => {
             const users = [];
             rows.forEach((val, i, arr) => {
               users.push({
@@ -143,7 +143,6 @@ class Tools {
             });
             return resolve(users);
           });
-        };
         const pts = await points;
         resolve(pts);
       });
