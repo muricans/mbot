@@ -1,13 +1,11 @@
-const sqlite = require('sqlite3').verbose();
+const Database = require('better-sqlite3');
 const Logger = require('../logger');
 
 class SQLite {
     constructor(path) {
-        const db = new sqlite.Database(path, (err => {
-            if (err) return console.log(err.message);
-            Logger.info('Connected to ' + path + ' database');
-        }));
+        const db = new Database(path);
         this.db = db;
+        Logger.debug('Connected to database: ' + path);
     }
 }
 

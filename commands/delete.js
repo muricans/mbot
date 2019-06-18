@@ -20,7 +20,7 @@ module.exports = {
     if (!exists) {
       return message.channel.send(`${message.author} That command doesn't exist!`);
     }
-    db.run('DELETE FROM commands WHERE id = ? AND name = ? AND message = ?', exists.id, exists.name, exists.message);
+    db.prepare('DELETE FROM commands WHERE id = ? AND name = ? AND message = ?').run(exists.id, exists.name, exists.message);
     mbot.event.emit('deleteCommand', exists.id, exists.name, exists.message);
     return message.channel.send(`${message.author} Command ${args[0].toLowerCase()} was deleted!`);
   },
