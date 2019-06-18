@@ -15,15 +15,26 @@ module.exports = {
   execute(message, args, client, prefix, db, nsfwCmds) {
     if (!args.length) {
       const cmds = client.commands.array().filter(cmd => cmd.nsfw !== true).sort((a, b) => (a.name > b.name) ? 1 : -1);
+
       const builder = new EmbedBuilder(message.channel)
         .setTime(35000)
         .calculatePages(cmds.length, 8, (embed, i) => {
           embed.addField(`${prefix}${cmds[i].name}`, cmds[i].description);
         });
-      if (tools.usingNsfwModules(message.guild.id))
-        builder.getEmbeds()[builder.getEmbeds().length - 1].addField('NSFW Commands', '!help nsfw');
-      return builder.setTitle('Commands')
-        .build();
+      if (tools.usingNsfwModules(message.guild.id)) {
+        builder.getEmbeds()[builder.getEmbeds().length - 1].addField('NSFW Commands', '!help nsfw or continue to the next page...');
+        const nsfwBuilder = new EmbedBuilder(message.channel)
+          .calculatePages(nsfwCmds.length, 8, (embed, i) => {
+            embed.addField(`${prefix}${nsfwCmds[i].name}`, nsfwCmds[i].description);
+          })
+          .setTitle('NSFW Commands');
+        builder
+          .setTitle('Commands')
+          .concatEmbeds(nsfwBuilder.getEmbeds());
+      } else {
+        builder.setTitle('Commands');
+      }
+      return builder.build();
     }
     if (args[0].toLowerCase() === "nsfw" && tools.usingNsfwModules(message.guild.id)) {
       const embedBuilder = new EmbedBuilder(message.channel)

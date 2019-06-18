@@ -109,6 +109,14 @@ event.on('ready', () => {
 
 client.on('guildCreate', (guild) => {
   tls.initDb(guild);
+  this.prefixes.push({
+    "id": guild.id,
+    "prefix": "m!",
+  });
+  this.nsfw.push({
+    "id": guild.id,
+    "use": true,
+  });
 });
 
 client.on('guildMemberAdd', (guildMember) => {
@@ -164,14 +172,8 @@ client.on('ready', async () => {
       console.log(err);
     }
   }
-  setInterval(async () => {
-    const users = await tls.pointsUsers();
-    for (let i = 0; i < users.length; i++) {
-      const user = tls.users(client).find(usr => usr.id === users[i].id);
-      if (!user || user.bot) continue;
-      const current = users[i].points;
-      tls.setPoints(current + 10, user.id);
-    }
+  setInterval(() => {
+    tls._points10(client);
   }, (10 * 60000));
   setInterval(() => {
     seconds++;

@@ -183,6 +183,19 @@ class Tools {
     db.prepare('UPDATE users SET points = ? WHERE id = ?').run(amnt, id);
   }
 
+  _points10(client) {
+    return new Promise(async resolve => {
+      const users = await this.pointsUsers();
+      for (let i = 0; i < users.length; i++) {
+        const user = this.users(client).find(usr => usr.id === users[i].id);
+        if (!user || user.bot) continue;
+        const current = users[i].points;
+        this.setPoints(current + 10, user.id);
+      }
+      resolve();
+    });
+  }
+
   /**
    * 
    * @param {string} id Id of the user to get points from.
