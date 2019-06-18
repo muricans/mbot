@@ -59,7 +59,6 @@ let seconds = 0;
 let minutes = 0;
 let hours = 0;
 db.prepare('CREATE TABLE if not exists users(id TEXT, points INTEGER, UNIQUE(id))').run();
-db.prepare('CREATE TABLE if not exists users(id TEXT, points INTEGER, UNIQUE(id))').run();
 db.prepare('CREATE TABLE if not exists welcomeMessage(id TEXT, use INTEGER, message TEXT, channel TEXT, UNIQUE(id))').run();
 db.prepare('CREATE TABLE if not exists leaveMessage(id TEXT, use INTEGER, message TEXT, channel TEXT, UNIQUE(id))').run();
 db.prepare('CREATE TABLE if not exists prefix(id TEXT, prefix TEXT, UNIQUE(id))').run();
@@ -72,6 +71,7 @@ event.on('ready', () => {
   for (const i in client.guilds.array()) {
     const guild = client.guilds.array()[i];
     tls.initDb(guild);
+    tls._pointsClear24(guild);
   }
   db.prepare('SELECT id id, name name, message message FROM commands').all().forEach(row => {
     if (!row) return;
@@ -117,6 +117,17 @@ client.on('guildCreate', (guild) => {
     "id": guild.id,
     "use": true,
   });
+});
+
+client.on('guildDelete', (guild) => {
+  db.prepare('DELETE FROM commands WHERE id = ?').run(guild.id);
+  db.prepare('DELETE FROM prefix WHERE id = ?').run(guild.id);
+  db.prepare('DELETE FROM nsfw WHERE id = ?').run(guild.id);
+  db.prepare('DELETE FROM leaveMessage WHERE id = ?').run(guild.id);
+  db.prepare('DELETE FROM welcomeMessage WHERE id = ?').run(guild.id);
+  db.prepare('DELETE FROM serverInfo WHERE id = ?').run(guild.id);
+  db.prepare('DELETE FROM commandOptions WHERE id = ?').run(guild.id);
+  db.prepare('DELETE FROM roles WHERE id = ?').run(guild.id);
 });
 
 client.on('guildMemberAdd', (guildMember) => {
@@ -187,6 +198,12 @@ client.on('ready', async () => {
       }
     }
   }, 1000);
+  setInterval(() => {
+    for (let i = 0; i < client.guilds.array().length; i++) {
+      const guild = client.guilds.array()[i];
+      tls._pointsClear24(guild);
+    }
+  }, (1440 * 60000));
 });
 
 /**
