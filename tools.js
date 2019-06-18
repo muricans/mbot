@@ -196,20 +196,41 @@ class Tools {
     });
   }
 
-  /**
-   * 
-   * @param {Discord.Client} client 
-   */
-  _pointsClear24(guild) {
+  deleteGuild(guild) {
+    db.prepare('DELETE FROM commands WHERE id = ?').run(guild.id);
+    db.prepare('DELETE FROM prefix WHERE id = ?').run(guild.id);
+    db.prepare('DELETE FROM nsfw WHERE id = ?').run(guild.id);
+    db.prepare('DELETE FROM leaveMessage WHERE id = ?').run(guild.id);
+    db.prepare('DELETE FROM welcomeMessage WHERE id = ?').run(guild.id);
+    db.prepare('DELETE FROM serverInfo WHERE id = ?').run(guild.id);
+    db.prepare('DELETE FROM commandOptions WHERE id = ?').run(guild.id);
+    db.prepare('DELETE FROM roles WHERE id = ?').run(guild.id);
+  }
+
+  _pointsClear24(client) {
     return new Promise(async resolve => {
       const users = await this.pointsUsers();
-      for (let u = 0; u < users.length; u++) {
-        const user = users[u];
-        const exists = guild.members.find(member => member.user.id === user.id);
+      for (let i = 0; i < users.length; i++) {
+        const exists = client.users.find(user => user.id === users[i].id);
         if (!exists) {
-          db.prepare('DELETE FROM users WHERE id = ?').run(user.id);
-          resolve();
+          db.prepare('DELETE FROM users WHERE id = ?').run(users[i].id);
         }
+      }
+      resolve();
+    });
+  }
+
+  _loopGuild(guilds, id) {
+    return new Promise(resolve => {
+      let exist = 0;
+      for (let i = 0; i < guilds.length; i++) {
+        if (i === guilds.length) {
+          resolve(exist);
+          break;
+        }
+        const guild = guilds[i];
+        const exists = guild.members.find(member => member.user.id === id);
+        if (exists) exist++;
       }
     });
   }
