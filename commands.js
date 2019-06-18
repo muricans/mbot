@@ -188,7 +188,7 @@ module.exports.registerCommands = async (client, mbot, db) => {
         break;
     }
 
-    const allowNsfw = await tools.usingNsfwModules(message.guild.id);
+    const allowNsfw = tools.usingNsfwModules(message.guild.id);
     if (allowNsfw) {
       switch (command) {
         case "anal":
@@ -445,7 +445,7 @@ module.exports.registerCommands = async (client, mbot, db) => {
         return;
       }
 
-      const allowNsfw = await tools.usingNsfwModules(message.guild.id);
+      const allowNsfw = tools.usingNsfwModules(message.guild.id);
       if (comm.nsfw && !allowNsfw) return;
 
       if (comm.roulette && message.guild.id === "264445053596991498") return;

@@ -7,6 +7,10 @@
  * @typedef prefix
  * @property {string} id The guild servers id.
  * @property {string} prefix The guild servers command prefix.
+ * 
+ * @typedef nsfwModule
+ * @property {string} id The guild servers id.
+ * @property {boolean} use Is the guild using nsfw modules
  */
 // init discord lib
 const settings = require('./settings.json');
@@ -44,6 +48,10 @@ module.exports.cCommands = [];
  * @type {Array<prefix>}
  */
 module.exports.prefixes = [];
+/**
+ * @type {Array<nsfwModule>}
+ */
+module.exports.nsfw = [];
 
 const db = new Database('./mbot.db').db;
 
@@ -78,6 +86,16 @@ event.on('ready', () => {
     this.prefixes.push({
       "id": row.id,
       "prefix": row.prefix,
+    });
+  });
+  db.prepare('SELECT id id, use use FROM nsfw').all().forEach(row => {
+    if (!row) return;
+    let use;
+    if (row.use === 1) use = true;
+    if (row.use === 0) use = false;
+    this.nsfw.push({
+      "id": row.id,
+      "use": use,
     });
   });
   event.on('timerFinished', (userId, timerId, timerName) => {
@@ -261,6 +279,11 @@ event.on('stop', () => {
 event.on('prefixUpdate', (prefix, guildId) => {
   const guildPrefix = this.prefixes.find(guild => guild.id === guildId);
   guildPrefix.prefix = prefix;
+});
+
+event.on('nsfwUpdate', (use, guildId) => {
+  const guildUse = this.nsfw.find(guild => guild.id === guildId);
+  guildUse.use = use;
 });
 
 process.on('exit', (code) => {

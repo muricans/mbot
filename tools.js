@@ -324,17 +324,8 @@ class Tools {
   }
 
   usingNsfwModules(id) {
-    return new Promise(resolve => {
-      const row = db.prepare(`SELECT use use FROM nsfw WHERE id = ${id}`).get();
-      switch (row.use) {
-        case 0:
-          resolve(false);
-          break;
-        case 1:
-          resolve(true);
-          break;
-      }
-    });
+    const use = mbot.nsfw.find(guild => guild.id === id).use;
+    return use;
   }
 
   /**

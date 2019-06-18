@@ -221,11 +221,13 @@ module.exports = {
                     case "use":
                         switch (args[2]) {
                             case "true":
+                                mbot.event.emit('nsfwUpdate', true, message.guild.id);
                                 db.prepare('UPDATE nsfw SET use = ? WHERE id = ?').run(1, message.guild.id);
                                 tools.addCooldown(this.name, 10, message);
                                 message.channel.send(`${message.author} Enabled use of nsfw modules!`);
                                 break;
                             case "false":
+                                mbot.event.emit('nsfwUpdate', false, message.guild.id);
                                 db.prepare('UPDATE nsfw SET use = ? WHERE id = ?').run(0, message.guild.id);
                                 tools.addCooldown(this.name, 10, message);
                                 message.channel.send(`${message.author} Disabled use of nsfw modules!`);
