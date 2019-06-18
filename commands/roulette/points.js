@@ -14,7 +14,7 @@ module.exports = {
       current = await tools.getPoints(message.author.id);
       msg = `You have ${current} points!`;
     } else {
-      if (!mention) return message.channel.send('Could not find that user!');
+      if (!mention || mention.bot) return message.channel.send('Could not find that user!');
       current = await tools.getPoints(mention.id);
       msg = `${mention.username} has ${current} points!`;
       tools.addCooldown(this.name, 3, message);

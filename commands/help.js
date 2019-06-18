@@ -1,5 +1,9 @@
 const Discord = require('discord.js');
 const EmbedBuilder = require('discord-embedbuilder');
+const {
+  Tools,
+} = require('../tools');
+const tools = new Tools();
 
 // 17 commands + [5 admin only commands] + 14 nsfw commands
 // seperate admin only commands at a later time
@@ -11,15 +15,17 @@ module.exports = {
   execute(message, args, client, prefix, db, nsfwCmds) {
     if (!args.length) {
       const cmds = client.commands.array().filter(cmd => cmd.nsfw !== true).sort((a, b) => (a.name > b.name) ? 1 : -1);
-      return new EmbedBuilder(message.channel)
+      const builder = new EmbedBuilder(message.channel)
         .setTime(35000)
         .calculatePages(cmds.length, 8, (embed, i) => {
           embed.addField(`${prefix}${cmds[i].name}`, cmds[i].description);
-        })
-        .setTitle('Commands')
+        });
+      if (tools.usingNsfwModules(message.guild.id))
+        builder.getEmbeds()[builder.getEmbeds().length - 1].addField('NSFW Commands', '!help nsfw');
+      return builder.setTitle('Commands')
         .build();
     }
-    if (args[0].toLowerCase() === "nsfw") {
+    if (args[0].toLowerCase() === "nsfw" && tools.usingNsfwModules(message.guild.id)) {
       const embedBuilder = new EmbedBuilder(message.channel)
         .setTime(35000);
       embedBuilder.calculatePages(nsfwCmds.length, 8, (embed, i) => {

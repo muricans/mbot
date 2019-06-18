@@ -4,20 +4,21 @@
   "description": "Discord bot",
   "main": "mbot.js",
   "scripts": {
-    "test": "node test.js"
+    "start": "./start.sh",
+    "docs": "jsdoc *"
   },
   "author": "muricans",
   "license": "MIT",
   "dependencies": {
+    "better-sqlite3": "^5.4.0",
     "chalk": "^2.4.2",
     "crypto": "^1.0.1",
-    "discord-embedbuilder": "^2.3.0",
+    "discord-embedbuilder": "^2.3.1",
     "discord.js": "github:discordjs/discord.js",
     "discord.js-commando": "^0.9.0",
     "eslint": "^5.16.0",
     "figlet": "^1.2.3",
     "newsapi": "^2.4.0",
-    "snekfetch": "^4.0.4",
-    "sqlite3": "^4.0.9"
+    "snekfetch": "^4.0.4"
   }
 }

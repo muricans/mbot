@@ -4,6 +4,13 @@
  * @property {string} name The commands name.
  * @property {string} message The message the command outputs.
  * 
+ * @typedef prefix
+ * @property {string} id The guild servers id.
+ * @property {string} prefix The guild servers command prefix.
+ * 
+ * @typedef nsfwModule
+ * @property {string} id The guild servers id.
+ * @property {boolean} use Is the guild using nsfw modules
  */
 // init discord lib
 const settings = require('./settings.json');
@@ -37,38 +44,58 @@ let alive = false;
  * @type {Array<cmds>}
  */
 module.exports.cCommands = [];
+/**
+ * @type {Array<prefix>}
+ */
+module.exports.prefixes = [];
+/**
+ * @type {Array<nsfwModule>}
+ */
+module.exports.nsfw = [];
+
 const db = new Database('./mbot.db').db;
 
 let seconds = 0;
 let minutes = 0;
 let hours = 0;
-
-db.serialize(() => {
-  db.run('CREATE TABLE if not exists users(id TEXT, points INTEGER, UNIQUE(id))');
-  db.run('CREATE TABLE if not exists welcomeMessage(id TEXT, use INTEGER, message TEXT, channel TEXT, UNIQUE(id))');
-  db.run('CREATE TABLE if not exists leaveMessage(id TEXT, use INTEGER, message TEXT, channel TEXT, UNIQUE(id))');
-  db.run('CREATE TABLE if not exists prefix(id TEXT, prefix TEXT, UNIQUE(id))');
-  db.run('CREATE TABLE if not exists serverInfo(id TEXT, use INTEGER, UNIQUE(id))');
-  db.run('CREATE TABLE if not exists commands(id TEXT, name TEXT, message TEXT)');
-  db.run('CREATE TABLE if not exists commandOptions(id TEXT, everyone INTEGER, use INTEGER, UNIQUE(id))');
-  db.run('CREATE TABLE if not exists roles(id TEXT, def TEXT, use INTEGER, UNIQUE(id))');
-  db.run('CREATE TABLE if not exists nsfw(id TEXT, use INTEGER, UNIQUE(id))');
-});
-
+db.prepare('CREATE TABLE if not exists users(id TEXT, points INTEGER, UNIQUE(id))').run();
+db.prepare('CREATE TABLE if not exists users(id TEXT, points INTEGER, UNIQUE(id))').run();
+db.prepare('CREATE TABLE if not exists welcomeMessage(id TEXT, use INTEGER, message TEXT, channel TEXT, UNIQUE(id))').run();
+db.prepare('CREATE TABLE if not exists leaveMessage(id TEXT, use INTEGER, message TEXT, channel TEXT, UNIQUE(id))').run();
+db.prepare('CREATE TABLE if not exists prefix(id TEXT, prefix TEXT, UNIQUE(id))').run();
+db.prepare('CREATE TABLE if not exists serverInfo(id TEXT, use INTEGER, UNIQUE(id))').run();
+db.prepare('CREATE TABLE if not exists commands(id TEXT, name TEXT, message TEXT)').run();
+db.prepare('CREATE TABLE if not exists commandOptions(id TEXT, everyone INTEGER, use INTEGER, UNIQUE(id))').run();
+db.prepare('CREATE TABLE if not exists roles(id TEXT, def TEXT, use INTEGER, UNIQUE(id))').run();
+db.prepare('CREATE TABLE if not exists nsfw(id TEXT, use INTEGER, UNIQUE(id))').run();
 event.on('ready', () => {
   for (const i in client.guilds.array()) {
     const guild = client.guilds.array()[i];
     tls.initDb(guild);
   }
-  db.each('SELECT id id, name name, message message FROM commands', (err, row) => {
-    if (err) return console.log(err);
-    if (!row) {
-      return;
-    }
-    module.exports.cCommands.push({
+  db.prepare('SELECT id id, name name, message message FROM commands').all().forEach(row => {
+    if (!row) return;
+    this.cCommands.push({
       "id": row.id,
       "name": row.name,
       "message": row.message,
+    });
+  });
+  db.prepare('SELECT prefix prefix, id id FROM prefix').all().forEach(row => {
+    if (!row) return;
+    this.prefixes.push({
+      "id": row.id,
+      "prefix": row.prefix,
+    });
+  });
+  db.prepare('SELECT id id, use use FROM nsfw').all().forEach(row => {
+    if (!row) return;
+    let use;
+    if (row.use === 1) use = true;
+    if (row.use === 0) use = false;
+    this.nsfw.push({
+      "id": row.id,
+      "use": use,
     });
   });
   event.on('timerFinished', (userId, timerId, timerName) => {
@@ -77,7 +104,7 @@ event.on('ready', () => {
       user.send(`Your timer '${timerName}' has finished!`);
     }).catch();
   });
-  db.close(() => Logger.debug('Database for mbot.js closed successfully.'));
+  db.close();
 });
 
 client.on('guildCreate', (guild) => {
@@ -187,7 +214,7 @@ event.on('filesLoaded', () => {
 });
 
 event.on('newCommand', (id, name, message) => {
-  module.exports.cCommands.push({
+  this.cCommands.push({
     "id": id,
     "name": name,
     "message": message,
@@ -196,9 +223,9 @@ event.on('newCommand', (id, name, message) => {
 });
 
 event.on('deleteCommand', (id, name) => {
-  const jsonCmd = module.exports.cCommands.find(c => c.name.toLowerCase() === name && c.id === id);
-  const cmdIndex = module.exports.cCommands.indexOf(jsonCmd);
-  module.exports.cCommands.splice(cmdIndex, 1);
+  const jsonCmd = this.cCommands.find(c => c.name.toLowerCase() === name && c.id === id);
+  const cmdIndex = this.cCommands.indexOf(jsonCmd);
+  this.cCommands.splice(cmdIndex, 1);
   Logger.debug(`Command ${name} was deleted from server ${id}.`);
 });
 
@@ -244,9 +271,19 @@ event.on('stop', () => {
   exit().then(() => {
     process.exit(0);
   }).catch(err => {
-    Logger.error(err);
+    Logger.error(err.stack);
     process.exit(1);
   });
+});
+
+event.on('prefixUpdate', (prefix, guildId) => {
+  const guildPrefix = this.prefixes.find(guild => guild.id === guildId);
+  guildPrefix.prefix = prefix;
+});
+
+event.on('nsfwUpdate', (use, guildId) => {
+  const guildUse = this.nsfw.find(guild => guild.id === guildId);
+  guildUse.use = use;
 });
 
 process.on('exit', (code) => {
@@ -255,12 +292,16 @@ process.on('exit', (code) => {
 
 function exit() {
   return new Promise((resolve, reject) => {
-    tls.db.close((err) => {
-      if (err)
+    tls.close().then(() => {
+      try {
+        client.voice.connections.array().map(val => val.disconnect());
+        client.destroy();
+        return resolve();
+      } catch (err) {
         return reject(err);
-      client.voice.connections.array().map(val => val.disconnect());
-      client.destroy();
-      return resolve();
+      }
+    }).catch((err) => {
+      return reject(err);
     });
   });
 }
