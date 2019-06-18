@@ -71,7 +71,7 @@ event.on('ready', () => {
   for (const i in client.guilds.array()) {
     const guild = client.guilds.array()[i];
     tls.initDb(guild);
-    tls._pointsClear24(guild);
+    //tls._pointsClear24(guild);
   }
   db.prepare('SELECT id id, name name, message message FROM commands').all().forEach(row => {
     if (!row) return;
@@ -198,12 +198,6 @@ client.on('ready', async () => {
       }
     }
   }, 1000);
-  setInterval(() => {
-    for (let i = 0; i < client.guilds.array().length; i++) {
-      const guild = client.guilds.array()[i];
-      tls._pointsClear24(guild);
-    }
-  }, (1440 * 60000));
 });
 
 /**
