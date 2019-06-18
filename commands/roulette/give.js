@@ -15,7 +15,7 @@ module.exports = {
     if (mention === message.author) {
       return message.reply('You cannot give points to yourself!');
     }
-    if (!mention) {
+    if (!mention || mention.bot) {
       return message.reply('That user does not exist!');
     }
     let current = await tools.getPoints(message.author.id);
