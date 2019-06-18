@@ -27,24 +27,28 @@ module.exports = {
         if (mRole.comparePositionTo(role) > 0 || mRole.position === role.position) {
             return message.channel.send(`${message.author} That user has a higher role than you!`);
         }
+        const botRole = message.guild.member(client.user).roles.highest;
+        if (botRole.comparePositionTo(mRole) > 0 || botRole.position === mRole.position) {
+            return message.channel.send(`${message.author} That user has a higher role than me!`);
+        }
         if (args.length === 1) {
-            return message.member.ban(mention, {
+            return message.member.ban({
                 days: 0,
                 reason: `Banned by ${message.author.username}`,
             }).then((member) => {
                 return message.channel.send(`${message.author} Banned user ${member.user}`);
-            }).catch((err) => {
-                if (err) return console.log(err);
+            }).catch(() => {
+                return message.channel.send('Sorry, it seems an error occurred.\nMaybe check my permissions?');
             });
         } else if (args.length > 1) {
             const reason = args.slice(1, args.length).join(' ');
-            return message.member.ban(mention, {
+            return message.member.ban({
                 days: 0,
                 reason: `Banned by ${message.author.username} Reason: ${reason}`,
             }).then((member) => {
                 return message.channel.send(`${message.author} Banned user ${member.user}\nReason: ${reason}`);
-            }).catch((err) => {
-                if (err) return console.log(err);
+            }).catch(() => {
+                return message.channel.send('Sorry, it seems an error occurred.\nMaybe check my permissions?');
             });
         }
     },
