@@ -12,6 +12,9 @@ module.exports = {
     mod: true,
     execute(message, args, client) {
         const canBan = message.channel.permissionsFor(message.member).has('BAN_MEMBERS');
+        const canBanBot = message.channel.permissionsFor(message.guild.member(client.user)).has("BAN_MEMBERS");
+        if (!canBanBot)
+            return message.channel.send('The bot does not have permission to do this.');
         if (!canBan) {
             return message.channel.send(`${message.author} You don't have permission to use this command!`);
         }
