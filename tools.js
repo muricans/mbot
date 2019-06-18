@@ -146,7 +146,7 @@ class Tools {
   }
 
   addMember(guildMember) {
-    if (guildMember.guild.id === "264445053596991498") return;
+    if (guildMember.guild.id === "264445053596991498" || guildMember.user.bot) return;
     db.prepare('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)').run(guildMember.user.id, 100);
   }
 
@@ -197,41 +197,37 @@ class Tools {
   }
 
   deleteGuild(guild) {
-    db.prepare('DELETE FROM commands WHERE id = ?').run(guild.id);
-    db.prepare('DELETE FROM prefix WHERE id = ?').run(guild.id);
-    db.prepare('DELETE FROM nsfw WHERE id = ?').run(guild.id);
-    db.prepare('DELETE FROM leaveMessage WHERE id = ?').run(guild.id);
-    db.prepare('DELETE FROM welcomeMessage WHERE id = ?').run(guild.id);
-    db.prepare('DELETE FROM serverInfo WHERE id = ?').run(guild.id);
-    db.prepare('DELETE FROM commandOptions WHERE id = ?').run(guild.id);
-    db.prepare('DELETE FROM roles WHERE id = ?').run(guild.id);
+    return new Promise(resolve => {
+      db.prepare('DELETE FROM commands WHERE id = ?').run(guild.id);
+      db.prepare('DELETE FROM prefix WHERE id = ?').run(guild.id);
+      db.prepare('DELETE FROM nsfw WHERE id = ?').run(guild.id);
+      db.prepare('DELETE FROM leaveMessage WHERE id = ?').run(guild.id);
+      db.prepare('DELETE FROM welcomeMessage WHERE id = ?').run(guild.id);
+      db.prepare('DELETE FROM serverInfo WHERE id = ?').run(guild.id);
+      db.prepare('DELETE FROM commandOptions WHERE id = ?').run(guild.id);
+      db.prepare('DELETE FROM roles WHERE id = ?').run(guild.id);
+      const prefix = mbot.prefixes.find(g => g.id === guild.id);
+      const n = mbot.nsfw.find(g => g.id === guild.id);
+      mbot.prefixes.splice(mbot.prefixes.indexOf(prefix), 1);
+      mbot.nsfw.splice(mbot.nsfw.indexOf(n), 1);
+      resolve();
+    });
   }
 
+  /**
+   * 
+   * @param {Discord.Client} client 
+   */
   _pointsClear24(client) {
     return new Promise(async resolve => {
       const users = await this.pointsUsers();
       for (let i = 0; i < users.length; i++) {
         const exists = client.users.find(user => user.id === users[i].id);
-        if (!exists) {
+        if (!exists || exists.bot) {
           db.prepare('DELETE FROM users WHERE id = ?').run(users[i].id);
         }
       }
       resolve();
-    });
-  }
-
-  _loopGuild(guilds, id) {
-    return new Promise(resolve => {
-      let exist = 0;
-      for (let i = 0; i < guilds.length; i++) {
-        if (i === guilds.length) {
-          resolve(exist);
-          break;
-        }
-        const guild = guilds[i];
-        const exists = guild.members.find(member => member.user.id === id);
-        if (exists) exist++;
-      }
     });
   }
 

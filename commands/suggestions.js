@@ -1,6 +1,5 @@
 const tls = require('../tools');
 const suggestions = new tls.File('suggestions', './', 'json');
-const Discord = require('discord.js');
 
 module.exports = {
     name: 'suggestions',
@@ -9,8 +8,12 @@ module.exports = {
     owner: true,
     execute(message, args, client, prefix) {
         if (args.length === 0) {
-            const attch = new Discord.Attachment(suggestions.file);
-            return message.channel.send(attch);
+            return suggestions.read(data => {
+                let toSend = '';
+                for (let i = 0; i < data.length; i++)
+                    toSend += `${i + 1}. ${data[i].by}: ${data[i].suggestion}\n`;
+                message.channel.send(toSend || 'No suggestions found.');
+            });
         }
         if (args[0] === "clear") {
             suggestions.write([], () => {

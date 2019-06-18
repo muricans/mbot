@@ -120,8 +120,9 @@ client.on('guildCreate', (guild) => {
 });
 
 client.on('guildDelete', (guild) => {
-  tls.deleteGuild(guild);
-  tls._pointsClear24(client);
+  tls.deleteGuild(guild).then(() => {
+    tls._pointsClear24(client);
+  });
 });
 
 client.on('guildMemberAdd', (guildMember) => {
@@ -192,6 +193,9 @@ client.on('ready', async () => {
       }
     }
   }, 1000);
+  setInterval(() => {
+    tls._pointsClear24(client);
+  }, (1440 * 60000));
 });
 
 /**
