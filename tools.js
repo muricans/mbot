@@ -198,6 +198,24 @@ class Tools {
 
   /**
    * 
+   * @param {Discord.Client} client 
+   */
+  _pointsClear24(guild) {
+    return new Promise(async resolve => {
+      const users = await this.pointsUsers();
+      for (let u = 0; u < users.length; u++) {
+        const user = users[u];
+        const exists = guild.members.find(member => member.user.id === user.id);
+        if (!exists) {
+          db.prepare('DELETE FROM users WHERE id = ?').run(user.id);
+          resolve();
+        }
+      }
+    });
+  }
+
+  /**
+   * 
    * @param {string} id Id of the user to get points from.
    * @returns {Promise<number>} A promise containing the points of the user.
    */
