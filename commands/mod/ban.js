@@ -32,23 +32,21 @@ module.exports = {
             return message.channel.send(`${message.author} That user has a higher role than me!`);
         }
         if (args.length === 1) {
-            return message.member.ban({
-                days: 0,
+            return message.guild.member(mention).ban({
                 reason: `Banned by ${message.author.username}`,
             }).then((member) => {
                 return message.channel.send(`${message.author} Banned user ${member.user}`);
-            }).catch(() => {
-                return message.channel.send('Sorry, it seems an error occurred.\nMaybe check my permissions?');
+            }).catch((err) => {
+                return console.log(err);
             });
         } else if (args.length > 1) {
             const reason = args.slice(1, args.length).join(' ');
-            return message.member.ban({
-                days: 0,
+            return message.guild.member(mention).ban({
                 reason: `Banned by ${message.author.username} Reason: ${reason}`,
             }).then((member) => {
                 return message.channel.send(`${message.author} Banned user ${member.user}\nReason: ${reason}`);
-            }).catch(() => {
-                return message.channel.send('Sorry, it seems an error occurred.\nMaybe check my permissions?');
+            }).catch((err) => {
+                return console.log(err);
             });
         }
     },
