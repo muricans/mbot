@@ -1,3 +1,5 @@
+const mbot = require('../../mbot');
+
 module.exports = {
   name: 'prefix',
   usage: '<newPrefix>',
@@ -14,7 +16,8 @@ module.exports = {
       return message.channel.send(`${message.author}` + " You don't have permission to use this command! " + weirdChamp);
     }
     const newPrefix = args[0].toString();
-    db.run(`UPDATE prefix SET prefix = ? WHERE id = ?`, newPrefix, message.guild.id.toString());
+    mbot.event.emit('prefixUpdate', newPrefix, message.guild.id);
+    db.prepare(`UPDATE prefix SET prefix = ? WHERE id = ?`).run(newPrefix, message.guild.id);
     return message.channel.send(`${message.author}` + " New prefix set: " + args[0]);
   },
 };

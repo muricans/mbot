@@ -29,7 +29,7 @@ module.exports = {
       if (exists) {
         return message.channel.send(`${message.author} That command already exists!`);
       }
-      db.run('INSERT INTO commands(id, name, message) VALUES(?,?,?)',
+      db.prepare('INSERT INTO commands(id, name, message) VALUES(?,?,?)').run(
         message.guild.id,
         args[0].toLowerCase(),
         msg);

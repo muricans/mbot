@@ -30,18 +30,18 @@ module.exports = {
                         if (!args[2]) {
                             return message.reply(`${message.author} Please add params! ${prefix}modules welcomemessage edit <message>`);
                         }
-                        db.run('UPDATE welcomeMessage SET message = ? WHERE id = ?', msg, message.guild.id.toString());
+                        db.prepare('UPDATE welcomeMessage SET message = ? WHERE id = ?').run(msg, message.guild.id.toString());
                         tools.addCooldown(module.exports.name, 10, message);
                         return message.channel.send(`${message.author} Set welcome message to ${msg}!`);
                     case "use":
                         switch (args[2]) {
                             case "true":
-                                db.run('UPDATE welcomeMessage SET use = ? WHERE id = ?', 1, message.guild.id.toString());
+                                db.prepare('UPDATE welcomeMessage SET use = ? WHERE id = ?').run(1, message.guild.id.toString());
                                 tools.addCooldown(module.exports.name, 10, message);
                                 message.channel.send(`${message.author} Enabled use of sending welcome messages on join!`);
                                 break;
                             case "false":
-                                db.run('UPDATE welcomeMessage SET use = ? WHERE id = ?', 0, message.guild.id.toString());
+                                db.prepare('UPDATE welcomeMessage SET use = ? WHERE id = ?').run(0, message.guild.id.toString());
                                 tools.addCooldown(module.exports.name, 10, message);
                                 message.channel.send(`${message.author} Disabled use of sending welcome messages on join!`);
                                 break;
@@ -58,7 +58,7 @@ module.exports = {
                         if (!channel) {
                             return message.channel.send(`${message.author} That channel does not seem to exist on this server!`);
                         } else {
-                            db.run(`UPDATE welcomeMessage SET channel = ? WHERE id = ?`, args[2], message.guild.id.toString());
+                            db.prepare(`UPDATE welcomeMessage SET channel = ? WHERE id = ?`).run(args[2], message.guild.id.toString());
                             tools.addCooldown(module.exports.name, 10, message);
                             return message.channel.send(`${message.author} Set the welcomemessage channel to ${args[2]}!`);
                         }
@@ -76,18 +76,18 @@ module.exports = {
                         if (!args[2]) {
                             return message.reply(`${message.author} Please add params! ${prefix}modules leavemessage edit <message>`);
                         }
-                        db.run('UPDATE leaveMessage SET message = ? WHERE id = ?', msg, message.guild.id.toString());
+                        db.prepare('UPDATE leaveMessage SET message = ? WHERE id = ?').run(msg, message.guild.id.toString());
                         tools.addCooldown(module.exports.name, 10, message);
                         return message.channel.send(`${message.author} Set leave message to ${msg}!`);
                     case "use":
                         switch (args[2]) {
                             case "true":
-                                db.run('UPDATE leaveMessage SET use = ? WHERE id = ?', 1, message.guild.id.toString());
+                                db.prepare('UPDATE leaveMessage SET use = ? WHERE id = ?').run(1, message.guild.id.toString());
                                 tools.addCooldown(module.exports.name, 10, message);
                                 message.channel.send(`${message.author} Enabled use of sending leave messages on leave!`);
                                 break;
                             case "false":
-                                db.run('UPDATE leaveMessage SET use = ? WHERE id = ?', 0, message.guild.id.toString());
+                                db.prepare('UPDATE leaveMessage SET use = ? WHERE id = ?').run(0, message.guild.id.toString());
                                 tools.addCooldown(module.exports.name, 10, message);
                                 message.channel.send(`${message.author} Disabled use of sending leave messages on leave!`);
                                 break;
@@ -104,7 +104,7 @@ module.exports = {
                         if (!channel) {
                             return message.channel.send(`${message.author} That channel does not seem to exist on this server!`);
                         } else {
-                            db.run(`UPDATE leaveMessage SET channel = ? WHERE id = ?`, args[2], message.guild.id.toString());
+                            db.prepare(`UPDATE leaveMessage SET channel = ? WHERE id = ?`).run(args[2], message.guild.id.toString());
                             tools.addCooldown(module.exports.name, 10, message);
                             return message.channel.send(`${message.author} Set the leavemessage channel to ${args[2]}!`);
                         }
@@ -115,12 +115,12 @@ module.exports = {
                     case "use":
                         switch (args[2]) {
                             case "true":
-                                db.run('UPDATE serverInfo SET use = ? WHERE id = ?', 1, message.guild.id.toString());
+                                db.prepare('UPDATE serverInfo SET use = ? WHERE id = ?').run(1, message.guild.id.toString());
                                 tools.addCooldown(module.exports.name, 10, message);
                                 message.channel.send(`${message.author} Enabled use of serverinfo command!`);
                                 break;
                             case "false":
-                                db.run('UPDATE serverInfo SET use = ? WHERE id = ?', 0, message.guild.id.toString());
+                                db.prepare('UPDATE serverInfo SET use = ? WHERE id = ?').run(0, message.guild.id.toString());
                                 tools.addCooldown(module.exports.name, 10, message);
                                 message.channel.send(`${message.author} Disabled use of serverinfo commnad!`);
                                 break;
@@ -136,12 +136,12 @@ module.exports = {
                     case "everyone":
                         switch (args[2]) {
                             case "true":
-                                db.run('UPDATE commandOptions SET everyone = ? WHERE id = ?', 1, message.guild.id.toString());
+                                db.prepare('UPDATE commandOptions SET everyone = ? WHERE id = ?').run(1, message.guild.id.toString());
                                 tools.addCooldown(module.exports.name, 10, message);
                                 message.channel.send(`${message.author} Enabled use of allowing all users to create custom commands!`);
                                 break;
                             case "false":
-                                db.run('UPDATE commandOptions SET everyone = ? WHERE id = ?', 0, message.guild.id.toString());
+                                db.prepare('UPDATE commandOptions SET everyone = ? WHERE id = ?').run(0, message.guild.id.toString());
                                 tools.addCooldown(module.exports.name, 10, message);
                                 message.channel.send(`${message.author} Disabled use of allowing all users to create custom commands!`);
                                 break;
@@ -153,12 +153,12 @@ module.exports = {
                     case "use":
                         switch (args[2]) {
                             case "true":
-                                db.run('UPDATE commandOptions SET use = ? WHERE id = ?', 1, message.guild.id.toString());
+                                db.prepare('UPDATE commandOptions SET use = ? WHERE id = ?').run(1, message.guild.id.toString());
                                 tools.addCooldown(module.exports.name, 10, message);
                                 message.channel.send(`${message.author} Enabled use of custom commands!`);
                                 break;
                             case "false":
-                                db.run('UPDATE commandOptions SET use = ? WHERE id = ?', 0, message.guild.id.toString());
+                                db.prepare('UPDATE commandOptions SET use = ? WHERE id = ?').run(0, message.guild.id.toString());
                                 tools.addCooldown(module.exports.name, 10, message);
                                 message.channel.send(`${message.author} Disabled use of custom commands!`);
                                 break;
@@ -177,7 +177,7 @@ module.exports = {
                         }
                         const msg = args.slice(3, args.length).join(' ');
                         mbot.event.emit('editCommand', command, msg);
-                        db.run('UPDATE commands SET message = ? WHERE id = ? AND name = ?', msg, message.guild.id, command.name);
+                        db.prepare('UPDATE commands SET message = ? WHERE id = ? AND name = ?').run(msg, message.guild.id, command.name);
                         message.channel.send(`${message.author} Updated command ${command.name}'s message to ${msg}`);
                         break;
                 }
@@ -193,19 +193,19 @@ module.exports = {
                         if (!role) {
                             return message.channel.send(`${message.author} Could not find that role!`);
                         }
-                        db.run('UPDATE roles SET def = ? WHERE id = ?', role.name, message.guild.id);
+                        db.prepare('UPDATE roles SET def = ? WHERE id = ?').run(role.name, message.guild.id);
                         tools.addCooldown(module.exports.name, 10, message);
                         message.channel.send(`${message.author} Set the default role for new users to ${role.name}!`);
                         break;
                     case "use":
                         switch (args[2]) {
                             case "true":
-                                db.run('UPDATE roles SET use = ? WHERE id = ?', 1, message.guild.id.toString());
+                                db.prepare('UPDATE roles SET use = ? WHERE id = ?').run(1, message.guild.id.toString());
                                 tools.addCooldown(module.exports.name, 10, message);
                                 message.channel.send(`${message.author} Enabled use of setting default role on new user join!`);
                                 break;
                             case "false":
-                                db.run('UPDATE commandOptions SET use = ? WHERE id = ?', 0, message.guild.id.toString());
+                                db.prepare('UPDATE commandOptions SET use = ? WHERE id = ?').run(0, message.guild.id.toString());
                                 tools.addCooldown(module.exports.name, 10, message);
                                 message.channel.send(`${message.author} Disabled use of setting default role on new user join!`);
                                 break;
@@ -221,12 +221,12 @@ module.exports = {
                     case "use":
                         switch (args[2]) {
                             case "true":
-                                db.run('UPDATE nsfw SET use = ? WHERE id = ?', 1, message.guild.id);
+                                db.prepare('UPDATE nsfw SET use = ? WHERE id = ?').run(1, message.guild.id);
                                 tools.addCooldown(this.name, 10, message);
                                 message.channel.send(`${message.author} Enabled use of nsfw modules!`);
                                 break;
                             case "false":
-                                db.run('UPDATE nsfw SET use = ? WHERE id = ?', 0, message.guild.id);
+                                db.prepare('UPDATE nsfw SET use = ? WHERE id = ?').run(0, message.guild.id);
                                 tools.addCooldown(this.name, 10, message);
                                 message.channel.send(`${message.author} Disabled use of nsfw modules!`);
                                 break;

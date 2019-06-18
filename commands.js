@@ -402,7 +402,7 @@ module.exports.registerCommands = async (client, mbot, db) => {
       }
     }
     if (message.author.bot) return;
-    tools.getPrefix(message.guild.id, async (prefix) => {
+    tools.getPrefix(message.guild.id, async prefix => {
       if (message.content.indexOf(prefix) !== 0) return;
       const args = message.content.slice(prefix.length).split(' ');
       const command = args.shift().toLowerCase();

@@ -83,40 +83,38 @@ class Tools {
 
   initDb(guild) {
     if (guild.id === "264445053596991498") return;
-    db.serialize(() => {
-      db.run('INSERT OR IGNORE INTO welcomeMessage(id, use, message, channel) VALUES(?,?,?,?)',
-        guild.id.toString(),
-        0,
-        'User $user has joined the server!',
-        'general');
-      db.run('INSERT OR IGNORE INTO leaveMessage(id, use, message, channel) VALUES(?,?,?,?)',
-        guild.id.toString(),
-        0,
-        'User $user has left the server!',
-        'general');
-      db.run('INSERT OR IGNORE INTO prefix(id, prefix) VALUES(?,?)',
-        guild.id.toString(),
-        'm!');
-      db.run('INSERT OR IGNORE INTO serverInfo(id, use) VALUES(?,?)',
-        guild.id.toString(),
-        1);
-      db.run('INSERT OR IGNORE INTO commandOptions(id, everyone, use) VALUES(?,?,?)',
-        guild.id.toString(),
-        1,
-        1);
-      db.run('INSERT OR IGNORE INTO roles(id, def, use) VALUES(?,?,?)',
-        guild.id.toString(),
-        '_none',
-        1);
-      db.run('INSERT OR IGNORE INTO nsfw(id, use) VALUES(?,?)',
-        guild.id,
-        1);
-      for (let i = 0; i < guild.members.array().length; i++) {
-        const guildMember = guild.members.array()[i];
-        if (guildMember.user.bot) continue;
-        db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', guildMember.user.id, 100);
-      }
-    });
+    db.prepare('INSERT OR IGNORE INTO welcomeMessage(id, use, message, channel) VALUES(?,?,?,?)').run(
+      guild.id.toString(),
+      0,
+      'User $user has joined the server!',
+      'general');
+    db.prepare('INSERT OR IGNORE INTO leaveMessage(id, use, message, channel) VALUES(?,?,?,?)').run(
+      guild.id.toString(),
+      0,
+      'User $user has left the server!',
+      'general');
+    db.prepare('INSERT OR IGNORE INTO prefix(id, prefix) VALUES(?,?)').run(
+      guild.id.toString(),
+      'm!');
+    db.prepare('INSERT OR IGNORE INTO serverInfo(id, use) VALUES(?,?)').run(
+      guild.id.toString(),
+      1);
+    db.prepare('INSERT OR IGNORE INTO commandOptions(id, everyone, use) VALUES(?,?,?)').run(
+      guild.id.toString(),
+      1,
+      1);
+    db.prepare('INSERT OR IGNORE INTO roles(id, def, use) VALUES(?,?,?)').run(
+      guild.id.toString(),
+      '_none',
+      1);
+    db.prepare('INSERT OR IGNORE INTO nsfw(id, use) VALUES(?,?)').run(
+      guild.id,
+      1);
+    for (let i = 0; i < guild.members.array().length; i++) {
+      const guildMember = guild.members.array()[i];
+      if (guildMember.user.bot) continue;
+      db.prepare('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)').run(guildMember.user.id, 100);
+    }
   }
 
   /**
@@ -129,39 +127,34 @@ class Tools {
    * @returns {Promise<users[]>}
    */
   pointsUsers() {
-    return new Promise(resolve => {
-      db.all('SELECT points, id FROM users', async (err, rows) => {
-        if (err) return console.log(err);
-        const points =
-          new Promise(resolve => {
-            const users = [];
-            rows.forEach((val, i, arr) => {
-              users.push({
-                id: arr[i].id,
-                points: arr[i].points,
-              });
+    return new Promise(async resolve => {
+      const rows = db.prepare('SELECT points, id FROM users').all();
+      const points =
+        new Promise(resolve => {
+          const users = [];
+          rows.forEach((val, i, arr) => {
+            users.push({
+              id: arr[i].id,
+              points: arr[i].points,
             });
-            return resolve(users);
           });
-        const pts = await points;
-        resolve(pts);
-      });
+          return resolve(users);
+        });
+      const pts = await points;
+      resolve(pts);
     });
   }
 
   addMember(guildMember) {
     if (guildMember.guild.id === "264445053596991498") return;
-    db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', guildMember.user.id, 100);
+    db.prepare('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)').run(guildMember.user.id, 100);
   }
 
-  async addUser(user) {
-    const add = () => {
-      new Promise(resolve => {
-        db.run('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)', user.id, 100);
-        resolve();
-      });
-    };
-    await add;
+  addUser(user) {
+    return new Promise(resolve => {
+      db.prepare('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)').run(user.id, 100);
+      resolve();
+    });
   }
 
   /**
@@ -187,7 +180,7 @@ class Tools {
    * @param {string} id The id to give the points to.
    */
   setPoints(amnt, id) {
-    db.run('UPDATE users SET points = ? WHERE id = ?', amnt, id);
+    db.prepare('UPDATE users SET points = ? WHERE id = ?').run(amnt, id);
   }
 
   /**
@@ -197,18 +190,27 @@ class Tools {
    */
   getPoints(id) {
     return new Promise((resolve) => {
-      db.get('SELECT points FROM users WHERE id = ' + id, (err, row) => {
-        return resolve(row.points);
-      });
+      const row = db.prepare('SELECT points FROM users WHERE id = ' + id).get();
+      return resolve(row.points);
     });
   }
 
   pointsExist(id) {
     return new Promise(resolve => {
-      db.get('SELECT points FROM users WHERE id = ' + id, (err, row) => {
-        if (row === undefined) return resolve(false);
-        else return resolve(true);
-      });
+      const row = db.prepare('SELECT points FROM users WHERE id = ' + id).get();
+      if (row === undefined) return resolve(false);
+      else return resolve(true);
+    });
+  }
+
+  close() {
+    return new Promise((resolve, reject) => {
+      try {
+        this.db.close();
+        return resolve();
+      } catch (err) {
+        return reject(err);
+      }
     });
   }
 
@@ -232,12 +234,8 @@ class Tools {
    * });
    */
   getNLMessage(name, id, callback) {
-    db.get(`SELECT use use, message message, channel channel FROM ${name} WHERE id = ${id}`, (err, row) => {
-      if (err) {
-        return console.log(err);
-      }
-      callback(row.use, row.message, row.channel);
-    });
+    const row = db.prepare(`SELECT use use, message message, channel channel FROM ${name} WHERE id = ${id}`).get();
+    callback(row.use, row.message, row.channel);
   }
 
   /**
@@ -256,11 +254,9 @@ class Tools {
    *  // stuff here
    * });
    */
-  async getPrefix(id, callback) {
-    db.get(`SELECT prefix prefix FROM prefix WHERE id = ${id}`, (err, row) => {
-      if (err) return console.log(err);
-      callback(row.prefix);
-    });
+  getPrefix(id, callback) {
+    const prefix = mbot.prefixes.find(guild => guild.id === id).prefix;
+    callback(prefix);
   }
 
   /**
@@ -280,10 +276,8 @@ class Tools {
    * });
    */
   useServerInfo(id, callback) {
-    db.get(`SELECT use use FROM serverInfo WHERE id = ${id}`, (err, row) => {
-      if (err) return console.log(err);
-      callback(row.use);
-    });
+    const row = db.prepare(`SELECT use use FROM serverInfo WHERE id = ${id}`).get();
+    callback(row.use);
   }
 
   /**
@@ -304,10 +298,8 @@ class Tools {
    * });
    */
   getCommandOptions(id, callback) {
-    db.get(`SELECT everyone everyone, use use FROM commandOptions WHERE id = ${id}`, (err, row) => {
-      if (err) return console.log(err);
-      callback(row.everyone, row.use);
-    });
+    const row = db.prepare(`SELECT everyone everyone, use use FROM commandOptions WHERE id = ${id}`).get();
+    callback(row.everyone, row.use);
   }
 
   /**
@@ -327,25 +319,21 @@ class Tools {
    * });
    */
   getDefaultRole(id, callback) {
-    db.get(`SELECT def def, use use FROM roles WHERE id = ${id}`, (err, row) => {
-      if (err) return console.log(err);
-      callback(row.def, row.use);
-    });
+    const row = db.prepare(`SELECT def def, use use FROM roles WHERE id = ${id}`).get();
+    callback(row.def, row.use);
   }
 
   usingNsfwModules(id) {
     return new Promise(resolve => {
-      db.get(`SELECT use use FROM nsfw WHERE id = ${id}`, (err, row) => {
-        if (err) return console.log(err);
-        switch (row.use) {
-          case 0:
-            resolve(false);
-            break;
-          case 1:
-            resolve(true);
-            break;
-        }
-      });
+      const row = db.prepare(`SELECT use use FROM nsfw WHERE id = ${id}`).get();
+      switch (row.use) {
+        case 0:
+          resolve(false);
+          break;
+        case 1:
+          resolve(true);
+          break;
+      }
     });
   }
 
