@@ -34,7 +34,7 @@ module.exports = {
             return message.channel.send(`${message.author} That user has a higher role than you!`);
         }
         const botRole = message.guild.member(client.user).roles.highest;
-        if (botRole.comparePositionTo(mRole) > 0 || botRole.position === mRole.position) {
+        if (mRole.comparePositionTo(botRole) > 0 || mRole.position === botRole.position) {
             return message.channel.send(`${message.author} That user has a higher role than me!`);
         }
         if (!message.guild.member(mention).kickable) {
