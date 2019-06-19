@@ -149,7 +149,7 @@ module.exports.registerCommands = async (client, mbot, db) => {
     if (command === 'ping') {
       const then = Date.now();
       let uptime = mbot.getUptime().split(':');
-      let hours = uptime[0] === '00' ? '' : uptime[0] + 'hour(s) ';
+      let hours = uptime[0] === '00' ? '' : uptime[0] + ' hour(s) ';
       hours = hours.startsWith('0') ? hours.substr(1) : hours;
       let minutes = uptime[1] === '00' ? '' : uptime[1] + ' minute(s) ';
       minutes = minutes.startsWith('0') ? minutes.substr(1) : minutes;
