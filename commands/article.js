@@ -67,6 +67,8 @@ function handleArticle(message, body) {
     if (!article) {
         return message.channel.send('No articles were found!');
     }
+    article.title = article.title || 'No title found.';
+    article.author = article.author || 'No author found.';
     const embed = new Discord.MessageEmbed()
         .setTitle(article.title)
         .setDescription(article.description)
