@@ -301,6 +301,16 @@ process.on('exit', (code) => {
   Logger.info(`mbot v${pkg.version} has exited with code (${code})`);
 });
 
+const errorStream = require('fs').createWriteStream('logs/errors.log');
+
+process.on('uncaughtException', (err) => {
+  errorStream.write(`[${this.getUptime()}]: ${err.stack}`);
+});
+
+process.on('unhandledRejection', (reason) => {
+  errorStream.write(`[${this.getUptime()}]: ${reason}`);
+});
+
 function exit() {
   return new Promise((resolve, reject) => {
     tls.close().then(() => {
