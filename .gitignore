@@ -6,6 +6,7 @@ out
 mbot.db
 .DS_Store
 logs/mbot.log
+logs/errors.log
 version.txt
 start.bat
 .eslintrc.json

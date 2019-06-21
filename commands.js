@@ -147,9 +147,10 @@ module.exports.registerCommands = async (client, mbot, db) => {
 
     const ppHop = client.emojis.get("572687346529468428");
     if (command === 'ping') {
-      const then = Date.now();
+      const msgTimestamp = message.createdTimestamp;
+      const now = Date.now();
       let uptime = mbot.getUptime().split(':');
-      let hours = uptime[0] === '00' ? '' : uptime[0] + 'hour(s) ';
+      let hours = uptime[0] === '00' ? '' : uptime[0] + ' hour(s) ';
       hours = hours.startsWith('0') ? hours.substr(1) : hours;
       let minutes = uptime[1] === '00' ? '' : uptime[1] + ' minute(s) ';
       minutes = minutes.startsWith('0') ? minutes.substr(1) : minutes;
@@ -157,17 +158,19 @@ module.exports.registerCommands = async (client, mbot, db) => {
       seconds = seconds.startsWith('0') ? seconds.substr(1) : seconds;
       uptime = `${hours}${minutes}${seconds}`;
       let embed = new Discord.MessageEmbed()
-        .setTitle('pong')
+        .setTitle('Pong')
         .setColor(0x2872DB)
         .setDescription(`mbot has been up for: ${uptime}`)
-        .addField('Connection/Reaction Time', ppHop);
+        .addField('Receive', `${now - msgTimestamp}ms ${ppHop}`)
+        .addField('Send', `Loading... ${ppHop}`);
       message.channel.send(embed).then(sent => {
-        const reactionTime = Date.now() - then;
+        const time = Date.now() - now;
         embed = new Discord.MessageEmbed()
-          .setTitle('pong')
+          .setTitle('Pong')
           .setColor(0x2872DB)
           .setDescription(`mbot has been up for: ${uptime}`)
-          .addField('Connection/Reaction Time', reactionTime + ' ms ' + `${ppHop}`);
+          .addField('Receive', `${now - msgTimestamp}ms ${ppHop}`)
+          .addField('Send', `${time}ms ${ppHop}`);
         sent.edit(embed);
       });
     }
