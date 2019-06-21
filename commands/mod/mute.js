@@ -12,14 +12,12 @@ module.exports = {
     name: 'mute',
     usage: `<user> <time?'min','hour'>`,
     description: 'Keeps a player from chatting for specified time.',
+    cooldown: 3,
     args: true,
     minArgs: 2,
     mod: true,
+    permissions: ['KICK_MEMBERS'],
     execute(message, args, client) {
-        const canKick = message.channel.permissionsFor(message.member).has("KICK_MEMBERS");
-        if (!canKick) {
-            return message.channel.send(`${message.author} You do not have permission to use this command!`);
-        }
         if (!this.guilds.has(message.guild.id)) {
             this.guilds.set(message.guild.id, new Discord.Collection());
         }

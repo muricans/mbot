@@ -304,6 +304,34 @@ module.exports.registerCommands = async (client, mbot, db) => {
     }
   }
 
+  function cooldown(comm, message, prefix, args, n) {
+    try {
+      if (!cooldowns.has(comm.name)) {
+        tools.initCooldown(comm.name);
+        cooldowns.set(comm.name, new Discord.Collection());
+      }
+      const now = Date.now();
+      const timestamps = module.exports.getCooldowns(comm.name);
+      module.exports.timestamps = timestamps;
+      const cooldown = (comm.cooldown || 0) * 1000;
+      if (tools.hasCooldown(comm.name, message)) {
+        return message.channel.send(`${message.author} Please wait some time before using this command again!`);
+      }
+      if (timestamps.has(message.author.id)) {
+        const exp = timestamps.get(message.author.id) + cooldown;
+        if (now < exp) {
+          const left = (exp - now) / 1000;
+          return message.channel.send(`${message.author} Please wait ${left.toFixed(1)} second(s) before running that command again!`);
+        }
+      }
+      comm.execute(message, args, client, prefix, db, n);
+      timestamps.set(message.author.id, now);
+      setTimeout(() => timestamps.delete(message.author.id), cooldown);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   function doCommand(comm, message, prefix, args, n) {
     if (comm.args) {
       if (args.length < comm.minArgs) {
@@ -318,37 +346,27 @@ module.exports.registerCommands = async (client, mbot, db) => {
         console.log(err);
       }
     } else {
-      try {
-        tools.initCooldown(comm.name);
-        if (!cooldowns.has(comm.name)) {
-          cooldowns.set(comm.name, new Discord.Collection());
+      if (comm.permissions !== null) {
+        let count = 0;
+        for (let i = 0; i < comm.permissions.length; i++) {
+          const hasPerm = message.channel.permissionsFor(message.member).has(comm.permissions[i]);
+          //console.log(comm.permissions[i], hasPerm);
+          if (hasPerm)
+            count++;
+          else
+            return message.channel.send(`${message.author} You don't have permission to use this command!`);
         }
-        const now = Date.now();
-        const timestamps = module.exports.getCooldowns(comm.name);
-        module.exports.timestamps = timestamps;
-        const cooldown = (comm.cooldown || 0) * 1000;
-        if (tools.hasCooldown(comm.name, message)) {
-          return message.channel.send(`${message.author} Please wait some time before using this command again!`);
-        }
-        if (timestamps.has(message.author.id)) {
-          const exp = timestamps.get(message.author.id) + cooldown;
-          if (now < exp) {
-            const left = (exp - now) / 1000;
-            return message.channel.send(`${message.author} Please wait ${left.toFixed(1)} second(s) before running that command again!`);
-          }
-        }
-        comm.execute(message, args, client, prefix, db, n);
-        timestamps.set(message.author.id, now);
-        setTimeout(() => timestamps.delete(message.author.id), cooldown);
-      } catch (err) {
-        console.log(err);
+        //console.log(count, comm.permissions.length);
+        if (count === comm.permissions.length)
+          return cooldown(comm, message, prefix, args, n);
+      } else {
+        cooldown(comm, message, prefix, args, n);
       }
     }
   }
 
   client.on('message', async message => {
     if (message.guild.id === "264445053596991498") return;
-    if (message.author.bot) return;
     if (!timer.users.has(message.author.id)) {
       timer.users.set(message.author.id, new Discord.Collection());
       const user = timer.users.get(message.author.id);
