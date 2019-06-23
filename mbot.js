@@ -308,7 +308,8 @@ process.on('uncaughtException', (err) => {
 });
 
 process.on('unhandledRejection', (reason) => {
-  errorStream.write(`[${this.getUptime()}]: ${reason}`);
+  errorStream.write(`[${this.getUptime()}]: ${reason}\n`);
+  Logger.error(reason);
 });
 
 function exit() {
