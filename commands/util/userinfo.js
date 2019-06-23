@@ -32,7 +32,10 @@ function info(mention, message) {
     .addField('ID', mention.id)
     .addField('Time of Creation', mention.createdAt)
     .setThumbnail(mention.displayAvatarURL());
-  if (message !== undefined)
+  if (message !== undefined) {
+    const member = message.guild.member(mention);
+    if (!member.roles.array().length || !member.roles.color || !member.roles.color.color) return embed;
     embed.setColor(message.guild.member(mention).roles.color.color);
+  }
   return embed;
 }
