@@ -316,12 +316,12 @@ module.exports.registerCommands = async (client, mbot, db) => {
       const now = Date.now();
       const timestamps = module.exports.getCooldowns(comm.name);
       module.exports.timestamps = timestamps;
-      const cooldown = (comm.cooldown || 0) * 1000;
+      const cldwn = (comm.cooldown || 0) * 1000;
       if (tools.hasCooldown(comm.name, message)) {
         return message.channel.send(`${message.author} Please wait some time before using this command again!`);
       }
       if (timestamps.has(message.author.id)) {
-        const exp = timestamps.get(message.author.id) + cooldown;
+        const exp = timestamps.get(message.author.id) + cldwn;
         if (now < exp) {
           const left = (exp - now) / 1000;
           return message.channel.send(`${message.author} Please wait ${left.toFixed(1)} second(s) before running that command again!`);
@@ -329,7 +329,7 @@ module.exports.registerCommands = async (client, mbot, db) => {
       }
       comm.execute(message, args, client, prefix, db, n);
       timestamps.set(message.author.id, now);
-      setTimeout(() => timestamps.delete(message.author.id), cooldown);
+      setTimeout(() => timestamps.delete(message.author.id), cldwn);
     } catch (err) {
       console.log(err);
     }
@@ -348,23 +348,21 @@ module.exports.registerCommands = async (client, mbot, db) => {
       } catch (err) {
         console.log(err);
       }
-    } else {
-      if (comm.permissions !== null) {
-        let count = 0;
-        for (let i = 0; i < comm.permissions.length; i++) {
-          const hasPerm = message.channel.permissionsFor(message.member).has(comm.permissions[i]);
-          //console.log(comm.permissions[i], hasPerm);
-          if (hasPerm)
-            count++;
-          else
-            return message.channel.send(`${message.author} You don't have permission to use this command!`);
-        }
-        //console.log(count, comm.permissions.length);
-        if (count === comm.permissions.length)
-          return cooldown(comm, message, prefix, args, n);
-      } else {
-        cooldown(comm, message, prefix, args, n);
+    } else if (comm.permissions !== null) {
+      let count = 0;
+      for (let i = 0; i < comm.permissions.length; i++) {
+        const hasPerm = message.channel.permissionsFor(message.member).has(comm.permissions[i]);
+        //console.log(comm.permissions[i], hasPerm);
+        if (hasPerm)
+          count++;
+        else
+          return message.channel.send(`${message.author} You don't have permission to use this command!`);
       }
+      //console.log(count, comm.permissions.length);
+      if (count === comm.permissions.length)
+        return cooldown(comm, message, prefix, args, n);
+    } else {
+      cooldown(comm, message, prefix, args, n);
     }
   }
 
