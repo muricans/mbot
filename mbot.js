@@ -1,3 +1,10 @@
+const figlet = require('figlet');
+const chalk = require('chalk');
+console.log(chalk.magenta(figlet.textSync('mbot', {
+  font: "Doom",
+  horizontalLayout: "full",
+})));
+
 /**
  * @typedef cmds 
  * @property {string} id The guild servers id.
@@ -20,8 +27,6 @@ const tools = require('./tools.js');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const Logger = require('./logger');
-const figlet = require('figlet');
-const chalk = require('chalk');
 const Database = require('./database/database');
 const tls = new tools.Tools();
 
@@ -244,11 +249,6 @@ event.on('editCommand', (command, msg) => {
   command.message = msg;
   Logger.debug(`Command ${command.name}'s message was updated to ${msg}`);
 });
-
-console.log(chalk.magenta(figlet.textSync('mbot', {
-  font: "Doom",
-  horizontalLayout: "full",
-})));
 
 commands.registerCommands(client, this, tls.db);
 
