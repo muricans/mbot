@@ -20,6 +20,15 @@ module.exports = {
       hasTwoArgs = true;
     }
     const hasAdmin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");
+    const canDelOthBot = message.channel.permissionsFor(message.guild.member(client.user)).has("MANAGE_MESSAGES");
+    const hasAdminBot = message.channel.permissionsFor(message.guild.member(client.user)).has("ADMINISTRATOR");
+    if (!canDelOthBot || !hasAdminBot) {
+      return message.channel.send('The bot does not have permission to do this.');
+    }
+    if (!canDelOth) {
+      return message.channel.send(`${message.author} You don't have permission to use this command! ${weirdChamp}`);
+    }
+
     let amnt;
     if (hasTwoArgs) {
       amnt = parseInt(args[1]);

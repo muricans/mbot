@@ -147,7 +147,8 @@ module.exports.registerCommands = async (client, mbot, db) => {
 
     const ppHop = client.emojis.get("572687346529468428");
     if (command === 'ping') {
-      const then = Date.now();
+      const msgTimestamp = message.createdTimestamp;
+      const now = Date.now();
       let uptime = mbot.getUptime().split(':');
       let hours = uptime[0] === '00' ? '' : uptime[0] + ' hour(s) ';
       hours = hours.startsWith('0') ? hours.substr(1) : hours;
@@ -157,17 +158,19 @@ module.exports.registerCommands = async (client, mbot, db) => {
       seconds = seconds.startsWith('0') ? seconds.substr(1) : seconds;
       uptime = `${hours}${minutes}${seconds}`;
       let embed = new Discord.MessageEmbed()
-        .setTitle('pong')
+        .setTitle('Pong')
         .setColor(0x2872DB)
         .setDescription(`mbot has been up for: ${uptime}`)
-        .addField('Connection/Reaction Time', ppHop);
+        .addField('Receive', `${now - msgTimestamp}ms ${ppHop}`)
+        .addField('Send', `Loading... ${ppHop}`);
       message.channel.send(embed).then(sent => {
-        const reactionTime = Date.now() - then;
+        const time = Date.now() - now;
         embed = new Discord.MessageEmbed()
-          .setTitle('pong')
+          .setTitle('Pong')
           .setColor(0x2872DB)
           .setDescription(`mbot has been up for: ${uptime}`)
-          .addField('Connection/Reaction Time', reactionTime + ' ms ' + ppHop);
+          .addField('Receive', `${now - msgTimestamp}ms ${ppHop}`)
+          .addField('Send', `${time}ms ${ppHop}`);
         sent.edit(embed);
       });
     }
@@ -366,7 +369,6 @@ module.exports.registerCommands = async (client, mbot, db) => {
   }
 
   client.on('message', async message => {
-    if (message.guild.id === "264445053596991498") return;
     if (!timer.users.has(message.author.id)) {
       timer.users.set(message.author.id, new Discord.Collection());
       const user = timer.users.get(message.author.id);
@@ -391,6 +393,8 @@ module.exports.registerCommands = async (client, mbot, db) => {
       }
       return;
     }
+    if (message.author.bot) return;
+    if (message.guild.id === "264445053596991498") return;
     if (!mute.guilds.has(message.guild.id)) {
       mute.guilds.set(message.guild.id, new Discord.Collection());
     }

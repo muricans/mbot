@@ -71,8 +71,8 @@ event.on('ready', () => {
   for (const i in client.guilds.array()) {
     const guild = client.guilds.array()[i];
     tls.initDb(guild);
-    tls._pointsClear24(guild);
   }
+  tls._pointsClear24(client);
   db.prepare('SELECT id id, name name, message message FROM commands').all().forEach(row => {
     if (!row) return;
     this.cCommands.push({
@@ -120,14 +120,9 @@ client.on('guildCreate', (guild) => {
 });
 
 client.on('guildDelete', (guild) => {
-  db.prepare('DELETE FROM commands WHERE id = ?').run(guild.id);
-  db.prepare('DELETE FROM prefix WHERE id = ?').run(guild.id);
-  db.prepare('DELETE FROM nsfw WHERE id = ?').run(guild.id);
-  db.prepare('DELETE FROM leaveMessage WHERE id = ?').run(guild.id);
-  db.prepare('DELETE FROM welcomeMessage WHERE id = ?').run(guild.id);
-  db.prepare('DELETE FROM serverInfo WHERE id = ?').run(guild.id);
-  db.prepare('DELETE FROM commandOptions WHERE id = ?').run(guild.id);
-  db.prepare('DELETE FROM roles WHERE id = ?').run(guild.id);
+  tls.deleteGuild(guild).then(() => {
+    tls._pointsClear24(client);
+  });
 });
 
 client.on('guildMemberAdd', (guildMember) => {
@@ -199,10 +194,7 @@ client.on('ready', async () => {
     }
   }, 1000);
   setInterval(() => {
-    for (let i = 0; i < client.guilds.array().length; i++) {
-      const guild = client.guilds.array()[i];
-      tls._pointsClear24(guild);
-    }
+    tls._pointsClear24(client);
   }, (1440 * 60000));
 });
 
@@ -307,6 +299,16 @@ event.on('nsfwUpdate', (use, guildId) => {
 
 process.on('exit', (code) => {
   Logger.info(`mbot v${pkg.version} has exited with code (${code})`);
+});
+
+const errorStream = require('fs').createWriteStream('logs/errors.log');
+
+process.on('uncaughtException', (err) => {
+  errorStream.write(`[${this.getUptime()}]: ${err.stack}`);
+});
+
+process.on('unhandledRejection', (reason) => {
+  errorStream.write(`[${this.getUptime()}]: ${reason}`);
 });
 
 function exit() {

@@ -13,6 +13,13 @@ module.exports = {
     mod: true,
     permissions: ['BAN_MEMBERS'],
     execute(message, args, client) {
+        const canBan = message.channel.permissionsFor(message.member).has('BAN_MEMBERS');
+        const canBanBot = message.channel.permissionsFor(message.guild.member(client.user)).has("BAN_MEMBERS");
+        if (!canBanBot)
+            return message.channel.send('The bot does not have permission to do this.');
+        if (!canBan) {
+            return message.channel.send(`${message.author} You don't have permission to use this command!`);
+        }
         const mention = tools.parseMention(args[0], client);
         if (!mention) {
             return message.channel.send(`${message.author} Could not find that user!`);
@@ -22,24 +29,26 @@ module.exports = {
         if (mRole.comparePositionTo(role) > 0 || mRole.position === role.position) {
             return message.channel.send(`${message.author} That user has a higher role than you!`);
         }
+        const botRole = message.guild.member(client.user).roles.highest;
+        if (mRole.comparePositionTo(botRole) > 0 || mRole.position === botRole.position) {
+            return message.channel.send(`${message.author} That user has a higher role than me!`);
+        }
         if (args.length === 1) {
-            return message.member.ban(mention, {
-                days: 0,
+            return message.guild.member(mention).ban({
                 reason: `Banned by ${message.author.username}`,
             }).then((member) => {
                 return message.channel.send(`${message.author} Banned user ${member.user}`);
             }).catch((err) => {
-                if (err) return console.log(err);
+                return console.log(err);
             });
         } else if (args.length > 1) {
             const reason = args.slice(1, args.length).join(' ');
-            return message.member.ban(mention, {
-                days: 0,
+            return message.guild.member(mention).ban({
                 reason: `Banned by ${message.author.username} Reason: ${reason}`,
             }).then((member) => {
                 return message.channel.send(`${message.author} Banned user ${member.user}\nReason: ${reason}`);
             }).catch((err) => {
-                if (err) return console.log(err);
+                return console.log(err);
             });
         }
     },

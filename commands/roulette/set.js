@@ -11,7 +11,7 @@ module.exports = {
   roulette: true,
   execute(message, args, client) {
     const mention = tools.parseMention(args[0], client);
-    if (!mention) {
+    if (!mention || mention.bot) {
       return message.reply('That user does not exist!');
     }
     const amnt = parseInt(args[1]);
