@@ -1,3 +1,10 @@
+const figlet = require('figlet');
+const chalk = require('chalk');
+console.log(chalk.magenta(figlet.textSync('mbot', {
+  font: "Doom",
+  horizontalLayout: "full",
+})));
+
 /**
  * @typedef cmds 
  * @property {string} id The guild servers id.
@@ -20,10 +27,12 @@ const tools = require('./tools.js');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const Logger = require('./logger');
-const figlet = require('figlet');
-const chalk = require('chalk');
 const Database = require('./database/database');
 const tls = new tools.Tools();
+
+process.on('exit', (code) => {
+  Logger.info(`mbot v${pkg.version} has exited with code (${code})`);
+});
 
 if (settings.token === "YOURTOKEN" || !settings.token.length) {
   Logger.error('Please add your token to the bot!');
@@ -245,11 +254,6 @@ event.on('editCommand', (command, msg) => {
   Logger.debug(`Command ${command.name}'s message was updated to ${msg}`);
 });
 
-console.log(chalk.magenta(figlet.textSync('mbot', {
-  font: "Doom",
-  horizontalLayout: "full",
-})));
-
 commands.registerCommands(client, this, tls.db);
 
 process.openStdin().on('data', (val) => {
@@ -257,7 +261,7 @@ process.openStdin().on('data', (val) => {
   switch (command.toLowerCase()) {
     case "stop":
       Logger.info('Stopping mbot...');
-      event.emit('stop');
+      event.emit('stop', 0);
       break;
     case "version":
       require('fs').readFile('./version.txt', 'utf8', (err, data) => {
@@ -278,9 +282,9 @@ process.openStdin().on('data', (val) => {
   }
 });
 
-event.on('stop', () => {
+event.on('stop', (code) => {
   exit().then(() => {
-    process.exit(0);
+    process.exit(code);
   }).catch(err => {
     Logger.error(err.stack);
     process.exit(1);
@@ -297,10 +301,6 @@ event.on('nsfwUpdate', (use, guildId) => {
   guildUse.use = use;
 });
 
-process.on('exit', (code) => {
-  Logger.info(`mbot v${pkg.version} has exited with code (${code})`);
-});
-
 const errorStream = require('fs').createWriteStream('logs/errors.log');
 
 process.on('uncaughtException', (err) => {
@@ -308,7 +308,8 @@ process.on('uncaughtException', (err) => {
 });
 
 process.on('unhandledRejection', (reason) => {
-  errorStream.write(`[${this.getUptime()}]: ${reason}`);
+  errorStream.write(`[${this.getUptime()}]: ${reason}\n`);
+  Logger.error(reason);
 });
 
 function exit() {

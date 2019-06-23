@@ -352,13 +352,11 @@ module.exports.registerCommands = async (client, mbot, db) => {
       let count = 0;
       for (let i = 0; i < comm.permissions.length; i++) {
         const hasPerm = message.channel.permissionsFor(message.member).has(comm.permissions[i]);
-        //console.log(comm.permissions[i], hasPerm);
         if (hasPerm)
           count++;
         else
           return message.channel.send(`${message.author} You don't have permission to use this command!`);
       }
-      //console.log(count, comm.permissions.length);
       if (count === comm.permissions.length)
         return cooldown(comm, message, prefix, args, n);
     } else {
