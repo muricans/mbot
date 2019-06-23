@@ -9,19 +9,16 @@ module.exports = {
   description: 'Deletes a specified amount of messages for a user [admin only]',
   cooldown: 1,
   mod: true,
+  permissions: ['MANAGE_MESSAGES'],
   execute(message, args, client) {
     const weirdChamp = client.emojis.get("572690273247821824");
     let hasTwoArgs;
-
     if (args.length === 1) {
       hasTwoArgs = false;
     }
-
     if (args.length > 1) {
       hasTwoArgs = true;
     }
-
-    const canDelOth = message.channel.permissionsFor(message.member).has("MANAGE_MESSAGES");
     const hasAdmin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");
     const canDelOthBot = message.channel.permissionsFor(message.guild.member(client.user)).has("MANAGE_MESSAGES");
     const hasAdminBot = message.channel.permissionsFor(message.guild.member(client.user)).has("ADMINISTRATOR");

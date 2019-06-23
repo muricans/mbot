@@ -9,7 +9,9 @@ module.exports = {
     description: 'Bans specified user',
     args: true,
     minArgs: 1,
+    cooldown: 5,
     mod: true,
+    permissions: ['BAN_MEMBERS'],
     execute(message, args, client) {
         const canBan = message.channel.permissionsFor(message.member).has('BAN_MEMBERS');
         const canBanBot = message.channel.permissionsFor(message.guild.member(client.user)).has("BAN_MEMBERS");

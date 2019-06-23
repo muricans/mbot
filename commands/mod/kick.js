@@ -7,9 +7,11 @@ module.exports = {
     name: 'kick',
     usage: '<player> [reason]',
     description: 'Kicks specified user',
+    cooldown: 3,
     args: true,
     minArgs: 1,
     mod: true,
+    permissions: ['KICK_MEMBERS'],
     execute(message, args, client) {
         const canKick = message.channel.permissionsFor(message.member).has('KICK_MEMBERS');
         if (!canKick) {

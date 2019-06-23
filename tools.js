@@ -519,7 +519,7 @@ class Tools {
    */
   handleSubredditImage(image, title, subreddit, up, randomEmoji, message) {
     if (this.end(image)) {
-      if (image.includes('.gifv')) {
+      if (image.endsWith('.gifv')) {
         image = image.substr(0, image.length - 1);
       }
       const embed = new Discord.MessageEmbed()
@@ -528,34 +528,7 @@ class Tools {
         .setFooter("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
       message.channel.send(embed);
     } else {
-      message.channel.send(title);
-      message.channel.send(image);
-      message.channel.send("Subreddit: " + subreddit + " " + randomEmoji + " Requested by: " + message.author.username + " 🔼 " + up);
-    }
-  }
-
-  /**
-   * @deprecated Most of the imgur links it sends are dead links, it's very unreliable.
-   * @see #imgur
-   * @see #gallery
-   * 
-   * @description Get a random imgur image
-   * @param {Discord.Message} message The message to respond to.
-   */
-  async getImage(message) {
-    try {
-      const {
-        body,
-      } = await snekfetch
-        .get('https://imgur.com/gallery/random.json')
-        .query({
-          limit: 4000,
-        });
-      const rn = Math.floor(Math.random() * body.data.length);
-      const imageData = body.data[rn].hash;
-      message.channel.send('https://i.imgur.com/' + imageData);
-    } catch (err) {
-      console.log(err);
+      message.channel.send(`${title}\n${image}\nSubreddit: ${subreddit} ${randomEmoji} Requested by: ${message.author.username} 🔼 ${up}`);
     }
   }
 
