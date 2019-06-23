@@ -9,7 +9,7 @@ module.exports = {
     args: true,
     minArgs: 1,
     mod: true,
-    permissions: ['KICK_MEMBERS', 'ADMINISTRATOR'],
+    permissions: ['KICK_MEMBERS'],
     execute(message, args, client) {
         const mention = tools.parseMention(args[0], client);
         if (!mention) {

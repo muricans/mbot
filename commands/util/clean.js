@@ -25,9 +25,6 @@ module.exports = {
     if (!canDelOthBot || !hasAdminBot) {
       return message.channel.send('The bot does not have permission to do this.');
     }
-    if (!canDelOth) {
-      return message.channel.send(`${message.author} You don't have permission to use this command! ${weirdChamp}`);
-    }
 
     let amnt;
     if (hasTwoArgs) {

@@ -13,10 +13,6 @@ module.exports = {
     mod: true,
     permissions: ['KICK_MEMBERS'],
     execute(message, args, client) {
-        const canKick = message.channel.permissionsFor(message.member).has('KICK_MEMBERS');
-        if (!canKick) {
-            return message.channel.send(`${message.author} You don't have permission to use this command!`);
-        }
         const canKickBot = message.channel.permissionsFor(message.guild.member(client.user)).has('KICK_MEMBERS');
         if (!canKickBot) {
             return message.channel.send('The bot does not have permission to do this.');
