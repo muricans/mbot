@@ -8,44 +8,31 @@ module.exports = {
   description: `Returns the designated user's info`,
   async execute(message, args, client) {
     if (args.length === 0) {
-      const embed = new Discord.MessageEmbed()
-        .setAuthor(message.author.username)
-        .setDescription('User info is being displayed.')
-        .addField('Full Username', `${message.author.username}#${message.author.discriminator}`)
-        .addField('ID', message.author.id)
-        .addField('Time of Creation', message.author.createdAt)
-        .addField('Avatar URL', message.author.avatarURL())
-        .setThumbnail(message.author.avatarURL());
-      return message.channel.send(embed);
-    }
-    if (isNaN(args[0])) {
+      return message.channel.send(info(message.author, message));
+    } else if (isNaN(args[0])) {
       const mention = tools.parseMention(args[0], client);
-      if (!mention) {
+      if (!mention) return message.channel.send(`${message.author} Could not find that user!`);
+      return message.channel.send(info(mention, message));
+    } else if (!isNaN(args[0])) {
+      try {
+        const mention = await client.users.fetch(args[0], false);
+        return message.channel.send(info(mention));
+      } catch (err) {
         return message.channel.send(`${message.author} Could not find that user!`);
       }
-      const embed = new Discord.MessageEmbed()
-        .setAuthor(mention.username)
-        .setDescription('User info is being displayed.')
-        .addField('Full Username', `${mention.username}#${mention.discriminator}`)
-        .addField('ID', mention.id)
-        .addField('Time of Creation', mention.createdAt)
-        .addField('Avatar URL', mention.avatarURL())
-        .setThumbnail(mention.avatarURL());
-      tools.addCooldown(module.exports.name, 5, message);
-      return message.channel.send(embed);
-    } else if (!isNaN(args[0])) {
-      const mention = await client.users.fetch(args[0], false);
-      if (!mention) return message.channel.send('Could not find that user!');
-      const embed = new Discord.MessageEmbed()
-        .setAuthor(mention.username)
-        .setDescription('User info is being displayed.')
-        .addField('Full Username', `${mention.username}#${mention.discriminator}`)
-        .addField('ID', mention.id)
-        .addField('Time of Creation', mention.createdAt)
-        .addField('Avatar URL', mention.avatarURL())
-        .setThumbnail(mention.avatarURL());
-      tools.addCooldown(this.name, 5, message);
-      return message.channel.send(embed);
     }
   },
 };
+
+function info(mention, message) {
+  const embed = new Discord.MessageEmbed()
+    .setAuthor(`${mention.username}#${mention.discriminator}`)
+    .setDescription('User info is being displayed');
+  embed
+    .addField('ID', mention.id)
+    .addField('Time of Creation', mention.createdAt)
+    .setThumbnail(mention.displayAvatarURL());
+  if (message !== undefined)
+    embed.setColor(message.guild.member(mention).roles.color.color);
+  return embed;
+}
