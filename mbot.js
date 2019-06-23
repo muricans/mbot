@@ -30,6 +30,10 @@ const Logger = require('./logger');
 const Database = require('./database/database');
 const tls = new tools.Tools();
 
+process.on('exit', (code) => {
+  Logger.info(`mbot v${pkg.version} has exited with code (${code})`);
+});
+
 if (settings.token === "YOURTOKEN" || !settings.token.length) {
   Logger.error('Please add your token to the bot!');
   return process.exit(1);
@@ -257,7 +261,7 @@ process.openStdin().on('data', (val) => {
   switch (command.toLowerCase()) {
     case "stop":
       Logger.info('Stopping mbot...');
-      event.emit('stop');
+      event.emit('stop', 0);
       break;
     case "version":
       require('fs').readFile('./version.txt', 'utf8', (err, data) => {
@@ -278,9 +282,9 @@ process.openStdin().on('data', (val) => {
   }
 });
 
-event.on('stop', () => {
+event.on('stop', (code) => {
   exit().then(() => {
-    process.exit(0);
+    process.exit(code);
   }).catch(err => {
     Logger.error(err.stack);
     process.exit(1);
@@ -295,10 +299,6 @@ event.on('prefixUpdate', (prefix, guildId) => {
 event.on('nsfwUpdate', (use, guildId) => {
   const guildUse = this.nsfw.find(guild => guild.id === guildId);
   guildUse.use = use;
-});
-
-process.on('exit', (code) => {
-  Logger.info(`mbot v${pkg.version} has exited with code (${code})`);
 });
 
 const errorStream = require('fs').createWriteStream('logs/errors.log');
