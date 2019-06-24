@@ -13,13 +13,9 @@ module.exports = {
     mod: true,
     permissions: ['BAN_MEMBERS'],
     execute(message, args, client) {
-        const canBan = message.channel.permissionsFor(message.member).has('BAN_MEMBERS');
         const canBanBot = message.channel.permissionsFor(message.guild.member(client.user)).has("BAN_MEMBERS");
         if (!canBanBot)
             return message.channel.send('The bot does not have permission to do this.');
-        if (!canBan) {
-            return message.channel.send(`${message.author} You don't have permission to use this command!`);
-        }
         const mention = tools.parseMention(args[0], client);
         if (!mention) {
             return message.channel.send(`${message.author} Could not find that user!`);

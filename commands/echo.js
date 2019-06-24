@@ -6,12 +6,8 @@ module.exports = {
   args: true,
   minArgs: 1,
   mod: true,
-  async execute(message, args, client) {
-    const weirdChamp = client.emojis.get("572690273247821824");
-    const hasAdmin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");
-    if (!hasAdmin) {
-      return message.channel.send(`${message.author}` + " You don't have permission to use this command! " + weirdChamp);
-    }
+  permissions: ['ADMINISTRATOR'],
+  async execute(message, args) {
     const echo = args.join(' ');
     await message.channel.send(echo);
   },

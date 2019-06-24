@@ -9,12 +9,8 @@ module.exports = {
   args: true,
   minArgs: 1,
   mod: true,
+  permissions: ['ADMINISTRATOR'],
   execute(message, args, client, prefix, db) {
-    const weirdChamp = client.emojis.get("572690273247821824");
-    const hasAdmin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");
-    if (!hasAdmin) {
-      return message.channel.send(`${message.author}` + " You don't have permission to use this command! " + weirdChamp);
-    }
     const cmds = cCommands.filter(cmd => cmd.id === message.guild.id);
     const exists = cmds.find(cmd => cmd.name === args[0].toLowerCase());
     if (!exists) {
