@@ -113,7 +113,6 @@ event.on('ready', () => {
       user.send(`Your timer '${timerName}' has finished!`);
     }).catch();
   });
-  db.close();
 });
 
 client.on('guildCreate', (guild) => {
@@ -299,17 +298,6 @@ event.on('prefixUpdate', (prefix, guildId) => {
 event.on('nsfwUpdate', (use, guildId) => {
   const guildUse = this.nsfw.find(guild => guild.id === guildId);
   guildUse.use = use;
-});
-
-const errorStream = require('fs').createWriteStream('logs/errors.log');
-
-process.on('uncaughtException', (err) => {
-  errorStream.write(`[${this.getUptime()}]: ${err.stack}`);
-});
-
-process.on('unhandledRejection', (reason) => {
-  errorStream.write(`[${this.getUptime()}]: ${reason}\n`);
-  Logger.error(reason);
 });
 
 function exit() {
