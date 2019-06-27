@@ -64,9 +64,7 @@ module.exports.nsfw = [];
 
 const db = new Database('./mbot.db').db;
 
-let seconds = 0;
-let minutes = 0;
-let hours = 0;
+const startTime = Date.now();
 db.prepare('CREATE TABLE if not exists users(id TEXT, points INTEGER, UNIQUE(id))').run();
 db.prepare('CREATE TABLE if not exists welcomeMessage(id TEXT, use INTEGER, message TEXT, channel TEXT, UNIQUE(id))').run();
 db.prepare('CREATE TABLE if not exists leaveMessage(id TEXT, use INTEGER, message TEXT, channel TEXT, UNIQUE(id))').run();
@@ -190,18 +188,6 @@ client.on('ready', async () => {
     tls._points10(client);
   }, (10 * 60000));
   setInterval(() => {
-    seconds++;
-    if (seconds >= 60) {
-      seconds = 0;
-      minutes++;
-      event.emit('uptimeMinute');
-      if (minutes >= 60) {
-        minutes = 0;
-        hours++;
-      }
-    }
-  }, 1000);
-  setInterval(() => {
     tls._pointsClear24(client);
   }, (1440 * 60000));
 });
@@ -211,6 +197,11 @@ client.on('ready', async () => {
  * @returns {string}
  */
 module.exports.getUptime = () => {
+  const uptime = Date.now() - startTime;
+  let seconds = Math.floor(uptime / 1000);
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor(seconds / 60);
+  seconds = Math.floor((seconds % 3600) % 60);
   const h = hours < 10 ? "0" + hours : hours;
   const m = minutes < 10 ? "0" + minutes : minutes;
   const s = seconds < 10 ? "0" + seconds : seconds;
@@ -221,12 +212,12 @@ module.exports.getUptime = () => {
 const games = ['Minecraft', 'forsenPls', 'nymnBridge PewDiePie', 'wow',
   'This bot was made by me 😃', 'help me',
 ];
-event.on('uptimeMinute', () => {
+setInterval(() => {
   const randomStatus = games[Math.floor(Math.random() * games.length)];
   client.user.setActivity(randomStatus, {
     type: 'PLAYING',
   });
-});
+}, 60000);
 
 event.on('filesLoaded', () => {
   Logger.file('Command files loaded!');
@@ -304,6 +295,7 @@ function exit() {
   return new Promise((resolve, reject) => {
     tls.close().then(() => {
       try {
+        db.close();
         client.voice.connections.array().map(val => val.disconnect());
         client.destroy();
         return resolve();
