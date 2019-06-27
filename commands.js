@@ -134,7 +134,7 @@ module.exports.registerCommands = (client, mbot, db) => {
   }
   nCmds.sort((a, b) => (a.name > b.name) ? 1 : -1);
 
-  async function handleOther(command, message, args) {
+  async function handleOther(command, message) {
     if (command === 'test') {
       message.channel.send("Test recieved").then(async sent => {
         sent.react("🔼");
