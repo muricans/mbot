@@ -8,13 +8,8 @@ module.exports = {
   args: true,
   minArgs: 1,
   mod: true,
+  permissions: ['ADMINISTRATOR'],
   execute(message, args, client, prefix, db) {
-    const weirdChamp = client.emojis.get("572690273247821824");
-
-    const hasAdmin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");
-    if (!hasAdmin) {
-      return message.channel.send(`${message.author}` + " You don't have permission to use this command! " + weirdChamp);
-    }
     const newPrefix = args[0].toString();
     mbot.event.emit('prefixUpdate', newPrefix, message.guild.id);
     db.prepare(`UPDATE prefix SET prefix = ? WHERE id = ?`).run(newPrefix, message.guild.id);

@@ -13,6 +13,12 @@ module.exports.getCooldowns = (key) => {
   return cooldowns.get(key);
 };
 
+/**
+ * Scan for commands in a directory.
+ * 
+ * @param {string} dir Directory to scan for commands
+ * @param {Discord.Collection} insert The collection to set command data in.
+ */
 function scanComamnds(dir, insert) {
   const files = fs.readdirSync(dir);
   for (const file of files) {
@@ -44,7 +50,7 @@ function scanComamnds(dir, insert) {
  * @param {Discord.Client} client The bots client.
  * @param mbot mbot main script.
  */
-module.exports.registerCommands = async (client, mbot, db) => {
+module.exports.registerCommands = (client, mbot, db) => {
   client.commands = new Discord.Collection();
   scanComamnds('./commands', client.commands);
   client.commands.set('meme', {
@@ -128,7 +134,7 @@ module.exports.registerCommands = async (client, mbot, db) => {
   }
   nCmds.sort((a, b) => (a.name > b.name) ? 1 : -1);
 
-  async function handleOther(command, message, args) {
+  async function handleOther(command, message) {
     if (command === 'test') {
       message.channel.send("Test recieved").then(async sent => {
         sent.react("🔼");
@@ -274,17 +280,12 @@ module.exports.registerCommands = async (client, mbot, db) => {
           });
           message.channel.stopTyping(true);
           break;
-          // rule34 code different than others
         case "rule34":
           message.channel.startTyping();
-          if (!args.length) {
-            tools.search(rule34[Math.floor(Math.random() * rule34.length)], 'all', message, true);
-            message.delete({
-              timeout: 1000,
-            });
-            return message.channel.stopTyping(true);
-          }
-          tools.find(rule34[Math.floor(Math.random() * rule34.length)], args.toString().replace(' ', '+'), 'all', message, true);
+          tools.search(rule34[Math.floor(Math.random() * rule34.length)], 'all', message, true);
+          message.delete({
+            timeout: 1000,
+          });
           message.channel.stopTyping(true);
           break;
         case "thighs":

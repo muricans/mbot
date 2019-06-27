@@ -9,14 +9,11 @@ module.exports = {
     args: true,
     minArgs: 2,
     mod: true,
+    permissions: ['ADMINISTRATOR'],
     execute(message, args, client, prefix, db) {
         //0=moduleName
         //1=moduleOption
         //2=setTo
-        const hasAdmin = message.channel.permissionsFor(message.member).has("ADMINISTRATOR");
-        if (!hasAdmin) {
-            return message.channel.send(`${message.author} You don't have permission to use this command!`);
-        }
         switch (args[0].toLowerCase()) {
             case "welcomemessage":
                 switch (args[1]) {
