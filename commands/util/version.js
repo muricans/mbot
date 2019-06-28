@@ -17,7 +17,7 @@ module.exports = {
                 .addField('Version', `v${pkg.version}`, true)
                 .addField('Author', 'muricans', true)
                 .addField('Repository', '[GitHub](https://github.com/muricans/mbot)', true)
-                .addField('Documentation', '[Here](https://muricans.github.io/)', true)
+                .addField('Documentation', '[Here](https://muricans.github.io/mbot/docs)', true)
                 .setFooter(`Git commit: ${data}`, 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png');
             message.channel.send(embed);
         });
