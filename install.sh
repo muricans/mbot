@@ -3,7 +3,7 @@ npm install
 chmod +x update.sh
 chmod +x start.sh
 
-curl https://muricans.github.io/settings.json -o settings.json
+curl https://muricans.github.io/mbot/files/settings.json -o settings.json
 
 git show --format="%h" --no-patch > version.txt
 
