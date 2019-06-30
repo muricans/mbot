@@ -127,21 +127,23 @@ class Tools {
    * @returns {Promise<users[]>}
    */
   pointsUsers() {
-    return new Promise(async resolve => {
-      const rows = db.prepare('SELECT points, id FROM users').all();
-      const points =
-        new Promise(resolve => {
-          const users = [];
-          rows.forEach((val, i, arr) => {
-            users.push({
-              id: arr[i].id,
-              points: arr[i].points,
+    return new Promise(resolve => {
+      setImmediate(async () => {
+        const rows = db.prepare('SELECT points, id FROM users').all();
+        const points =
+          new Promise(resolve => {
+            const users = [];
+            rows.forEach((val, i, arr) => {
+              users.push({
+                id: arr[i].id,
+                points: arr[i].points,
+              });
             });
+            return resolve(users);
           });
-          return resolve(users);
-        });
-      const pts = await points;
-      resolve(pts);
+        const pts = await points;
+        resolve(pts);
+      });
     });
   }
 
@@ -184,33 +186,37 @@ class Tools {
   }
 
   _points10(client) {
-    return new Promise(async resolve => {
-      const users = await this.pointsUsers();
-      for (let i = 0; i < users.length; i++) {
-        const user = this.users(client).find(usr => usr.id === users[i].id);
-        if (!user || user.bot) continue;
-        const current = users[i].points;
-        this.setPoints(current + 10, user.id);
-      }
-      resolve();
+    return new Promise(resolve => {
+      setImmediate(async () => {
+        const users = await this.pointsUsers();
+        for (let i = 0; i < users.length; i++) {
+          const user = this.users(client).find(usr => usr.id === users[i].id);
+          if (!user || user.bot) continue;
+          const current = users[i].points;
+          this.setPoints(current + 10, user.id);
+        }
+        resolve();
+      });
     });
   }
 
   deleteGuild(guild) {
     return new Promise(resolve => {
-      db.prepare('DELETE FROM commands WHERE id = ?').run(guild.id);
-      db.prepare('DELETE FROM prefix WHERE id = ?').run(guild.id);
-      db.prepare('DELETE FROM nsfw WHERE id = ?').run(guild.id);
-      db.prepare('DELETE FROM leaveMessage WHERE id = ?').run(guild.id);
-      db.prepare('DELETE FROM welcomeMessage WHERE id = ?').run(guild.id);
-      db.prepare('DELETE FROM serverInfo WHERE id = ?').run(guild.id);
-      db.prepare('DELETE FROM commandOptions WHERE id = ?').run(guild.id);
-      db.prepare('DELETE FROM roles WHERE id = ?').run(guild.id);
-      const prefix = mbot.prefixes.find(g => g.id === guild.id);
-      const n = mbot.nsfw.find(g => g.id === guild.id);
-      mbot.prefixes.splice(mbot.prefixes.indexOf(prefix), 1);
-      mbot.nsfw.splice(mbot.nsfw.indexOf(n), 1);
-      resolve();
+      setImmediate(() => {
+        db.prepare('DELETE FROM commands WHERE id = ?').run(guild.id);
+        db.prepare('DELETE FROM prefix WHERE id = ?').run(guild.id);
+        db.prepare('DELETE FROM nsfw WHERE id = ?').run(guild.id);
+        db.prepare('DELETE FROM leaveMessage WHERE id = ?').run(guild.id);
+        db.prepare('DELETE FROM welcomeMessage WHERE id = ?').run(guild.id);
+        db.prepare('DELETE FROM serverInfo WHERE id = ?').run(guild.id);
+        db.prepare('DELETE FROM commandOptions WHERE id = ?').run(guild.id);
+        db.prepare('DELETE FROM roles WHERE id = ?').run(guild.id);
+        const prefix = mbot.prefixes.find(g => g.id === guild.id);
+        const n = mbot.nsfw.find(g => g.id === guild.id);
+        mbot.prefixes.splice(mbot.prefixes.indexOf(prefix), 1);
+        mbot.nsfw.splice(mbot.nsfw.indexOf(n), 1);
+        resolve();
+      });
     });
   }
 
@@ -219,15 +225,17 @@ class Tools {
    * @param {Discord.Client} client 
    */
   _pointsClear24(client) {
-    return new Promise(async resolve => {
-      const users = await this.pointsUsers();
-      for (let i = 0; i < users.length; i++) {
-        const exists = client.users.find(user => user.id === users[i].id);
-        if (!exists || exists.bot) {
-          db.prepare('DELETE FROM users WHERE id = ?').run(users[i].id);
+    return new Promise(resolve => {
+      setImmediate(async () => {
+        const users = await this.pointsUsers();
+        for (let i = 0; i < users.length; i++) {
+          const exists = client.users.find(user => user.id === users[i].id);
+          if (!exists || exists.bot) {
+            db.prepare('DELETE FROM users WHERE id = ?').run(users[i].id);
+          }
         }
-      }
-      resolve();
+        resolve();
+      });
     });
   }
 
@@ -238,16 +246,20 @@ class Tools {
    */
   getPoints(id) {
     return new Promise((resolve) => {
-      const row = db.prepare('SELECT points FROM users WHERE id = ' + id).get();
-      return resolve(row.points);
+      setImmediate(() => {
+        const row = db.prepare('SELECT points FROM users WHERE id = ' + id).get();
+        return resolve(row.points);
+      });
     });
   }
 
   pointsExist(id) {
     return new Promise(resolve => {
-      const row = db.prepare('SELECT points FROM users WHERE id = ' + id).get();
-      if (row === undefined) return resolve(false);
-      else return resolve(true);
+      setImmediate(() => {
+        const row = db.prepare('SELECT points FROM users WHERE id = ' + id).get();
+        if (row === undefined) return resolve(false);
+        else return resolve(true);
+      });
     });
   }
 
