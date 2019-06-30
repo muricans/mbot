@@ -304,7 +304,15 @@ class Tools {
    */
   getPrefix(id, callback) {
     const prefix = mbot.prefixes.find(guild => guild.id === id).prefix;
-    callback(prefix);
+    if (!prefix) {
+      mbot.prefixes.push({
+        id: id,
+        prefix: 'm!',
+      });
+      callback('m!');
+    } else {
+      callback(prefix);
+    }
   }
 
   /**
