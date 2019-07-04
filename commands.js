@@ -349,7 +349,7 @@ module.exports.registerCommands = (client, mbot, db) => {
       } catch (err) {
         console.log(err);
       }
-    } else if (comm.permissions !== null) {
+    } else if (comm.permissions !== undefined) {
       let count = 0;
       for (let i = 0; i < comm.permissions.length; i++) {
         const hasPerm = message.channel.permissionsFor(message.member).has(comm.permissions[i]);

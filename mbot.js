@@ -101,7 +101,6 @@ client.on('guildCreate', (guild) => {
     guild.leave();
   else {
     tls.initDb(guild);
-    tls.initDb(guild);
     this.prefixes.push({
       "id": guild.id,
       "prefix": "m!",
