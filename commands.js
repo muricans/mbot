@@ -390,7 +390,6 @@ module.exports.registerCommands = (client, mbot, db) => {
       }
       return;
     }
-    if (message.author.bot) return;
     if (message.guild.id === "264445053596991498") return;
     if (!mute.guilds.has(message.guild.id)) {
       mute.guilds.set(message.guild.id, new Discord.Collection());

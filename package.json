@@ -1,6 +1,6 @@
 {
   "name": "mbot",
-  "version": "8.0.0",
+  "version": "8.0.1",
   "description": "Discord bot",
   "main": "mbot.js",
   "scripts": {
@@ -16,9 +16,11 @@
     "discord-embedbuilder": "^2.3.1",
     "discord.js": "github:discordjs/discord.js",
     "discord.js-commando": "^0.9.0",
-    "eslint": "^5.16.0",
     "figlet": "^1.2.3",
     "newsapi": "^2.4.0",
     "snekfetch": "^4.0.4"
+  },
+  "devDependencies": {
+    "eslint": "^6.0.1"
   }
 }

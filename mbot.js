@@ -74,37 +74,19 @@ db.prepare('CREATE TABLE if not exists commands(id TEXT, name TEXT, message TEXT
 db.prepare('CREATE TABLE if not exists commandOptions(id TEXT, everyone INTEGER, use INTEGER, UNIQUE(id))').run();
 db.prepare('CREATE TABLE if not exists roles(id TEXT, def TEXT, use INTEGER, UNIQUE(id))').run();
 db.prepare('CREATE TABLE if not exists nsfw(id TEXT, use INTEGER, UNIQUE(id))').run();
+db.prepare('CREATE TABLE if not exists blocked(id TEXT, UNIQUE(id))').run();
 event.on('ready', () => {
+  this.prefixes = [];
+  this.nsfw = [];
+  this.cCommands = [];
   for (const i in client.guilds.array()) {
     const guild = client.guilds.array()[i];
-    tls.initDb(guild);
+    const blocked = db.prepare('SELECT id id FROM blocked').all().find(row => row.id === guild.id);
+    if (blocked !== undefined) guild.leave();
+    else tls.initDb(guild);
   }
   tls._pointsClear24(client);
-  db.prepare('SELECT id id, name name, message message FROM commands').all().forEach(row => {
-    if (!row) return;
-    this.cCommands.push({
-      "id": row.id,
-      "name": row.name,
-      "message": row.message,
-    });
-  });
-  db.prepare('SELECT prefix prefix, id id FROM prefix').all().forEach(row => {
-    if (!row) return;
-    this.prefixes.push({
-      "id": row.id,
-      "prefix": row.prefix,
-    });
-  });
-  db.prepare('SELECT id id, use use FROM nsfw').all().forEach(row => {
-    if (!row) return;
-    let use;
-    if (row.use === 1) use = true;
-    if (row.use === 0) use = false;
-    this.nsfw.push({
-      "id": row.id,
-      "use": use,
-    });
-  });
+  json();
   event.on('timerFinished', (userId, timerId, timerName) => {
     Logger.debug(`Timer ${timerId} has finished.`);
     client.users.fetch(userId, false).then(user => {
@@ -114,15 +96,21 @@ event.on('ready', () => {
 });
 
 client.on('guildCreate', (guild) => {
-  tls.initDb(guild);
-  this.prefixes.push({
-    "id": guild.id,
-    "prefix": "m!",
-  });
-  this.nsfw.push({
-    "id": guild.id,
-    "use": true,
-  });
+  const blocked = db.prepare('SELECT id id FROM blocked').all().find(row => row.id === guild.id);
+  if (blocked !== undefined)
+    guild.leave();
+  else {
+    tls.initDb(guild);
+    tls.initDb(guild);
+    this.prefixes.push({
+      "id": guild.id,
+      "prefix": "m!",
+    });
+    this.nsfw.push({
+      "id": guild.id,
+      "use": true,
+    });
+  }
 });
 
 client.on('guildDelete', (guild) => {
@@ -272,6 +260,37 @@ process.openStdin().on('data', (val) => {
       break;
   }
 });
+
+function json() {
+  db.sqlite.each('id id, name name, message message', 'commands', (err, row) => {
+    if (err) return console.log(err);
+    if (!row) return;
+    module.exports.cCommands.push({
+      "id": row.id,
+      "name": row.name,
+      "message": row.message,
+    });
+  });
+  db.sqlite.each('prefix prefix, id id', 'prefix', (err, row) => {
+    if (err) return console.log(err);
+    if (!row) return;
+    module.exports.prefixes.push({
+      "id": row.id,
+      "prefix": row.prefix,
+    });
+  });
+  db.sqlite.each('id id, use use', 'nsfw', (err, row) => {
+    if (err) return console.log(err);
+    if (!row) return;
+    let use;
+    if (row.use === 1) use = true;
+    if (row.use === 0) use = false;
+    module.exports.nsfw.push({
+      "id": row.id,
+      "use": use,
+    });
+  });
+}
 
 event.on('stop', (code) => {
   exit().then(() => {

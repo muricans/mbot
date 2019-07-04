@@ -19,7 +19,7 @@ class Logger {
      */
     static debug(text) {
         if (settings.debug) {
-            rawLog(text, 'DEBUG');
+            return rawLog(text, 'DEBUG');
         }
     }
 
@@ -29,7 +29,7 @@ class Logger {
      * @param {string} text The text you want to send to console.
      */
     static file(text) {
-        rawLog(text, 'FILE');
+        return rawLog(text, 'FILE');
     }
 
     /**
@@ -38,7 +38,7 @@ class Logger {
      * @param {string} text The text you want to send to console.
      */
     static info(text) {
-        rawLog(text, 'INFO');
+        return rawLog(text, 'INFO');
     }
 
     /**
@@ -47,7 +47,7 @@ class Logger {
      * @param {string} text The text you want to send to console.
      */
     static error(text) {
-        rawLog(text, 'ERROR');
+        return rawLog(text, 'ERROR');
     }
 
     /**
@@ -56,7 +56,7 @@ class Logger {
      * @param {string} text The text you want to send to console.
      */
     static warn(text) {
-        rawLog(text, 'WARN');
+        return rawLog(text, 'WARN');
     }
 
     /**
@@ -65,18 +65,28 @@ class Logger {
      * @param {string} text The text you want to send to console.
      */
     static log(text) {
-        console.log(`[${time()}]: ${text}`);
+        return new Promise(resolve => {
+            process.nextTick(() => {
+                console.log(`[${time()}]: ${text}`);
+                resolve();
+            });
+        });
     }
 }
 
 function rawLog(message, type) {
-    const open = chalk.yellow('[');
-    const close = chalk.yellow(']');
-    type = chalk.blue('LEVEL-' + type);
-    console.log(`${open}${chalk.green(time())} ${type}${close}: ${message}`);
-    if (isFileLogging) {
-        mbotLogStream.write(writeLog(message, type));
-    }
+    return new Promise(resolve => {
+        process.nextTick(() => {
+            const open = chalk.yellow('[');
+            const close = chalk.yellow(']');
+            type = chalk.blue('LEVEL-' + type);
+            console.log(`${open}${chalk.green(time())} ${type}${close}: ${message}`);
+            if (isFileLogging) {
+                mbotLogStream.write(writeLog(message, type));
+            }
+            resolve();
+        });
+    });
 }
 
 function writeLog(message, type) {

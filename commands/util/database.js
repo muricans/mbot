@@ -31,6 +31,29 @@ module.exports = {
             case "download":
                 message.channel.send(new Discord.MessageAttachment('mbot.db'));
                 break;
+            case "block":
+                if (!args[1]) return message.channel.send('Please add the id of the server you would like to block!');
+                if (isNaN(args[1])) return message.channel.send('Please use a proper server id!');
+                db.sqlite.insert('blocked(id)', [args[1]], true).then(() => {
+                    message.channel.send(`Blocked server ${args[1]} successfully!`);
+                }).catch((err) => {
+                    console.log(err);
+                    message.channel.send('Error occurred while performing task.');
+                });
+                break;
+            case "unblock":
+                if (!args[1]) return message.channel.send('Please add the id of the server you would like to unblock');
+                if (isNaN(args[1])) return message.channel.send('Please use a proper server id!');
+                db.sqlite.delete('blocked', `id = ${args[1]}`).then(() => {
+                    message.channel.send(`Unblocked server ${args[1]} successfully!`);
+                }).catch(err => {
+                    console.log(err);
+                    message.channel.send('Error occurred while performing task.');
+                });
+                break;
+            default:
+                message.channel.send('Unkown argument! run | get | download | block');
+                break;
         }
     },
 };

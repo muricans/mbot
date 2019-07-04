@@ -10,3 +10,4 @@ logs/errors.log
 version.txt
 start.bat
 .eslintrc.json
+package-lock.json
