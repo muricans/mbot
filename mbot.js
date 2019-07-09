@@ -75,7 +75,7 @@ db.prepare('CREATE TABLE if not exists commandOptions(id TEXT, everyone INTEGER,
 db.prepare('CREATE TABLE if not exists roles(id TEXT, def TEXT, use INTEGER, UNIQUE(id))').run();
 db.prepare('CREATE TABLE if not exists nsfw(id TEXT, use INTEGER, UNIQUE(id))').run();
 db.prepare('CREATE TABLE if not exists blocked(id TEXT, UNIQUE(id))').run();
-event.on('ready', () => {
+event.once('ready', () => {
   this.prefixes = [];
   this.nsfw = [];
   this.cCommands = [];
@@ -87,12 +87,13 @@ event.on('ready', () => {
   }
   tls._pointsClear24(client);
   json();
-  event.on('timerFinished', (userId, timerId, timerName) => {
-    Logger.debug(`Timer ${timerId} has finished.`);
-    client.users.fetch(userId, false).then(user => {
-      user.send(`Your timer '${timerName}' has finished!`);
-    }).catch();
-  });
+});
+
+event.on('timerFinished', (userId, timerId, timerName) => {
+  Logger.debug(`Timer ${timerId} has finished.`);
+  client.users.fetch(userId, false).then(user => {
+    user.send(`Your timer '${timerName}' has finished!`);
+  }).catch();
 });
 
 client.on('guildCreate', (guild) => {
@@ -160,7 +161,7 @@ client.on('guildMemberRemove', (guildMember) => {
 });
 
 // actions
-client.on('ready', async () => {
+client.once('ready', async () => {
   event.emit('ready');
   Logger.info('mbot v' + pkg.version + " has been enabled.");
   if (settings.debug) {
