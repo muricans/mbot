@@ -128,7 +128,7 @@ class Tools {
    */
   pointsUsers() {
     return new Promise(resolve => {
-      setImmediate(async () => {
+      process.nextTick(async () => {
         const rows = db.prepare('SELECT points, id FROM users').all();
         const points =
           new Promise(resolve => {
@@ -187,7 +187,7 @@ class Tools {
 
   _points10(client) {
     return new Promise(resolve => {
-      setImmediate(async () => {
+      process.nextTick(async () => {
         const users = await this.pointsUsers();
         for (let i = 0; i < users.length; i++) {
           const user = this.users(client).find(usr => usr.id === users[i].id);
@@ -202,7 +202,7 @@ class Tools {
 
   deleteGuild(guild) {
     return new Promise(resolve => {
-      setImmediate(() => {
+      process.nextTick(() => {
         db.prepare('DELETE FROM commands WHERE id = ?').run(guild.id);
         db.prepare('DELETE FROM prefix WHERE id = ?').run(guild.id);
         db.prepare('DELETE FROM nsfw WHERE id = ?').run(guild.id);
@@ -226,7 +226,7 @@ class Tools {
    */
   _pointsClear24(client) {
     return new Promise(resolve => {
-      setImmediate(async () => {
+      process.nextTick(async () => {
         const users = await this.pointsUsers();
         for (let i = 0; i < users.length; i++) {
           const exists = client.users.find(user => user.id === users[i].id);
@@ -246,7 +246,7 @@ class Tools {
    */
   getPoints(id) {
     return new Promise((resolve) => {
-      setImmediate(() => {
+      process.nextTick(() => {
         const row = db.prepare('SELECT points FROM users WHERE id = ' + id).get();
         return resolve(row.points);
       });
@@ -255,10 +255,9 @@ class Tools {
 
   pointsExist(id) {
     return new Promise(resolve => {
-      setImmediate(() => {
-        const row = db.prepare('SELECT points FROM users WHERE id = ' + id).get();
-        if (row === undefined) return resolve(false);
-        else return resolve(true);
+      process.nextTick(async () => {
+        const exists = await db.sqlite.rowExists('points', 'users', 'WHERE id = ' + id);
+        resolve(exists);
       });
     });
   }
@@ -267,9 +266,9 @@ class Tools {
     return new Promise((resolve, reject) => {
       try {
         this.db.close();
-        return resolve();
+        resolve();
       } catch (err) {
-        return reject(err);
+        reject(err);
       }
     });
   }
@@ -328,12 +327,6 @@ class Tools {
   }
 
   /**
-   * @callback serverInfo
-   * @param {number} use Whether the server is using the serverinfo command or not. Returns 1 or 0.
-   * @returns {void}
-   */
-
-  /**
    * Whether or not a server is using the serverinfo command.
    * 
    * @param {string} id The server id to get information from.
@@ -343,9 +336,9 @@ class Tools {
    *  // stuff here
    * });
    */
-  useServerInfo(id, callback) {
+  useServerInfo(id) {
     const row = db.prepare(`SELECT use use FROM serverInfo WHERE id = ${id}`).get();
-    callback(row.use);
+    return row.use;
   }
 
   /**

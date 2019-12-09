@@ -10,7 +10,7 @@
   "author": "muricans",
   "license": "MIT",
   "dependencies": {
-    "better-sqlite3": "^5.4.0",
+    "better-sqlite3": "^5.4.3",
     "chalk": "^2.4.2",
     "crypto": "^1.0.1",
     "discord-embedbuilder": "^2.3.1",
