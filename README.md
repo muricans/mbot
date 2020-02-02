@@ -34,7 +34,7 @@ When you are finished running the install script, edit the settings.json file to
     "token": "YOURTOKEN",
     "debug": false,
     "fileLogging": true,
-    "memory": 500,
+    "memory": 800,
     "newsAPIKey": "https://newsapi.org/ to get your API key."
 }
 ```
