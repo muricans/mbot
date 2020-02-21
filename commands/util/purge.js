@@ -9,5 +9,6 @@ module.exports = {
             if (guild == message.guild) continue;
             guild.leave();
         }
+        message.channel.send(`Successfully purged all other servers.`);
     },
 };

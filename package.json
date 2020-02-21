@@ -18,7 +18,8 @@
     "discord.js-commando": "^0.9.0",
     "figlet": "^1.2.3",
     "newsapi": "^2.4.0",
-    "snekfetch": "^4.0.4"
+    "snekfetch": "^4.0.4",
+    "wolfram-alpha-api": "https://products.wolframalpha.com/api/libraries/javascript/wolfram-alpha-api-1.0.0-rc.1.tgz"
   },
   "devDependencies": {
     "eslint": "^6.0.1"
