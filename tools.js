@@ -229,7 +229,7 @@ class Tools {
       process.nextTick(async () => {
         const users = await this.pointsUsers();
         for (let i = 0; i < users.length; i++) {
-          const exists = client.users.find(user => user.id === users[i].id);
+          const exists = client.users.cache.find(user => user.id === users[i].id);
           if (!exists || exists.bot) {
             db.prepare('DELETE FROM users WHERE id = ?').run(users[i].id);
           }
