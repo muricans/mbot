@@ -11,7 +11,7 @@ module.exports = {
   mod: true,
   permissions: ['MANAGE_MESSAGES'],
   execute(message, args, client) {
-    const weirdChamp = client.emojis.get("572690273247821824");
+    const weirdChamp = client.emojis.cache.get("572690273247821824");
     let hasTwoArgs;
     if (args.length === 1) {
       hasTwoArgs = false;

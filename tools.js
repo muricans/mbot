@@ -495,8 +495,8 @@ class Tools {
    * @param {boolean} all Is the user rouletting all their points?
    */
   roulette(amnt, current, message, client, all) {
-    const smile = client.emojis.get("566861749324873738");
-    const wtf = client.emojis.get("567905581868777492");
+    const smile = client.emojis.cache.get("566861749324873738");
+    const wtf = client.emojis.cache.get("567905581868777492");
     const chance = Math.floor(Math.random() * 1000) + 1;
     let lost;
     // chance of winning

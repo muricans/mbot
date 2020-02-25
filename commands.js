@@ -151,7 +151,7 @@ module.exports.registerCommands = (client, mbot, db) => {
 
     // commands here
 
-    const ppHop = client.emojis.get("572687346529468428");
+    const ppHop = client.emojis.cache.get("572687346529468428");
     if (command === 'ping') {
       const msgTimestamp = message.createdTimestamp;
       const now = Date.now();
