@@ -27,7 +27,7 @@ module.exports = {
             return message.channel.send(embed);
         }
         if (!isNaN(args[0])) {
-            const guild = client.guilds.get(args[0]);
+            const guild = client.guilds.cache.get(args[0]);
             if (!guild) {
                 return message.channel.send(`${message.author} Could not find a server with the given ID!`);
             }

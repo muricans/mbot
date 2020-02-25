@@ -79,8 +79,8 @@ event.once('ready', () => {
   this.prefixes = [];
   this.nsfw = [];
   this.cCommands = [];
-  for (const i in client.guilds.array()) {
-    const guild = client.guilds.array()[i];
+  for (const i in client.guilds.cache.array()) {
+    const guild = client.guilds.cache.array()[i];
     const blocked = db.prepare('SELECT id id FROM blocked').all().find(row => row.id === guild.id);
     if (blocked !== undefined) guild.leave();
     else tls.initDb(guild);
