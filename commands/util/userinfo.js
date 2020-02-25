@@ -15,7 +15,7 @@ module.exports = {
       return message.channel.send(info(mention, message));
     } else if (!isNaN(args[0])) {
       try {
-        const mention = await client.users.fetch(args[0], false);
+        const mention = await client.users.cache.fetch(args[0], false);
         return message.channel.send(info(mention));
       } catch (err) {
         return message.channel.send(`${message.author} Could not find that user!`);

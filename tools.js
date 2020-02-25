@@ -772,7 +772,7 @@ class Tools {
    * @param {Discord.Client} client The client to retrieve users from.
    */
   users(client) {
-    return client.users.array();
+    return client.users.cache.array();
   }
 
   /**
@@ -929,7 +929,7 @@ class Tools {
       if (mention.startsWith('!'))
         mention = mention.slice(1);
     }
-    return client.users.get(mention);
+    return client.users.cache.get(mention);
   }
 }
 module.exports.Tools = Tools;

@@ -91,7 +91,7 @@ event.once('ready', () => {
 
 event.on('timerFinished', (userId, timerId, timerName) => {
   Logger.debug(`Timer ${timerId} has finished.`);
-  client.users.fetch(userId, false).then(user => {
+  client.users.cache.fetch(userId, false).then(user => {
     user.send(`Your timer '${timerName}' has finished!`);
   }).catch();
 });
