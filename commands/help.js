@@ -19,13 +19,22 @@ module.exports = {
       const builder = new EmbedBuilder(message.channel)
         .setTime(35000)
         .calculatePages(cmds.length, 8, (embed, i) => {
-          embed.addField(`${prefix}${cmds[i].name}`, cmds[i].description);
+          embed.addFields([{
+            name: `${prefix}${cmds[i].name}`,
+            value: cmds[i].description,
+          }]);
         });
       if (tools.usingNsfwModules(message.guild.id)) {
-        builder.getEmbeds()[builder.getEmbeds().length - 1].addField('NSFW Commands', '!help nsfw or continue to the next page...');
+        builder.getEmbeds()[builder.getEmbeds().length - 1].addFields([{
+          name: 'NSFW Commands',
+          value: '!help nsfw or continue to the next page...',
+        }]);
         const nsfwBuilder = new EmbedBuilder(message.channel)
           .calculatePages(nsfwCmds.length, 8, (embed, i) => {
-            embed.addField(`${prefix}${nsfwCmds[i].name}`, nsfwCmds[i].description);
+            embed.addFields([{
+              name: `${prefix}${nsfwCmds[i].name}`,
+              value: nsfwCmds[i].description,
+            }]);
           })
           .setTitle('NSFW Commands');
         builder
@@ -40,7 +49,10 @@ module.exports = {
       const embedBuilder = new EmbedBuilder(message.channel)
         .setTime(35000);
       embedBuilder.calculatePages(nsfwCmds.length, 8, (embed, i) => {
-        embed.addField(`${prefix}${nsfwCmds[i].name}`, nsfwCmds[i].description);
+        embed.addFields([{
+          name: `${prefix}${nsfwCmds[i].name}`,
+          value: nsfwCmds[i].description,
+        }]);
       });
       return embedBuilder
         .setTitle('NSFW Commands')
@@ -54,7 +66,10 @@ module.exports = {
       const embedBuilder = new EmbedBuilder(message.channel)
         .setTime(35000);
       embedBuilder.calculatePages(cmds.length, 8, (embed, i) => {
-        embed.addField(`${prefix}${cmds[i].name}`, cmds[i].description);
+        embed.addFields([{
+          name: `${prefix}${cmds[i].name}`,
+          value: cmds[i].description,
+        }]);
       });
       return embedBuilder
         .setTitle(`Results with: ${args[0].toLowerCase()}`)
@@ -69,8 +84,14 @@ module.exports = {
     const usg = usage || "No usage data found.";
     const embed = new Discord.MessageEmbed()
       .setTitle(prefix + name)
-      .addField('Usage ', usg)
-      .addField('Description', desc);
+      .addFields([{
+        name: 'Usage ',
+        value: usg,
+      }])
+      .addFields([{
+        names: 'Description',
+        value: desc,
+      }]);
     return message.channel.send(embed);
   },
 };

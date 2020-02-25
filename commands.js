@@ -167,16 +167,28 @@ module.exports.registerCommands = (client, mbot, db) => {
         .setTitle('Pong')
         .setColor(0x2872DB)
         .setDescription(`mbot has been up for: ${uptime}`)
-        .addField('Receive', `${now - msgTimestamp}ms ${ppHop}`)
-        .addField('Send', `Loading... ${ppHop}`);
+        .addFields([{
+          name: 'Receive',
+          value: `${now - msgTimestamp}ms ${ppHop}`,
+        }])
+        .addFields([{
+          name: 'Send',
+          value: `Loading... ${ppHop}`,
+        }]);
       message.channel.send(embed).then(sent => {
         const time = Date.now() - now;
         embed = new Discord.MessageEmbed()
           .setTitle('Pong')
           .setColor(0x2872DB)
           .setDescription(`mbot has been up for: ${uptime}`)
-          .addField('Receive', `${now - msgTimestamp}ms ${ppHop}`)
-          .addField('Send', `${time}ms ${ppHop}`);
+          .addFields([{
+            name: 'Receive',
+            value: `${now - msgTimestamp}ms ${ppHop}`,
+          }])
+          .addFields([{
+            name: 'Send',
+            value: `${time}ms ${ppHop}`,
+          }]);
         sent.edit(embed);
       });
     }

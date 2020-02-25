@@ -18,12 +18,27 @@ module.exports = {
             const embed = new Discord.MessageEmbed()
                 .setAuthor(guild.name)
                 .setDescription('Server information is now being displayed.')
-                .addField('Owner', `${guild.owner.user.username}#${guild.owner.user.discriminator}`)
-                .addField('Server ID', guild.id)
-                .addField('Time of Creation', guild.createdAt)
-                .addField('Icon URL', icon)
+                .addFields([{
+                    name: 'Owner',
+                    value: `${guild.owner.user.username}#${guild.owner.user.discriminator}`,
+                }])
+                .addFields([{
+                    name: 'Server ID',
+                    value: guild.id,
+                }])
+                .addFields([{
+                    name: 'Time of Creation',
+                    value: guild.createdAt,
+                }])
+                .addFields([{
+                    name: 'Icon URL',
+                    value: icon,
+                }])
                 .setThumbnail(guild.iconURL())
-                .addField('Members', guild.memberCount);
+                .addFields([{
+                    name: 'Members',
+                    value: guild.memberCount,
+                }]);
             return message.channel.send(embed);
         }
         if (!isNaN(args[0])) {
@@ -38,12 +53,27 @@ module.exports = {
             const embed = new Discord.MessageEmbed()
                 .setAuthor(guild.name)
                 .setDescription('Server information is now being displayed.')
-                .addField('Owner', `${guild.owner.user.username}#${guild.owner.user.discriminator}`)
-                .addField('Server ID', guild.id)
-                .addField('Time of Creation', guild.createdAt)
-                .addField('Icon URL', icon)
+                .addFields([{
+                    name: 'Owner',
+                    value: `${guild.owner.user.username}#${guild.owner.user.discriminator}`,
+                }])
+                .addFields([{
+                    name: 'Server ID',
+                    value: guild.id,
+                }])
+                .addFields([{
+                    name: 'Time of Creation',
+                    value: guild.createdAt,
+                }])
+                .addFields([{
+                    name: 'Icon URL',
+                    value: icon,
+                }])
                 .setThumbnail(guild.iconURL())
-                .addField('Members', guild.memberCount);
+                .addFields([{
+                    name: 'Members',
+                    value: guild.memberCount,
+                }]);
             return message.channel.send(embed);
         } else {
             return message.channel.send(`${message.author} Could not find a server with the given ID!`);

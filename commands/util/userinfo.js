@@ -29,8 +29,14 @@ function info(mention, message) {
     .setAuthor(`${mention.username}#${mention.discriminator}`)
     .setDescription('User info is being displayed');
   embed
-    .addField('ID', mention.id)
-    .addField('Time of Creation', mention.createdAt)
+    .addFields([{
+      name: 'ID',
+      value: mention.id,
+    }])
+    .addFields([{
+      name: 'Time of Creation',
+      value: mention.createdAt,
+    }])
     .setThumbnail(mention.displayAvatarURL());
   if (message !== undefined) {
     const member = message.guild.member(mention);

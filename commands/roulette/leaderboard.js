@@ -29,7 +29,11 @@ function leaderboard(channel, client) {
         }
         users = users.sort((a, b) => (a.points > b.points) ? -1 : 1).slice(0, 50);
         embeds.calculatePages(users.length, 10, (embed, i) => {
-            embed.addField(`${i + 1}. ${users[i].username}`, users[i].points, true);
+            embed.addFields([{
+                name: `${i + 1}. ${users[i].username}`,
+                value: users[i].points,
+                inline: true,
+            }]);
         });
         embeds
             .setTitle('Points Leaderboard')

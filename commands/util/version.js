@@ -14,10 +14,26 @@ module.exports = {
                 .setTitle('mbot info')
                 .setThumbnail('https://hotemoji.com/images/dl/v/robot-face-emoji-by-twitter.png')
                 .setColor('#e9225f')
-                .addField('Version', `v${pkg.version}`, true)
-                .addField('Author', 'muricans', true)
-                .addField('Repository', '[GitHub](https://github.com/muricans/mbot)', true)
-                .addField('Documentation', '[Here](https://muricans.github.io/mbot/docs)', true)
+                .addFields([{
+                    name: 'Version',
+                    value: `v${pkg.version}`,
+                    inline: true,
+                }])
+                .addFields([{
+                    name: 'Author',
+                    value: 'muricans',
+                    inline: true,
+                }])
+                .addFields([{
+                    name: 'Repository',
+                    value: '[GitHub](https://github.com/muricans/mbot)',
+                    inline: true,
+                }])
+                .addFields([{
+                    name: 'Documentation',
+                    value: '[Here](https://muricans.github.io/mbot/docs)',
+                    inline: true,
+                }])
                 .setFooter(`Git commit: ${data}`, 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png');
             message.channel.send(embed);
         });
