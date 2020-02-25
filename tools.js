@@ -110,8 +110,8 @@ class Tools {
     db.prepare('INSERT OR IGNORE INTO nsfw(id, use) VALUES(?,?)').run(
       guild.id,
       1);
-    for (let i = 0; i < guild.members.array().length; i++) {
-      const guildMember = guild.members.array()[i];
+    for (let i = 0; i < guild.members.cache.array().length; i++) {
+      const guildMember = guild.members.cache.array()[i];
       if (guildMember.user.bot) continue;
       db.prepare('INSERT OR IGNORE INTO users(id, points) VALUES(?,?)').run(guildMember.user.id, 100);
     }
