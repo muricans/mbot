@@ -39,9 +39,9 @@ function info(mention, message) {
     }])
     .setThumbnail(mention.displayAvatarURL());
   if (message !== undefined) {
-    const member = message.guild.member(mention);
-    if (!member.roles.array().length || !member.roles.color || !member.roles.color.color) return embed;
-    embed.setColor(message.guild.member(mention).roles.color.color);
+    const roles = message.guild.member(mention).roles.cache;
+    if (!roles.array().length || !roles.color || !roles.color.color) return embed;
+    embed.setColor(roles.color.color);
   }
   return embed;
 }
